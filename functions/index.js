@@ -1,39 +1,19 @@
-const functions = require("firebase-functions");
+/**
+ * Import function triggers from their respective submodules:
+ *
+ * const {onCall} = require("firebase-functions/v2/https");
+ * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
+ *
+ * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ */
 
-const admin = require("firebase-admin");
-admin.initializeApp();
+const {onRequest} = require("firebase-functions/v2/https");
+const logger = require("firebase-functions/logger");
 
-exports.updateRating = functions.firestore.document("ratings/{ratingId}")
-    .onWrite((change, context) => {
-      const courseId = change.after.data().courseId;
-      const ratingsRef = admin.firestore()
-          .collection("ratings")
-          .where("courseId", "==", courseId);
+// Create and deploy your first functions
+// https://firebase.google.com/docs/functions/get-started
 
-      return ratingsRef.get().then((querySnapshot) => {
-        let rating = 0;
-        let snippets = 0;
-        let maintenance = 0;
-        let understandability = 0;
-        let count = 0;
-        querySnapshot.forEach((doc) => {
-          rating += doc.data().rating;
-          snippets += doc.data().snippets;
-          maintenance += doc.data().maintenance;
-          understandability += doc.data().understandability;
-          count++;
-        });
-        const averageRating = rating / count;
-        const averageSnippets = snippets / count;
-        const averageMaintenance = maintenance / count;
-        const averageUnderstandability = understandability / count;
-
-        return admin.firestore().collection("courses").doc(courseId).update({
-          rating: averageRating,
-          snippets: averageSnippets,
-          maintenance: averageMaintenance,
-          understandability: averageUnderstandability,
-          ratingVotes: count,
-        });
-      });
-    });
+// exports.helloWorld = onRequest((request, response) => {
+//   logger.info("Hello logs!", {structuredData: true});
+//   response.send("Hello from Firebase!");
+// });
