@@ -8,7 +8,14 @@ REACT_APP_ALGOLIA_API_KEY=""\
 REACT_APP_ALGOLIA_APPLICATION_ID=""\
 REACT_APP_PROFILE='dev'
 
-Run `firebase emulators:start` followed by `npm start` 
+Run 
+1. Install nvm, node.js and npm
+2. Install firebase CLI and login
+3. Install java
+4. Got to /functions and run `npm install`
+3. Run `npm install`
+4. Start firebase emulators `firebase emulators:start`
+5. Start the application `npm start` 
 
 
 Open [http://localhost:3000](http://localhost:3000)

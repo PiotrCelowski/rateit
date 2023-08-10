@@ -13,7 +13,6 @@ build
 #firebase
 .firebase
 .firebaserc
-firebase.json
 
 # api keys
 /.env
