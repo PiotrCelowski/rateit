@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import { useAutocomplete } from "../../algolia/CustomAlgoliaHooks";
+import { useAutocomplete } from "../../configuration/algolia/CustomAlgoliaHooks";
 import CustomConfig from "./CustomConfigure";
 
 const Searcher = (props) => {

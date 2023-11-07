@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
-import { firestore } from "./FirebaseCommon";
+import { firestore } from "../configuration/firebase/FirebaseCommon";
 
 export const fetchCourse = async (id) => {
     try {

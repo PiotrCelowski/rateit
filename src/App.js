@@ -5,7 +5,7 @@ import RegisterPage from "./pages/RegisterPage"
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./pages/RootLayout";
 import { InstantSearch } from 'react-instantsearch-hooks-web';
-import { searchClient } from "./algolia/algolia-config";
+import { searchClient } from "./configuration/algolia/algolia-config";
 import { proposeCourseAction } from "./components/ProposeCourseForm/ProposeCourseForm";
 import ProposeCoursePage from "./pages/ProposeCoursePage";
 import PendingCoursesPage from "./pages/PendingCoursesPage";

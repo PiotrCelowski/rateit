@@ -5,15 +5,15 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { courseRatingActions } from "../../store/courseRatingSlice";
-import { fetchCourse } from "../../firebase/FirestoreApi";
+import { fetchCourse } from "../../api/FirestoreApi";
 import CourseRatingSection from "./CourseRatingSection";
 import { v4 as uuidv4 } from "uuid";
-import { getCurrentUser } from "../../firebase/FirebaseAuthApi";
+import { getCurrentUser } from "../../api/FirebaseAuthApi";
 import {
   addRating,
   fetchCourseRating,
   updateRating,
-} from "../../firebase/FirestoreApi";
+} from "../../api/FirestoreApi";
 
 const style = {
   position: "absolute",
@@ -97,7 +97,6 @@ const CourseRatingOverlay = () => {
     changeCourseRatingHandler,
     initialCourseState
   );
-  const [isLoading, setIsLoading] = useState(false);
   const [ratingId, setRatingId] = useState(null);
 
   const closeCourseHandler = () => {

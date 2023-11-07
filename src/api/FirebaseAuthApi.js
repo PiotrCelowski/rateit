@@ -7,7 +7,7 @@ import {
   signOut,
   browserSessionPersistence,
 } from "firebase/auth";
-import { auth } from "./FirebaseCommon";
+import { auth } from "../configuration/firebase/FirebaseCommon";
 
 export const signInWithEmail = async (email, password, rememberMe) => {
   if (!rememberMe) {

@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { courseDetailsActions } from "../../store/courseDetailsSlice";
-import { fetchCourse } from "../../firebase/FirestoreApi";
+import { fetchCourse } from "../../api/FirestoreApi";
 import CourseRatingSection from "./CourseRatingSection";
 import CircularLoading from "../Loader/CircularLoading"
 

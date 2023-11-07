@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import { Button, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { fetchCourse, updateCourse } from "../../firebase/FirestoreApi";
+import { fetchCourse, updateCourse } from "../../api/FirestoreApi";
 import { Form, redirect } from "react-router-dom";
 
 const initialCourseState = {

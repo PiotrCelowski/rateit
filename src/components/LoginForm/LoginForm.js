@@ -13,11 +13,11 @@ import {
   signInWithGoogle,
   signInWithFacebook,
   signInWithEmail,
-} from "../../firebase/FirebaseAuthApi";
+} from "../../api/FirebaseAuthApi";
 import { useDispatch } from "react-redux";
 import { loginActions } from "../../store/loginSlice";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebase/FirebaseCommon";
+import { auth } from "../../configuration/firebase/FirebaseCommon";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import IconButton from "@mui/material/IconButton";

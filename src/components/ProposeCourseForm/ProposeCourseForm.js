@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import { Form, redirect } from "react-router-dom";
 import { Button, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { addCourse } from "../../firebase/FirestoreApi";
+import { addCourse } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
 
 const ProposeCourseForm = () => {
