@@ -9,6 +9,7 @@ import { fetchCourse } from "../../api/FirestoreApi";
 import CourseRatingSection from "./CourseRatingSection";
 import { v4 as uuidv4 } from "uuid";
 import { getCurrentUser } from "../../api/FirebaseAuthApi";
+import { useNavigate } from "react-router-dom";
 import {
   addRating,
   fetchCourseRating,
@@ -88,6 +89,7 @@ const changeCourseRatingHandler = (state, action) => {
 };
 
 const CourseRatingOverlay = () => {
+  const navigate = useNavigate();
   const showCourse = useSelector((state) => state.courseRating.isRatingOpened);
   const currentCourseId = useSelector(
     (state) => state.courseRating.currentCourseId
@@ -181,6 +183,8 @@ const CourseRatingOverlay = () => {
 
     setRatingId(null);
     dispatch(courseRatingActions.toggleCourseRating(null));
+
+    navigate("/", {state: {message: "Course was rated!"}})
   };
 
   return (

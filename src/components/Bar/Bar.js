@@ -47,7 +47,7 @@ const Bar = () => {
       dispatch(loginActions.setLoggedIn(isUserSignedIn()));
     }
 
-    navigate("/");
+    navigate("/", {state: {message: "Logged out successfully."}});
   };
 
   const signUpHandler = () => {

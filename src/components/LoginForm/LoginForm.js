@@ -1,3 +1,4 @@
+import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -21,22 +22,37 @@ import { auth } from "../../configuration/firebase/FirebaseCommon";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import IconButton from "@mui/material/IconButton";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [errorMessage, setError] = useState([]);
+  const [snackbarOpened, setSnackbarOpened] = useState(false);
 
   const sumbitHandler = async (event) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
-    await signInWithEmail(
+    signInWithEmail(
       data.get("email"),
       data.get("password"),
       data.get("rememberMe")
-    );
+    ).then(() => setAuthCallback())
+      .catch((error) => {
+        setError(error.message);
+        setSnackbarOpened(true);
+      });
 
-    setAuthCallback();
+  };
+
+  const closeSnackbar = () => {
+    setSnackbarOpened(false);
   };
 
   const facebookHandler = async (event) => {
@@ -55,7 +71,7 @@ export default function SignIn() {
         user.getIdTokenResult().then((token) => {
           dispatch(loginActions.setLoggedIn(true));
           if (isUserAdmin(token)) dispatch(loginActions.setAdmin(true));
-          navigate("/");
+          navigate("/", {state: {message: "Login successfull!"}});
         });
       } else {
         //do nothing
@@ -160,6 +176,11 @@ export default function SignIn() {
           </Grid>
         </Box>
       </Box>
+      <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={closeSnackbar}>
+        <Alert onClose={closeSnackbar} severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

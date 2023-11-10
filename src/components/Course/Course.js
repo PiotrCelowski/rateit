@@ -11,18 +11,19 @@ import { courseDetailsActions } from "../../store/courseDetailsSlice";
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from "react";
 import { loginActions } from "../../store/loginSlice";
+import CardMedia from '@mui/material/CardMedia';
 
 const Course = (props) => {
   const dispatch = useDispatch();
   const loggedIn = useSelector((state) => state.login.isLoggedIn);
 
   useEffect(() => {
-    if(localStorage.getItem("token")) {
+    if (localStorage.getItem("token")) {
       dispatch(loginActions.setLoggedIn((true)));
     }
   }, [dispatch]);
 
-  const openCourseHandler = () => {    
+  const openCourseHandler = () => {
     dispatch(courseDetailsActions.setCurrentCourseId(props.id));
     dispatch(courseDetailsActions.toggleCourseDetails());
   };
@@ -34,8 +35,16 @@ const Course = (props) => {
 
   return (
     <Card sx={{ display: "grid", gridTemplateRows: "1fr auto" }}>
-      <CardContent sx={{ paddingBottom: "0px", minHeight: "200px" }}>
+      <CardContent sx={{ paddingBottom: "0px", minHeight: "150px" }}>
         <Grid container direction="column" height="100%" justifyContent="space-between" >
+          <Grid item >
+            <CardMedia
+              component="img"
+              height="100"
+              image="https://reactnative.dev/img/tiny_logo.png"
+              alt="Something"
+            />
+          </Grid>
           <Grid item>
             <CourseHeader {...props} />
           </Grid>

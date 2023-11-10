@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
-import { Form, redirect } from "react-router-dom";
+import { Form } from "react-router-dom";
 import { Button, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { addCourse } from "../../api/FirestoreApi";
@@ -16,6 +16,36 @@ const ProposeCourseForm = () => {
   const goBackHandler = () => {
     navigate("/");
   };
+
+  const proposeCourse = async(event) => {
+    event.preventDefault();
+
+    const data = event.target;
+
+    const proposedCourse = {
+      id: uuidv4(),
+      title: capitalize(data.title.value),
+      author: capitalize(data.author.value),
+      release: data.release.value,
+      technologies: [
+        capitalize(data.technology1.value),
+        capitalize(data.technology2.value),
+        capitalize(data.technology3.value),
+      ],
+      type: capitalize(data.type.value),
+      level: capitalize(data.level.value),
+      approved: false,
+    };
+
+    await addCourse(proposedCourse);
+
+    navigate("/", {state: {message: "Course was proposed!"}});
+  }
+  
+  function capitalize(technology) {
+    return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
+  }
+  
 
   return (
     <Container component="main" maxWidth="md">
@@ -32,7 +62,7 @@ const ProposeCourseForm = () => {
         </Typography>
         <Box
           component={Form}
-          method={"post"}
+          onSubmit={proposeCourse}
           sx={{ mt: 1, width: "100%" }}
           autoComplete="off"
         >
@@ -173,30 +203,3 @@ const ProposeCourseForm = () => {
 };
 
 export default ProposeCourseForm;
-
-export async function proposeCourseAction({ request }) {
-  const data = await request.formData();
-
-  const proposedCourse = {
-    id: uuidv4(),
-    title: capitalize(data.get("title")),
-    author: capitalize(data.get("author")),
-    release: data.get("release"),
-    technologies: [
-      capitalize(data.get("technology1")),
-      capitalize(data.get("technology2")),
-      capitalize(data.get("technology3")),
-    ],
-    type: capitalize(data.get("type")),
-    level: capitalize(data.get("level")),
-    approved: false,
-  };
-
-  await addCourse(proposedCourse);
-
-  return redirect("/");
-}
-
-function capitalize(technology) {
-  return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
-}

@@ -21,8 +21,8 @@ export const signInWithEmail = async (email, password, rememberMe) => {
   return userCredentials;
 };
 
-export const signUpWithEmail = async (email, password) => {
-  createUserWithEmailAndPassword(auth, email, password);
+export const signUpWithEmail = async(email, password) => {
+  await createUserWithEmailAndPassword(auth, email, password);
 };
 
 export const signInWithGoogle = async () => {

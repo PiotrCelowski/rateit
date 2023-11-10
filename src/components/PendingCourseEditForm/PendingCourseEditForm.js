@@ -8,7 +8,7 @@ import { Button, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { fetchCourse, updateCourse } from "../../api/FirestoreApi";
-import { Form, redirect } from "react-router-dom";
+import { Form } from "react-router-dom";
 
 const initialCourseState = {
   id: "",
@@ -56,6 +56,34 @@ const PendingCourseEditForm = () => {
     fetchCurrentCourse();
   }, [fetchCurrentCourse]);
 
+  const approveCourse = async(event) => {
+    const data = event.target;
+  
+    const proposedCourse = {
+      id: data.courseId.value,
+      title: capitalize(data.title.value),
+      author: capitalize(data.author.value),
+      release: data.release.value,
+      technologies: [
+        capitalize(data.technology1.value),
+        capitalize(data.technology2.value),
+        capitalize(data.technology3.value),
+      ],
+      type: capitalize(data.type.value),
+      level: capitalize(data.level.value),
+      approved: true,
+    };
+  
+    await updateCourse(proposedCourse);
+  
+    navigate("/", {state: {message: "Course approved!"}});
+  }
+  
+  function capitalize(technology) {
+    return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
+  }
+  
+
   if (isLoading) {
     return <Typography>Fetching data...</Typography>;
   }
@@ -76,7 +104,7 @@ const PendingCourseEditForm = () => {
         </Typography>
         <Box
           component={Form}
-          method={"put"}
+          onSubmit={approveCourse}
           sx={{ mt: 1, width: "100%" }}
           autoComplete="off"
         >
@@ -246,30 +274,3 @@ const PendingCourseEditForm = () => {
 };
 
 export default PendingCourseEditForm;
-
-export async function approveCourse({ request }) {
-  const data = await request.formData();
-
-  const proposedCourse = {
-    id: data.get("courseId"),
-    title: capitalize(data.get("title")),
-    author: capitalize(data.get("author")),
-    release: data.get("release"),
-    technologies: [
-      capitalize(data.get("technology1")),
-      capitalize(data.get("technology2")),
-      capitalize(data.get("technology3")),
-    ],
-    type: capitalize(data.get("type")),
-    level: capitalize(data.get("level")),
-    approved: true,
-  };
-
-  await updateCourse(proposedCourse);
-
-  return redirect("/pending");
-}
-
-function capitalize(technology) {
-  return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
-}

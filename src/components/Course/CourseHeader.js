@@ -20,7 +20,6 @@ const CourseHeader = (props) => {
         color="text.secondary"
         fontSize="12px"
         align="left"
-        marginBottom="20px"
       >
         Released in {props.release}
       </Typography>
