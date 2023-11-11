@@ -38,8 +38,8 @@ const Course = (props) => {
       <CardMedia
         component="img"
         height="150"
-        image="https://reactnative.dev/img/tiny_logo.png"
-        alt="Something"
+        image={props.photoUrl}
+        alt={props.title}
       />
       <CardContent sx={{ paddingBottom: "0px", minHeight: "150px" }}>
         <Grid container direction="column" height="100%" justifyContent="space-between" >

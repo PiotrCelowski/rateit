@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
 import { firestore, storage } from "../configuration/firebase/FirebaseCommon";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export const fetchCourse = async (id) => {
     try {
@@ -21,7 +21,8 @@ export const addCourse = async (course) => {
             technologies: course.technologies,
             type: course.type,
             level: course.level,
-            approved: course.approved
+            approved: course.approved,
+            photoUrl: course.photoUrl
         };
         await setDoc(doc(firestore, "courses", course.id), docData);
     } catch (error) {
@@ -93,7 +94,8 @@ export const updateCourse = async (course) => {
             technologies: course.technologies,
             type: course.type,
             level: course.level,
-            approved: course.approved
+            approved: course.approved,
+            photoUrl: course.photoUrl
         })
     } catch (error) {
         console.error(error);
@@ -109,5 +111,7 @@ export const uploadPhoto = async (file, courseId, title, author) => {
         author: author
     }
 
-    await uploadBytes(fileRef, file, metadata);
+    return uploadBytes(fileRef, file, metadata).then((snapshot) => {
+        return getDownloadURL(snapshot.ref);
+    })
 }

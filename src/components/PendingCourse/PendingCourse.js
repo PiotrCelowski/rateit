@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import { courseDetailsActions } from '../../store/courseDetailsSlice';
 import { useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
+import CardMedia from '@mui/material/CardMedia';
 
 const PendingCourse = (props) => {
     const dispatch = useDispatch();
@@ -19,7 +20,13 @@ const PendingCourse = (props) => {
 
     return (
         <Card>
-            <CardContent sx={{ paddingBottom: "0px", minHeight: "200px"  }}>
+            <CardMedia
+                component="img"
+                height="150"
+                image={props.photoUrl}
+                alt={props.title}
+            />
+            <CardContent sx={{ paddingBottom: "0px", minHeight: "150px" }}>
                 <PendingCourseHeader {...props} />
             </CardContent>
             <CardActions sx={{ paddingLeft: "16px" }}>

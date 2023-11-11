@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import { Button, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { fetchCourse, updateCourse } from "../../api/FirestoreApi";
+import { fetchCourse, updateCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { Form } from "react-router-dom";
 
 const initialCourseState = {
@@ -18,6 +18,7 @@ const initialCourseState = {
   technologies: [],
   type: "",
   level: "",
+  photoUrl: ""
 };
 
 const PendingCourseEditForm = () => {
@@ -46,6 +47,7 @@ const PendingCourseEditForm = () => {
           technologies: response.data().technologies,
           type: response.data().type,
           level: response.data().level,
+          photoUrl: response.data().photoUrl
         };
       });
       setIsLoading(false);
@@ -73,6 +75,16 @@ const PendingCourseEditForm = () => {
       level: capitalize(data.level.value),
       approved: true,
     };
+
+    let url = currentCourse.photoUrl;
+
+    console.log(data.photo.files[0]);
+
+    if (data.photo.files[0]) {
+      url = await uploadPhoto(data.photo.files[0], proposedCourse.id, proposedCourse.title, proposedCourse.author);
+    }
+
+    proposedCourse["photoUrl"] = url;
   
     await updateCourse(proposedCourse);
   
@@ -147,6 +159,17 @@ const PendingCourseEditForm = () => {
                 InputLabelProps={{ shrink: true }}
                 defaultValue={currentCourse.release}
                 fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="photo"
+                id="photo"
+                type="file"
+                fullWidth
+                sx = {{
+                  marginTop: "16px"
+                }}
               />
             </Grid>
           </Grid>

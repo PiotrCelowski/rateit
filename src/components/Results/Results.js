@@ -21,7 +21,8 @@ const Results = (props) => {
           release: course.release,
           rating: course.rating,
           ratingVotes: course.ratingVotes,
-          tags: course.tags
+          tags: course.tags,
+          photoUrl: course.photoUrl
         });
       }
     })

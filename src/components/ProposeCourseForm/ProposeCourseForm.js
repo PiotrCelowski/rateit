@@ -36,14 +36,18 @@ const ProposeCourseForm = () => {
       level: capitalize(data.level.value),
       approved: false,
     };
+    
+    let url = "/static/images/no-image.jpg";
 
-    console.log(data.photo.value)
+    if (data.photo.files[0]) {
+      url = await uploadPhoto(data.photo.files[0], proposedCourse.id, proposedCourse.title, proposedCourse.author);
+    }
+
+    proposedCourse["photoUrl"] = url;
 
     await addCourse(proposedCourse);
-
-    await uploadPhoto(data.photo.files[0], proposedCourse.id, proposedCourse.title, proposedCourse.author);
-
-    // navigate("/", { state: { message: "Course was proposed!" } });
+    
+    navigate("/", { state: { message: "Course was proposed!" } });
   }
 
   function capitalize(technology) {
