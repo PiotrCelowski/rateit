@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
-import { firestore } from "../configuration/firebase/FirebaseCommon";
+import { firestore, storage } from "../configuration/firebase/FirebaseCommon";
+import { ref, uploadBytes } from "firebase/storage";
 
 export const fetchCourse = async (id) => {
     try {
@@ -97,4 +98,16 @@ export const updateCourse = async (course) => {
     } catch (error) {
         console.error(error);
     }
+}
+
+export const uploadPhoto = async (file, courseId, title, author) => {
+    const fileRef = ref(storage, courseId);
+
+    const metadata = {
+        courseId: courseId,
+        title: title,
+        author: author
+    }
+
+    await uploadBytes(fileRef, file, metadata);
 }

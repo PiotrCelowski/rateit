@@ -35,16 +35,14 @@ const Course = (props) => {
 
   return (
     <Card sx={{ display: "grid", gridTemplateRows: "1fr auto" }}>
+      <CardMedia
+        component="img"
+        height="150"
+        image="https://reactnative.dev/img/tiny_logo.png"
+        alt="Something"
+      />
       <CardContent sx={{ paddingBottom: "0px", minHeight: "150px" }}>
         <Grid container direction="column" height="100%" justifyContent="space-between" >
-          <Grid item >
-            <CardMedia
-              component="img"
-              height="100"
-              image="https://reactnative.dev/img/tiny_logo.png"
-              alt="Something"
-            />
-          </Grid>
           <Grid item>
             <CourseHeader {...props} />
           </Grid>

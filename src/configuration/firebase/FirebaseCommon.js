@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 const app = initializeApp(firebaseConfig);
 
@@ -15,4 +16,7 @@ if(process.env.REACT_APP_PROFILE === 'dev') connectAuthEmulator(auth, "http://12
 const functions = getFunctions(app);
 if(process.env.REACT_APP_PROFILE === 'dev') connectFunctionsEmulator(functions, "localhost", 5002);
 
-export { auth, firestore, functions };
+const storage = getStorage(app);
+if(process.env.REACT_APP_PROFILE === 'dev') connectStorageEmulator(storage,  "localhost", 9199);
+
+export { auth, firestore, functions, storage };

@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import { Form } from "react-router-dom";
 import { Button, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { addCourse } from "../../api/FirestoreApi";
+import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
 
 const ProposeCourseForm = () => {
@@ -17,7 +17,7 @@ const ProposeCourseForm = () => {
     navigate("/");
   };
 
-  const proposeCourse = async(event) => {
+  const proposeCourse = async (event) => {
     event.preventDefault();
 
     const data = event.target;
@@ -37,15 +37,19 @@ const ProposeCourseForm = () => {
       approved: false,
     };
 
+    console.log(data.photo.value)
+
     await addCourse(proposedCourse);
 
-    navigate("/", {state: {message: "Course was proposed!"}});
+    await uploadPhoto(data.photo.files[0], proposedCourse.id, proposedCourse.title, proposedCourse.author);
+
+    // navigate("/", { state: { message: "Course was proposed!" } });
   }
-  
+
   function capitalize(technology) {
     return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
   }
-  
+
 
   return (
     <Container component="main" maxWidth="md">
@@ -97,6 +101,17 @@ const ProposeCourseForm = () => {
                 fullWidth
               />
             </Grid>
+            <Grid item xs={4}>
+              <TextField
+                name="photo"
+                id="photo"
+                type="file"
+                fullWidth
+                sx = {{
+                  marginTop: "16px"
+                }}
+              />
+            </Grid>
           </Grid>
           <Grid container spacing={1} direction={"row"}>
             <Grid item xs={4}>
@@ -127,7 +142,7 @@ const ProposeCourseForm = () => {
               />
             </Grid>
           </Grid>
-          <Grid container spacing={1} direction={"row"}>
+          <Grid container spacing={1} direction={"row"} alignItems="center">
             <Grid item xs={4}>
               <TextField
                 margin="normal"
