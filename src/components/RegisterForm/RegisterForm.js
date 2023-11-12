@@ -17,12 +17,17 @@ export default function SignUp() {
     const navigate = useNavigate();
     const [errorMessage, setError] = useState([]);
     const [snackbarOpened, setSnackbarOpened] = useState(false);
+    const [password, setPassword] = useState('');
+    const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(true);
+    const [confirmedPassword, setConfirmedPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [buttonEnabled, setButtonEnabled] = useState(false);
 
     const sumbitHandler = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         signUpWithEmail(data.get("email"), data.get("password"))
-            .then(() => navigate("/", { state: {message: "Account was created successfully!"} }))
+            .then(() => navigate("/", { state: { message: "Account was created successfully!" } }))
             .catch((error) => {
                 setError(error.message);
                 setSnackbarOpened(true);
@@ -32,6 +37,32 @@ export default function SignUp() {
     const closeSnackbar = () => {
         setSnackbarOpened(false);
     };
+
+    const saveEmail = (event) => {
+        setEmail(event.currentTarget.value);
+        checkPasswordAndEnableButton(password, confirmedPassword, event.currentTarget.value);
+    }
+
+    const saveConfirmedPassword = (event) => {
+        setConfirmedPassword(event.currentTarget.value);
+        checkPasswordAndEnableButton(password, event.currentTarget.value, email);
+    }
+
+    const savePassword = (event) => {
+        setPassword(event.currentTarget.value);
+        checkPasswordAndEnableButton(event.currentTarget.value, confirmedPassword, email);
+    }
+
+    function checkPasswordAndEnableButton(password, confirmation, emailParam) {
+        setIsPasswordConfirmed(false);
+        setButtonEnabled(false);
+        if (password === confirmation && password.length > 0) {
+            setIsPasswordConfirmed(true);
+            if (emailParam.length > 0) {
+                setButtonEnabled(true);
+            }
+        }
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -55,6 +86,7 @@ export default function SignUp() {
                         label="Email Address"
                         name="email"
                         autoComplete="email"
+                        onChange={saveEmail}
                         autoFocus
                     />
                     <TextField
@@ -65,13 +97,26 @@ export default function SignUp() {
                         label="Password"
                         type="password"
                         id="password"
+                        onChange={savePassword}
                         autoComplete="current-password"
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="confirm-password"
+                        label="Confirm password"
+                        type="password"
+                        onChange={saveConfirmedPassword}
+                        id="confirm-password"
+                        error={Boolean(!isPasswordConfirmed)}
                     />
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
+                        disabled={Boolean(!buttonEnabled)}
                     >
                         Sign Up
                     </Button>

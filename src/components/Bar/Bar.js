@@ -12,6 +12,7 @@ import { loginActions } from "../../store/loginSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { getCurrentUser } from "../../api/FirebaseAuthApi";
 import { auth } from "../../configuration/firebase/FirebaseCommon";
+import Avatar from '@mui/material/Avatar';
 
 const Bar = () => {
   const loggedIn = useSelector((state) => state.login.isLoggedIn);
@@ -47,7 +48,7 @@ const Bar = () => {
       dispatch(loginActions.setLoggedIn(isUserSignedIn()));
     }
 
-    navigate("/", {state: {message: "Logged out successfully."}});
+    navigate("/", { state: { message: "Logged out successfully." } });
   };
 
   const signUpHandler = () => {
@@ -105,6 +106,11 @@ const Bar = () => {
             <Button color="inherit" onClick={logoutHandler}>
               Log out
             </Button>
+          )}
+          {loggedIn && (
+            <Avatar>
+              PC
+            </Avatar>
           )}
           {!loggedIn && (
             <Button color="inherit" onClick={signUpHandler}>
