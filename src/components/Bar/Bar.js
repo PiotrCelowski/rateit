@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,12 +13,20 @@ import { onAuthStateChanged } from "firebase/auth";
 import { getCurrentUser } from "../../api/FirebaseAuthApi";
 import { auth } from "../../configuration/firebase/FirebaseCommon";
 import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { deepOrange } from '@mui/material/colors';
 
 const Bar = () => {
   const loggedIn = useSelector((state) => state.login.isLoggedIn);
   const isAdmin = useSelector((state) => state.login.isAdmin);
+  const userEmail = useSelector((state) => state.login.email);
+  const userPhoto = useSelector((state) => state.login.imageUrl);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const menuOpened = Boolean(anchorEl);
+  const [firstLetter, setFirstLetter] = useState('');
 
   const handleAdminRigths = useCallback(async () => {
     const token = await getCurrentUser().getIdTokenResult();
@@ -30,6 +38,10 @@ const Bar = () => {
       if (user) {
         dispatch(loginActions.setLoggedIn(true));
         handleAdminRigths();
+        dispatch(loginActions.setEmail(user.email));
+        dispatch(loginActions.setImageUrl(user.photoURL));
+        console.log(user);
+        setFirstLetter(user.email.charAt(0).toUpperCase());
       } else {
       }
     },
@@ -41,6 +53,8 @@ const Bar = () => {
   }, [authStateObserver]);
 
   const logoutHandler = async () => {
+    closeMenu();
+
     await signOutUser();
 
     if (!isUserSignedIn()) {
@@ -75,56 +89,72 @@ const Bar = () => {
     navigate("/");
   };
 
+  const openMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, cursor: "pointer" }}
-            onClick={goToMainPageHandler}
-          >
-            R4te it!
-          </Typography>
-          {loggedIn && isAdmin && (
-            <Button color="inherit" onClick={approvedCoursesHandler}>
-              Approved courses
-            </Button>
-          )}
-          {loggedIn && isAdmin && (
-            <Button color="inherit" onClick={pendingCoursesHandler}>
-              Pending courses
-            </Button>
-          )}
-          {loggedIn && (
-            <Button color="inherit" onClick={proposeCourseHandler}>
-              Propose course
-            </Button>
-          )}
-          {loggedIn && (
-            <Button color="inherit" onClick={logoutHandler}>
-              Log out
-            </Button>
-          )}
-          {loggedIn && (
-            <Avatar>
-              PC
-            </Avatar>
-          )}
-          {!loggedIn && (
-            <Button color="inherit" onClick={signUpHandler}>
-              Sign up
-            </Button>
-          )}
-          {!loggedIn && (
-            <Button color="inherit" onClick={signInHandler}>
-              Sign in
-            </Button>
-          )}
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, cursor: "pointer" }}
+              onClick={goToMainPageHandler}
+            >
+              R4te it!
+            </Typography>
+            {loggedIn && isAdmin && (
+              <Button color="inherit" onClick={approvedCoursesHandler}>
+                Approved courses
+              </Button>
+            )}
+            {loggedIn && isAdmin && (
+              <Button color="inherit" onClick={pendingCoursesHandler}>
+                Pending courses
+              </Button>
+            )}
+            {loggedIn && (
+              <Button color="inherit" onClick={proposeCourseHandler}>
+                Propose course
+              </Button>
+            )}
+            {loggedIn && (
+              <Avatar sx={{ bgcolor: deepOrange[500], cursor: "pointer", marginLeft: "10px", marginRight: "10px"}} onClick={openMenu} src={userPhoto ? userPhoto : ''} >
+                {firstLetter}
+              </Avatar>
+            )}
+            {!loggedIn && (
+              <Button color="inherit" onClick={signUpHandler}>
+                Sign up
+              </Button>
+            )}
+            {!loggedIn && (
+              <Button color="inherit" onClick={signInHandler}>
+                Sign in
+              </Button>
+            )}
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={menuOpened}
+        onClose={closeMenu}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+      </Menu>
+    </>
   );
 };
 
