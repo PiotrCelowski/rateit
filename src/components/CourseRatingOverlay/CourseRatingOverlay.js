@@ -33,9 +33,10 @@ const initialCourseState = {
   author: "",
   rating: 0,
   ratingVotes: 0,
-  snippets: 0,
-  understandability: 0,
-  maintenance: 0,
+  codeSnippetsWorking: 0,
+  easilyExplained: 0,
+  keptUpToDate: 0,
+  topicCoverage: 0
 };
 
 const changeCourseRatingHandler = (state, action) => {
@@ -46,9 +47,10 @@ const changeCourseRatingHandler = (state, action) => {
     release: state.release,
     rating: state.rating,
     ratingVotes: state.ratingVotes,
-    snippets: state.snippets,
-    understandability: state.understandability,
-    maintenance: state.maintenance,
+    codeSnippetsWorking: state.codeSnippetsWorking,
+    easilyExplained: state.easilyExplained,
+    keptUpToDate: state.keptUpToDate,
+    topicCoverage: state.topicCoverage
   };
 
   if (action.type === "RATING") {
@@ -56,15 +58,19 @@ const changeCourseRatingHandler = (state, action) => {
   }
 
   if (action.type === "SNIPPETS") {
-    courseRating.snippets = parseInt(action.value);
+    courseRating.codeSnippetsWorking = parseInt(action.value);
   }
 
-  if (action.type === "UNDERSTANDABILITY") {
-    courseRating.understandability = parseInt(action.value);
+  if (action.type === "EXPLAINED") {
+    courseRating.easilyExplained = parseInt(action.value);
   }
 
-  if (action.type === "MAINTENANCE") {
-    courseRating.maintenance = parseInt(action.value);
+  if (action.type === "UPTODATE") {
+    courseRating.keptUpToDate = parseInt(action.value);
+  }
+
+  if (action.type === "COVERAGE") {
+    courseRating.topicCoverage = parseInt(action.value);
   }
 
   if (action.type === "INITIAL_UPDATE") {
@@ -73,16 +79,18 @@ const changeCourseRatingHandler = (state, action) => {
     courseRating.author = action.author;
     courseRating.release = parseInt(action.release);
     courseRating.rating = parseInt(action.rating);
-    courseRating.snippets = parseInt(action.snippets);
-    courseRating.understandability = parseInt(action.understandability);
-    courseRating.maintenance = parseInt(action.maintenance);
+    courseRating.codeSnippetsWorking = parseInt(action.codeSnippetsWorking);
+    courseRating.easilyExplained = parseInt(action.easilyExplained);
+    courseRating.keptUpToDate = parseInt(action.keptUpToDate);
+    courseRating.topicCoverage = parseInt(action.topicCoverage);
   }
 
   if (action.type === "INITIAL_RATING_UPDATE") {
     courseRating.rating = parseInt(action.rating);
-    courseRating.snippets = parseInt(action.snippets);
-    courseRating.understandability = parseInt(action.understandability);
-    courseRating.maintenance = parseInt(action.maintenance);
+    courseRating.codeSnippetsWorking = parseInt(action.codeSnippetsWorking);
+    courseRating.easilyExplained = parseInt(action.easilyExplained);
+    courseRating.keptUpToDate = parseInt(action.keptUpToDate);
+    courseRating.topicCoverage = parseInt(action.topicCoverage);
   }
 
   return courseRating;
@@ -117,9 +125,10 @@ const CourseRatingOverlay = () => {
         release: response.data().release,
         rating: response.data().rating,
         ratingVotes: response.data().ratingVotes,
-        snippets: response.data().snippets,
-        understandability: response.data().understandability,
-        maintenance: response.data().maintenance,
+        codeSnippetsWorking: response.data().codeSnippetsWorking,
+        easilyExplained: response.data().easilyExplained,
+        keptUpToDate: response.data().keptUpToDate,
+        topicCoverage: response.data().topicCoverage
       });
 
       const maybeRatingSnap = await fetchCourseRating(
@@ -133,9 +142,10 @@ const CourseRatingOverlay = () => {
         courseRatingDispatch({
           type: "INITIAL_RATING_UPDATE",
           rating: rating.rating,
-          snippets: rating.snippets,
-          understandability: rating.understandability,
-          maintenance: rating.maintenance,
+          codeSnippetsWorking: rating.codeSnippetsWorking,
+          easilyExplained: rating.easilyExplained,
+          keptUpToDate: rating.keptUpToDate,
+          topicCoverage: rating.topicCoverage
         });
       });
     }
@@ -153,15 +163,19 @@ const CourseRatingOverlay = () => {
     courseRatingDispatch({ type: "SNIPPETS", value: event.target.value });
   };
 
-  const understandabilityChangeHandler = (event) => {
+  const explanationHandler = (event) => {
     courseRatingDispatch({
-      type: "UNDERSTANDABILITY",
+      type: "EXPLAINED",
       value: event.target.value,
     });
   };
 
-  const maintenanceChangeHandler = (event) => {
-    courseRatingDispatch({ type: "MAINTENANCE", value: event.target.value });
+  const upToDateHandler = (event) => {
+    courseRatingDispatch({ type: "UPTODATE", value: event.target.value });
+  };
+
+  const coverageHandler = (event) => {
+    courseRatingDispatch({ type: "COVERAGE", value: event.target.value });
   };
 
   const rateItHandler = async () => {
@@ -170,9 +184,10 @@ const CourseRatingOverlay = () => {
       courseId: currentCourseId,
       userId: getCurrentUser().uid,
       rating: currentCourseRating.rating,
-      snippets: currentCourseRating.snippets,
-      understandability: currentCourseRating.understandability,
-      maintenance: currentCourseRating.maintenance,
+      codeSnippetsWorking: currentCourseRating.codeSnippetsWorking,
+      easilyExplained: currentCourseRating.easilyExplained,
+      keptUpToDate: currentCourseRating.keptUpToDate,
+      topicCoverage: currentCourseRating.topicCoverage
     };
 
     if (ratingId) {
@@ -211,8 +226,9 @@ const CourseRatingOverlay = () => {
           {...currentCourseRating}
           ratingChangeHandler={ratingChangeHandler}
           snippetsChangeHandler={snippetsChangeHandler}
-          understandabilityChangeHandler={understandabilityChangeHandler}
-          maintenanceChangeHandler={maintenanceChangeHandler}
+          explanationHandler={explanationHandler}
+          upToDateHandler={upToDateHandler}
+          coverageHandler={coverageHandler}
         />
         <Box
           width="100"

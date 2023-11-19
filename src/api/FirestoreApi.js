@@ -37,9 +37,10 @@ export const addRating = async (rating) => {
             courseId: rating.courseId,
             userId: rating.userId,
             rating: rating.rating,
-            snippets: rating.snippets,
-            understandability: rating.understandability,
-            maintenance: rating.maintenance
+            codeSnippetsWorking: rating.codeSnippetsWorking,
+            easilyExplained: rating.easilyExplained,
+            keptUpToDate: rating.keptUpToDate,
+            topicCoverage: rating.topicCoverage
         };
         await setDoc(doc(firestore, "ratings", rating.id), docData);
     } catch (error) {
@@ -66,9 +67,10 @@ export const updateRating = async (rating) => {
         await updateDoc(existingRating, {
             courseId: rating.courseId,
             rating: rating.rating,
-            snippets: rating.snippets,
-            understandability: rating.understandability,
-            maintenance: rating.maintenance
+            codeSnippetsWorking: rating.codeSnippetsWorking,
+            easilyExplained: rating.easilyExplained,
+            keptUpToDate: rating.keptUpToDate,
+            topicCoverage: rating.topicCoverage
         })
     } catch (error) {
         console.error(error);
@@ -109,6 +111,18 @@ export const uploadPhoto = async (file, courseId, title, author) => {
         courseId: courseId,
         title: title,
         author: author
+    }
+
+    return uploadBytes(fileRef, file, metadata).then((snapshot) => {
+        return getDownloadURL(snapshot.ref);
+    })
+}
+
+export const uploadUserPhoto = async (file, userId) => {
+    const fileRef = ref(storage, "userImages/" + userId);
+
+    const metadata = {
+        userId: userId
     }
 
     return uploadBytes(fileRef, file, metadata).then((snapshot) => {

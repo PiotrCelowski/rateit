@@ -26,9 +26,10 @@ const initialCourseState = {
   author: "",
   rating: 0,
   ratingVotes: 0,
-  snippets: 0,
-  understandability: 0,
-  maintenance: 0,
+  codeSnippetsWorking: 0,
+  easilyExplained: 0,
+  keptUpToDate: 0,
+  topicCoverage: 0
 };
 
 const CourseDetailsOverlay = () => {
@@ -56,9 +57,10 @@ const CourseDetailsOverlay = () => {
           author: response.data().author,
           rating: response.data().rating,
           ratingVotes: response.data().ratingVotes,
-          snippets: response.data().snippets,
-          understandability: response.data().understandability,
-          maintenance: response.data().maintenance,
+          codeSnippetsWorking: response.data().codeSnippetsWorking,
+          easilyExplained: response.data().easilyExplained,
+          keptUpToDate: response.data().keptUpToDate,
+          topicCoverage: response.data().topicCoverage
         };
       });
       setIsLoading(false);

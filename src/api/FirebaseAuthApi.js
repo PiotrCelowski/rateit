@@ -6,6 +6,7 @@ import {
   signInWithPopup,
   signOut,
   browserSessionPersistence,
+  updateProfile
 } from "firebase/auth";
 import { auth } from "../configuration/firebase/FirebaseCommon";
 
@@ -21,7 +22,7 @@ export const signInWithEmail = async (email, password, rememberMe) => {
   return userCredentials;
 };
 
-export const signUpWithEmail = async(email, password) => {
+export const signUpWithEmail = async (email, password) => {
   await createUserWithEmailAndPassword(auth, email, password);
 };
 
@@ -54,3 +55,9 @@ export const isUserAdmin = (tokenResult) => {
     return false;
   }
 };
+
+export const updatePhoto = async (uid, imageUrl) => {
+  updateProfile(auth.currentUser, {
+    photoURL: imageUrl
+  })
+}

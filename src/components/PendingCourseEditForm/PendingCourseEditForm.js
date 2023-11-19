@@ -28,8 +28,9 @@ const PendingCourseEditForm = () => {
   );
   const [currentCourse, setCurrentCourse] = useState(initialCourseState);
   const [isLoading, setIsLoading] = useState(true);
+  const [technologies, setTechnologies] = useState([]);
 
-  const declineHandler = () => {};
+  const declineHandler = () => { };
 
   const goBackHandler = () => {
     navigate("/pending");
@@ -38,6 +39,7 @@ const PendingCourseEditForm = () => {
   const fetchCurrentCourse = useCallback(async () => {
     if (currentCourseId != null) {
       const response = await fetchCourse(currentCourseId);
+      updateTechnologies(response.data().technologies);
       setCurrentCourse((oldState) => {
         return {
           id: response.data().id,
@@ -54,23 +56,36 @@ const PendingCourseEditForm = () => {
     }
   }, [currentCourseId]);
 
+  const updateTechnologies = (technologies) => {
+    const tempTechnologies = [];
+    let i = 0;
+    technologies.forEach(technology => {
+      i++;
+      tempTechnologies.push({ id: "technology" + i, name: "Technology " + i, label: "Technology " + i, value: technology });
+    })
+    setTechnologies(tempTechnologies);
+  }
+
   useEffect(() => {
     fetchCurrentCourse();
   }, [fetchCurrentCourse]);
 
-  const approveCourse = async(event) => {
+  const approveCourse = async (event) => {
     const data = event.target;
-  
+
+    const receivedTechnologies = technologies.map(technology => {
+      let techId = technology.id;
+      return capitalize(data[techId].value);
+    }).filter(value => {
+      return value.length > 0;
+    })
+
     const proposedCourse = {
       id: data.courseId.value,
       title: capitalize(data.title.value),
       author: capitalize(data.author.value),
       release: data.release.value,
-      technologies: [
-        capitalize(data.technology1.value),
-        capitalize(data.technology2.value),
-        capitalize(data.technology3.value),
-      ],
+      technologies: receivedTechnologies,
       type: capitalize(data.type.value),
       level: capitalize(data.level.value),
       approved: true,
@@ -78,23 +93,29 @@ const PendingCourseEditForm = () => {
 
     let url = currentCourse.photoUrl;
 
-    console.log(data.photo.files[0]);
-
     if (data.photo.files[0]) {
       url = await uploadPhoto(data.photo.files[0], proposedCourse.id, proposedCourse.title, proposedCourse.author);
     }
 
     proposedCourse["photoUrl"] = url;
-  
+
     await updateCourse(proposedCourse);
-  
-    navigate("/", {state: {message: "Course approved!"}});
+
+    navigate("/", { state: { message: "Course approved!" } });
   }
-  
+
   function capitalize(technology) {
     return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
   }
-  
+
+  const addTechnologyHandler = () => {
+    setTechnologies((oldTechnologies) => {
+      const newTechnology = { id: "technology" + (oldTechnologies.length + 1), name: "Technology " + (oldTechnologies.length + 1), label: "Technology " + (oldTechnologies.length + 1) };
+      const newTechnologies = [...oldTechnologies];
+      newTechnologies.push(newTechnology);
+      return newTechnologies;
+    })
+  }
 
   if (isLoading) {
     return <Typography>Fetching data...</Typography>;
@@ -167,46 +188,27 @@ const PendingCourseEditForm = () => {
                 id="photo"
                 type="file"
                 fullWidth
-                sx = {{
+                sx={{
                   marginTop: "16px"
                 }}
               />
             </Grid>
           </Grid>
           <Grid container spacing={1} direction={"row"}>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="technology1"
-                label="Technology 1"
-                name="technology1"
-                InputLabelProps={{ shrink: true }}
-                defaultValue={currentCourse.technologies[0]}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="technology2"
-                label="Technology 2"
-                name="technology2"
-                InputLabelProps={{ shrink: true }}
-                defaultValue={currentCourse.technologies[1]}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="technology3"
-                label="Technology 3"
-                name="technology3"
-                InputLabelProps={{ shrink: true }}
-                defaultValue={currentCourse.technologies[2]}
-                fullWidth
-              />
-            </Grid>
+            {technologies.map(technology => {
+              return (<Grid item xs={4}>
+                <TextField
+                  margin="normal"
+                  InputLabelProps={{ shrink: true }}
+                  key={technology.id}
+                  id={technology.id}
+                  label={technology.label}
+                  name={technology.name}
+                  defaultValue={technology.value}
+                  fullWidth
+                />
+              </Grid>)
+            })}
           </Grid>
           <Grid container spacing={1} direction={"row"}>
             <Grid item xs={4}>
@@ -257,7 +259,7 @@ const PendingCourseEditForm = () => {
             direction={"row"}
             justifyContent={"center"}
           >
-            <Grid item xs={4} alignContent={"center"}>
+            <Grid item xs={2} alignContent={"center"}>
               <Button
                 type="submit"
                 fullWidth
@@ -267,7 +269,7 @@ const PendingCourseEditForm = () => {
                 Approve
               </Button>
             </Grid>
-            <Grid item xs={4} alignContent={"center"}>
+            <Grid item xs={2} alignContent={"center"}>
               <Button
                 type="submit"
                 fullWidth
@@ -279,6 +281,17 @@ const PendingCourseEditForm = () => {
               </Button>
             </Grid>
             <Grid item xs={4}>
+              <Button
+                type="button"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={addTechnologyHandler}
+              >
+                Add technology
+              </Button>
+            </Grid>
+            <Grid item xs={2}>
               <Button
                 type="button"
                 fullWidth

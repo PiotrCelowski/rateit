@@ -12,27 +12,31 @@ exports.updateRating = functions.firestore.document("ratings/{ratingId}")
 
       return ratingsRef.get().then((querySnapshot) => {
         let rating = 0;
-        let snippets = 0;
-        let maintenance = 0;
-        let understandability = 0;
+        let codeSnippetsWorking = 0;
+        let easilyExplained = 0;
+        let keptUpToDate = 0;
+        let topicCoverage = 0;
         let count = 0;
         querySnapshot.forEach((doc) => {
           rating += doc.data().rating;
-          snippets += doc.data().snippets;
-          maintenance += doc.data().maintenance;
-          understandability += doc.data().understandability;
+          codeSnippetsWorking += doc.data().codeSnippetsWorking;
+          easilyExplained += doc.data().easilyExplained;
+          keptUpToDate += doc.data().keptUpToDate;
+          topicCoverage += doc.data().topicCoverage;
           count++;
         });
         const averageRating = rating / count;
-        const averageSnippets = snippets / count;
-        const averageMaintenance = maintenance / count;
-        const averageUnderstandability = understandability / count;
+        const averageCodeSnippetsWorking = codeSnippetsWorking / count;
+        const averageEasilyExplained = easilyExplained / count;
+        const averagekeptUpToDate = keptUpToDate / count;
+        const averageTopicCoverage = topicCoverage / count;
 
         return admin.firestore().collection("courses").doc(courseId).update({
           rating: averageRating,
-          snippets: averageSnippets,
-          maintenance: averageMaintenance,
-          understandability: averageUnderstandability,
+          codeSnippetsWorking: averageCodeSnippetsWorking,
+          easilyExplained: averageEasilyExplained,
+          keptUpToDate: averagekeptUpToDate,
+          topicCoverage: averageTopicCoverage,
           ratingVotes: count,
         });
       });

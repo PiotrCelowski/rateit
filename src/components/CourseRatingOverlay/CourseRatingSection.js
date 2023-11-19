@@ -13,21 +13,27 @@ const CourseRatingSection = (props) => {
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Code snippets:</Typography>
+        <Typography variant="body2">Are code snippets working:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.snippets} onChange={props.snippetsChangeHandler}/>
+          <Rating name="read-only" value={props.codeSnippetsWorking} onChange={props.snippetsChangeHandler}/>
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Understandability:</Typography>
+        <Typography variant="body2">How well explained:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.understandability} onChange={props.understandabilityChangeHandler} />
+          <Rating name="read-only" value={props.easilyExplained} onChange={props.explanationHandler} />
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Maintainance:</Typography>
+        <Typography variant="body2">Is up to date:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.maintenance} onChange={props.maintenanceChangeHandler} />
+          <Rating name="read-only" value={props.keptUpToDate} onChange={props.upToDateHandler} />
+        </Stack>
+      </Stack>
+      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
+        <Typography variant="body2">Is everything covered:</Typography>
+        <Stack width="170px" direction="row">
+          <Rating name="read-only" value={props.topicCoverage} onChange={props.coverageHandler} />
         </Stack>
       </Stack>
     </Stack>

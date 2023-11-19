@@ -16,21 +16,27 @@ const CourseRatingSection = (props) => {
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Code snippets:</Typography>
+        <Typography variant="body2">Are code snippets working:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.snippets} readOnly />
+          <Rating name="read-only" value={props.codeSnippetsWorking} readOnly />
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Understandability:</Typography>
+        <Typography variant="body2">How well explained:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.understandability} readOnly />
+          <Rating name="read-only" value={props.easilyExplained} readOnly />
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Maintainance:</Typography>
+        <Typography variant="body2">Is up to date:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.maintenance} readOnly />
+          <Rating name="read-only" value={props.keptUpToDate} readOnly />
+        </Stack>
+      </Stack>
+      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
+        <Typography variant="body2">Is everything covered:</Typography>
+        <Stack width="170px" direction="row">
+          <Rating name="read-only" value={props.topicCoverage} readOnly />
         </Stack>
       </Stack>
     </Stack>

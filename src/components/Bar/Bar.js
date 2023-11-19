@@ -40,7 +40,7 @@ const Bar = () => {
         handleAdminRigths();
         dispatch(loginActions.setEmail(user.email));
         dispatch(loginActions.setImageUrl(user.photoURL));
-        console.log(user);
+        dispatch(loginActions.setUserId(user.uid))
         setFirstLetter(user.email.charAt(0).toUpperCase());
       } else {
       }
@@ -64,6 +64,10 @@ const Bar = () => {
 
     navigate("/", { state: { message: "Logged out successfully." } });
   };
+
+  const accountSettingsHandler = () => {
+    navigate("/user");
+  }
 
   const signUpHandler = () => {
     navigate("/register");
@@ -152,6 +156,7 @@ const Bar = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
+        <MenuItem onClick={accountSettingsHandler}>Account settings</MenuItem>
         <MenuItem onClick={logoutHandler}>Logout</MenuItem>
       </Menu>
     </>

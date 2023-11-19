@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialLoginState = { isLoggedIn: false, isAdmin: false, email: '', imageUrl: '' };
+const initialLoginState = { isLoggedIn: false, isAdmin: false, email: '', imageUrl: '', userId: '' };
 
 const loginSlice = createSlice({
   name: "login",
@@ -17,6 +17,9 @@ const loginSlice = createSlice({
     },
     setImageUrl(state, action) {
       state.imageUrl = action.payload;
+    },
+    setUserId(state, action) {
+      state.userId = action.payload;
     },
   },
 });

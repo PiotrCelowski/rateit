@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -12,6 +12,11 @@ import { v4 as uuidv4 } from "uuid";
 
 const ProposeCourseForm = () => {
   const navigate = useNavigate();
+  const [technologies, setTechnologies] = useState([
+    { id: "technology1", name: "Technology 1", label: "Technology 1" },
+    { id: "technology2", name: "Technology 2", label: "Technology 2" },
+    { id: "technology3", name: "Technology 3", label: "Technology 3" },
+  ]);
 
   const goBackHandler = () => {
     navigate("/");
@@ -22,21 +27,24 @@ const ProposeCourseForm = () => {
 
     const data = event.target;
 
+    const receivedTechnologies = technologies.map(technology => {
+      let techId = technology.id;
+      return capitalize(data[techId].value);
+    }).filter(value => {
+      return value.length > 0;
+    })
+
     const proposedCourse = {
       id: uuidv4(),
       title: capitalize(data.title.value),
       author: capitalize(data.author.value),
       release: data.release.value,
-      technologies: [
-        capitalize(data.technology1.value),
-        capitalize(data.technology2.value),
-        capitalize(data.technology3.value),
-      ],
+      technologies: receivedTechnologies,
       type: capitalize(data.type.value),
       level: capitalize(data.level.value),
       approved: false,
     };
-    
+
     let url = "/static/images/no-image.jpg";
 
     if (data.photo.files[0]) {
@@ -46,12 +54,21 @@ const ProposeCourseForm = () => {
     proposedCourse["photoUrl"] = url;
 
     await addCourse(proposedCourse);
-    
+
     navigate("/", { state: { message: "Course was proposed!" } });
   }
 
   function capitalize(technology) {
     return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
+  }
+
+  const addTechnologyHandler = () => {
+    setTechnologies((oldTechnologies) => {
+      const newTechnology = { id: "technology" + (oldTechnologies.length + 1), name: "Technology " + (oldTechnologies.length + 1), label: "Technology " + (oldTechnologies.length + 1) };
+      const newTechnologies = [...oldTechnologies];
+      newTechnologies.push(newTechnology);
+      return newTechnologies;
+    })
   }
 
 
@@ -111,40 +128,24 @@ const ProposeCourseForm = () => {
                 id="photo"
                 type="file"
                 fullWidth
-                sx = {{
+                sx={{
                   marginTop: "16px"
                 }}
               />
             </Grid>
           </Grid>
           <Grid container spacing={1} direction={"row"}>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="technology1"
-                label="Technology 1"
-                name="technology1"
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="technology2"
-                label="Technology 2"
-                name="technology2"
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="technology3"
-                label="Technology 3"
-                name="technology3"
-                fullWidth
-              />
-            </Grid>
+            {technologies.map(technology => {
+              return (<Grid key={technology.id} item xs={4}>
+                <TextField
+                  margin="normal"
+                  id={technology.id}
+                  label={technology.label}
+                  name={technology.name}
+                  fullWidth
+                />
+              </Grid>)
+            })}
           </Grid>
           <Grid container spacing={1} direction={"row"} alignItems="center">
             <Grid item xs={4}>
@@ -204,6 +205,17 @@ const ProposeCourseForm = () => {
               </Button>
             </Grid>
             <Grid item xs={4}>
+              <Button
+                type="button"
+                fullWidth
+                variant="contained"
+                onClick={addTechnologyHandler}
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Add technology
+              </Button>
+            </Grid>
+            <Grid item xs={2}>
               <Button
                 type="button"
                 fullWidth

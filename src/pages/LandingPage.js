@@ -23,6 +23,7 @@ const LandingPage = () => {
         if (location.state?.message) {
             setMessage(location.state.message);
             setSnackbarOpened(true);
+            window.history.replaceState({}, document.title);
         }
     }
         , [location.state?.message])

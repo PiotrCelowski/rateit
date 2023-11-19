@@ -9,6 +9,7 @@ import { searchClient } from "./configuration/algolia/algolia-config";
 import ProposeCoursePage from "./pages/ProposeCoursePage";
 import PendingCoursesPage from "./pages/PendingCoursesPage";
 import EditCoursePage from "./pages/EditCoursePage";
+import UserSettingsPage from "./pages/UserSettingsPage";
 
 function App() {
 
@@ -22,7 +23,8 @@ function App() {
         { path: "/register", element: <RegisterPage /> },
         { path: "/propose", element: <ProposeCoursePage /> },
         { path: "/pending", element: <PendingCoursesPage /> },
-        { path: "/edit", element: <EditCoursePage /> }
+        { path: "/edit", element: <EditCoursePage /> },
+        { path: "/user", element: <UserSettingsPage /> }
       ]
     }
   ])
