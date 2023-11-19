@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 
 const LoginPage = () => {
     return (
-        <Box pl={3} pr={3} pt={3} minHeight={"1250px"}>
+        <Box pl={3} pr={3} pt={3} sx={{flexGrow: 1}}>
             <LoginForm />
         </Box>
     )

@@ -40,7 +40,7 @@ const Bar = () => {
         handleAdminRigths();
         dispatch(loginActions.setEmail(user.email));
         dispatch(loginActions.setImageUrl(user.photoURL));
-        dispatch(loginActions.setUserId(user.uid))
+        dispatch(loginActions.setUserId(user.uid));
         setFirstLetter(user.email.charAt(0).toUpperCase());
       } else {
       }
@@ -103,7 +103,7 @@ const Bar = () => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box>
         <AppBar position="static">
           <Toolbar>
             <Typography
