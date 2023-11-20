@@ -105,7 +105,7 @@ export const updateCourse = async (course) => {
 }
 
 export const uploadPhoto = async (file, courseId, title, author) => {
-    const fileRef = ref(storage, courseId);
+    const fileRef = ref(storage, "courseImages/" + courseId);
 
     const metadata = {
         courseId: courseId,

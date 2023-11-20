@@ -26,8 +26,6 @@ const CookieBanner = () => {
 
     useEffect(() => {
         setIsConsentApproved(cookies.get('ConsentCookie') === true);
-        console.log(cookies.get('ConsentCookie'));
-        console.log(cookies.get('ConsentCookie') === true);
     }, [cookies])
 
     return (
