@@ -39,7 +39,7 @@ const CourseRatingSection = (props) => {
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
         <Typography variant="body2">Is well organized:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.organization} readOnly />
+          <Rating name="read-only" value={props.organization} onChange={props.organizationHandler} />
         </Stack>
       </Stack>
     </Stack>
