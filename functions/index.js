@@ -16,6 +16,7 @@ exports.updateRating = functions.firestore.document("ratings/{ratingId}")
         let easilyExplained = 0;
         let keptUpToDate = 0;
         let topicCoverage = 0;
+        let organization = 0;
         let count = 0;
         querySnapshot.forEach((doc) => {
           rating += doc.data().rating;
@@ -23,6 +24,7 @@ exports.updateRating = functions.firestore.document("ratings/{ratingId}")
           easilyExplained += doc.data().easilyExplained;
           keptUpToDate += doc.data().keptUpToDate;
           topicCoverage += doc.data().topicCoverage;
+          organization += doc.data().organization;
           count++;
         });
         const averageRating = rating / count;
@@ -30,6 +32,7 @@ exports.updateRating = functions.firestore.document("ratings/{ratingId}")
         const averageEasilyExplained = easilyExplained / count;
         const averagekeptUpToDate = keptUpToDate / count;
         const averageTopicCoverage = topicCoverage / count;
+        const averageOrganization = organization / count;
 
         return admin.firestore().collection("courses").doc(courseId).update({
           rating: averageRating,
@@ -37,6 +40,7 @@ exports.updateRating = functions.firestore.document("ratings/{ratingId}")
           easilyExplained: averageEasilyExplained,
           keptUpToDate: averagekeptUpToDate,
           topicCoverage: averageTopicCoverage,
+          organization: averageOrganization,
           ratingVotes: count,
         });
       });
