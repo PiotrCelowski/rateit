@@ -15,14 +15,6 @@ const CourseHeader = (props) => {
       >
         By {props.author}
       </Typography>
-      <Typography
-        variant="body1"
-        color="text.secondary"
-        fontSize="12px"
-        align="left"
-      >
-        Released in {props.release}
-      </Typography>
     </React.Fragment>
   );
 };

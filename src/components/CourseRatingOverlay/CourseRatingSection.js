@@ -19,7 +19,7 @@ const CourseRatingSection = (props) => {
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">How well explained:</Typography>
+        <Typography variant="body2">Is simply explained:</Typography>
         <Stack width="170px" direction="row">
           <Rating name="read-only" value={props.easilyExplained} onChange={props.explanationHandler} />
         </Stack>
@@ -34,6 +34,12 @@ const CourseRatingSection = (props) => {
         <Typography variant="body2">Is everything covered:</Typography>
         <Stack width="170px" direction="row">
           <Rating name="read-only" value={props.topicCoverage} onChange={props.coverageHandler} />
+        </Stack>
+      </Stack>
+      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
+        <Typography variant="body2">Is well organized:</Typography>
+        <Stack width="170px" direction="row">
+          <Rating name="read-only" value={props.organization} readOnly />
         </Stack>
       </Stack>
     </Stack>

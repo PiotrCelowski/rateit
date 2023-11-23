@@ -17,7 +17,6 @@ export const addCourse = async (course) => {
             id: course.id,
             title: course.title,
             author: course.author,
-            release: course.release,
             technologies: course.technologies,
             type: course.type,
             level: course.level,
@@ -40,7 +39,8 @@ export const addRating = async (rating) => {
             codeSnippetsWorking: rating.codeSnippetsWorking,
             easilyExplained: rating.easilyExplained,
             keptUpToDate: rating.keptUpToDate,
-            topicCoverage: rating.topicCoverage
+            topicCoverage: rating.topicCoverage,
+            organization: rating.organization
         };
         await setDoc(doc(firestore, "ratings", rating.id), docData);
     } catch (error) {
@@ -70,7 +70,8 @@ export const updateRating = async (rating) => {
             codeSnippetsWorking: rating.codeSnippetsWorking,
             easilyExplained: rating.easilyExplained,
             keptUpToDate: rating.keptUpToDate,
-            topicCoverage: rating.topicCoverage
+            topicCoverage: rating.topicCoverage,
+            organization: rating.organization
         })
     } catch (error) {
         console.error(error);
@@ -92,7 +93,6 @@ export const updateCourse = async (course) => {
         await updateDoc(existingRating, {
             title: course.title,
             author: course.author,
-            release: course.release,
             technologies: course.technologies,
             type: course.type,
             level: course.level,

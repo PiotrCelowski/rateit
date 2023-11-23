@@ -17,7 +17,6 @@ const PendingResults = (props) => {
         id: course.id,
         title: course.title,
         author: course.author,
-        release: course.release,
         rating: course.rating,
         ratingVotes: course.ratingVotes,
         tags: course.tags,

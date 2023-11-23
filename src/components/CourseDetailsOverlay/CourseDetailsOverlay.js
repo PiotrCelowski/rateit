@@ -29,7 +29,8 @@ const initialCourseState = {
   codeSnippetsWorking: 0,
   easilyExplained: 0,
   keptUpToDate: 0,
-  topicCoverage: 0
+  topicCoverage: 0,
+  organization: 0
 };
 
 const CourseDetailsOverlay = () => {
@@ -60,7 +61,8 @@ const CourseDetailsOverlay = () => {
           codeSnippetsWorking: response.data().codeSnippetsWorking,
           easilyExplained: response.data().easilyExplained,
           keptUpToDate: response.data().keptUpToDate,
-          topicCoverage: response.data().topicCoverage
+          topicCoverage: response.data().topicCoverage,
+          organization: response.data().organization
         };
       });
       setIsLoading(false);

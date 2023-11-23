@@ -36,7 +36,8 @@ const initialCourseState = {
   codeSnippetsWorking: 0,
   easilyExplained: 0,
   keptUpToDate: 0,
-  topicCoverage: 0
+  topicCoverage: 0,
+  organization: 0
 };
 
 const changeCourseRatingHandler = (state, action) => {
@@ -50,7 +51,8 @@ const changeCourseRatingHandler = (state, action) => {
     codeSnippetsWorking: state.codeSnippetsWorking,
     easilyExplained: state.easilyExplained,
     keptUpToDate: state.keptUpToDate,
-    topicCoverage: state.topicCoverage
+    topicCoverage: state.topicCoverage,
+    organization: state.organization
   };
 
   if (action.type === "RATING") {
@@ -73,6 +75,10 @@ const changeCourseRatingHandler = (state, action) => {
     courseRating.topicCoverage = parseInt(action.value);
   }
 
+  if (action.type === "ORGANIZATION") {
+    courseRating.organization = parseInt(action.value);
+  }
+
   if (action.type === "INITIAL_UPDATE") {
     courseRating.id = action.id;
     courseRating.title = action.title;
@@ -83,6 +89,7 @@ const changeCourseRatingHandler = (state, action) => {
     courseRating.easilyExplained = parseInt(action.easilyExplained);
     courseRating.keptUpToDate = parseInt(action.keptUpToDate);
     courseRating.topicCoverage = parseInt(action.topicCoverage);
+    courseRating.organization = parseInt(action.organization);
   }
 
   if (action.type === "INITIAL_RATING_UPDATE") {
@@ -91,6 +98,7 @@ const changeCourseRatingHandler = (state, action) => {
     courseRating.easilyExplained = parseInt(action.easilyExplained);
     courseRating.keptUpToDate = parseInt(action.keptUpToDate);
     courseRating.topicCoverage = parseInt(action.topicCoverage);
+    courseRating.organization = parseInt(action.organization);
   }
 
   return courseRating;
@@ -128,7 +136,8 @@ const CourseRatingOverlay = () => {
         codeSnippetsWorking: response.data().codeSnippetsWorking,
         easilyExplained: response.data().easilyExplained,
         keptUpToDate: response.data().keptUpToDate,
-        topicCoverage: response.data().topicCoverage
+        topicCoverage: response.data().topicCoverage,
+        organization: response.data().organization
       });
 
       const maybeRatingSnap = await fetchCourseRating(
@@ -145,7 +154,8 @@ const CourseRatingOverlay = () => {
           codeSnippetsWorking: rating.codeSnippetsWorking,
           easilyExplained: rating.easilyExplained,
           keptUpToDate: rating.keptUpToDate,
-          topicCoverage: rating.topicCoverage
+          topicCoverage: rating.topicCoverage,
+          organization: rating.organization
         });
       });
     }
@@ -178,6 +188,10 @@ const CourseRatingOverlay = () => {
     courseRatingDispatch({ type: "COVERAGE", value: event.target.value });
   };
 
+  const organizationHandler = (event) => {
+    courseRatingDispatch({ type: "ORGANIZATION", value: event.target.value });
+  };
+
   const rateItHandler = async () => {
     const newRating = {
       id: ratingId ? ratingId : null,
@@ -187,7 +201,8 @@ const CourseRatingOverlay = () => {
       codeSnippetsWorking: currentCourseRating.codeSnippetsWorking,
       easilyExplained: currentCourseRating.easilyExplained,
       keptUpToDate: currentCourseRating.keptUpToDate,
-      topicCoverage: currentCourseRating.topicCoverage
+      topicCoverage: currentCourseRating.topicCoverage,
+      organization: currentCourseRating.organization
     };
 
     if (ratingId) {
@@ -229,6 +244,7 @@ const CourseRatingOverlay = () => {
           explanationHandler={explanationHandler}
           upToDateHandler={upToDateHandler}
           coverageHandler={coverageHandler}
+          organizationHandler={organizationHandler}
         />
         <Box
           width="100"

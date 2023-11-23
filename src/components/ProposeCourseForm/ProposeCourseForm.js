@@ -38,7 +38,6 @@ const ProposeCourseForm = () => {
       id: uuidv4(),
       title: capitalize(data.title.value),
       author: capitalize(data.author.value),
-      release: data.release.value,
       technologies: receivedTechnologies,
       type: capitalize(data.type.value),
       level: capitalize(data.level.value),
@@ -111,15 +110,6 @@ const ProposeCourseForm = () => {
                 name="author"
                 fullWidth
                 type="text"
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="release"
-                label="Release year"
-                name="release"
-                fullWidth
               />
             </Grid>
             <Grid item xs={4}>

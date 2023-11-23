@@ -14,7 +14,6 @@ const initialCourseState = {
   id: "",
   title: "",
   author: "",
-  release: "",
   technologies: [],
   type: "",
   level: "",
@@ -45,7 +44,6 @@ const PendingCourseEditForm = () => {
           id: response.data().id,
           title: response.data().title,
           author: response.data().author,
-          release: response.data().release,
           technologies: response.data().technologies,
           type: response.data().type,
           level: response.data().level,
@@ -84,7 +82,6 @@ const PendingCourseEditForm = () => {
       id: data.courseId.value,
       title: capitalize(data.title.value),
       author: capitalize(data.author.value),
-      release: data.release.value,
       technologies: receivedTechnologies,
       type: capitalize(data.type.value),
       level: capitalize(data.level.value),
@@ -169,17 +166,6 @@ const PendingCourseEditForm = () => {
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 defaultValue={currentCourse.author}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                margin="normal"
-                id="release"
-                label="Release year"
-                name="release"
-                InputLabelProps={{ shrink: true }}
-                defaultValue={currentCourse.release}
-                fullWidth
               />
             </Grid>
             <Grid item xs={4}>
