@@ -18,7 +18,6 @@ const Results = (props) => {
           id: course.id,
           title: course.title,
           author: course.author,
-          release: course.release,
           rating: course.rating,
           ratingVotes: course.ratingVotes,
           tags: course.tags,
@@ -42,7 +41,12 @@ const Results = (props) => {
         sx={{
           display: "grid",
           gap: 2,
-          gridTemplateColumns: "repeat(4, 1fr)",
+          gridTemplateColumns: {
+            xl: "repeat(4, 1fr)",
+            md: "repeat(3, 1fr)",
+            sm: "repeat(2, 1fr)",
+            xs: "repeat(1, 1fr)"
+          }
         }}
       >
         {algoliaResults.map(result => {
