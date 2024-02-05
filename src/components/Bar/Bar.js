@@ -2,8 +2,6 @@ import React, { useCallback, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import { isUserSignedIn, signOutUser } from "../../api/FirebaseAuthApi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,10 +10,15 @@ import { loginActions } from "../../store/loginSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { getCurrentUser } from "../../api/FirebaseAuthApi";
 import { auth } from "../../configuration/firebase/FirebaseCommon";
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { deepOrange } from '@mui/material/colors';
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { deepOrange } from "@mui/material/colors";
+import { Container, ThemeProvider, useMediaQuery, useTheme } from "@mui/material";
+import { Logo } from "../Logo/LogoIcon";
+import { MobileMenu } from "./MobileMenu";
+import { lightPurpleTheme } from "../../themes/purpleTheme";
+import { BarButton } from "./BarButton";
 
 const Bar = () => {
   const loggedIn = useSelector((state) => state.login.isLoggedIn);
@@ -27,6 +30,10 @@ const Bar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpened = Boolean(anchorEl);
   const [firstLetter, setFirstLetter] = useState('');
+  
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [openMobileMenu, setOpenMobileMenu] = useState(false);
 
   const handleAdminRigths = useCallback(async () => {
     const token = await getCurrentUser().getIdTokenResult();
@@ -100,66 +107,79 @@ const Bar = () => {
   const closeMenu = () => {
     setAnchorEl(null);
   };
+  const AppBarMenuItems = ({ loggedIn, isAdmin, isMobile }) => (
+    <>
+      {loggedIn ? (
+        <>
+          {isAdmin && (
+            <>
+              <BarButton onClick={approvedCoursesHandler}>
+                Approved courses
+              </BarButton>
+              <BarButton onClick={pendingCoursesHandler}>
+                Pending courses
+              </BarButton>
+            </>
+          )}
+
+          <BarButton onClick={proposeCourseHandler}>
+            Propose course
+          </BarButton>
+          <Avatar
+            sx={{ bgcolor: deepOrange[500], cursor: "pointer", marginLeft: "10px", marginRight: "10px" }}
+            onClick={openMenu}
+            src={userPhoto ? userPhoto : ""}
+          >
+            {firstLetter}
+          </Avatar>
+        </>
+      ) : (
+        <>
+          <BarButton onClick={signInHandler}>
+            Sign in
+          </BarButton>
+          <BarButton variant='outlined' onClick={signUpHandler}>
+            Sign up
+          </BarButton>
+        </>
+      )}
+    </>
+  )
 
   return (
-    <>
+    <ThemeProvider theme={lightPurpleTheme}>
       <Box>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, cursor: "pointer" }}
-              onClick={goToMainPageHandler}
-            >
-              R4te it!
-            </Typography>
-            {loggedIn && isAdmin && (
-              <Button color="inherit" onClick={approvedCoursesHandler}>
-                Approved courses
-              </Button>
-            )}
-            {loggedIn && isAdmin && (
-              <Button color="inherit" onClick={pendingCoursesHandler}>
-                Pending courses
-              </Button>
-            )}
-            {loggedIn && (
-              <Button color="inherit" onClick={proposeCourseHandler}>
-                Propose course
-              </Button>
-            )}
-            {loggedIn && (
-              <Avatar sx={{ bgcolor: deepOrange[500], cursor: "pointer", marginLeft: "10px", marginRight: "10px"}} onClick={openMenu} src={userPhoto ? userPhoto : ''} >
-                {firstLetter}
-              </Avatar>
-            )}
-            {!loggedIn && (
-              <Button color="inherit" onClick={signUpHandler}>
-                Sign up
-              </Button>
-            )}
-            {!loggedIn && (
-              <Button color="inherit" onClick={signInHandler}>
-                Sign in
-              </Button>
-            )}
-          </Toolbar>
+        <AppBar position="static" color='primary'>
+          <Container maxWidth="xl">
+            <Toolbar>
+              <Box sx={{ flexGrow: 1 }}>
+                <Logo onClick={goToMainPageHandler} />
+              </Box>
+              {isMobile
+                ? <MobileMenu open={openMobileMenu} setOpen={setOpenMobileMenu}>
+                    <AppBarMenuItems loggedIn={loggedIn} isAdmin={isAdmin} isMobile={isMobile} />
+                  </MobileMenu>
+                : <AppBarMenuItems loggedIn={loggedIn} isAdmin={isAdmin} isMobile={isMobile} />
+              }
+            </Toolbar>
+          </Container>
         </AppBar>
       </Box>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={menuOpened}
-        onClose={closeMenu}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-      >
-        <MenuItem onClick={accountSettingsHandler}>Account settings</MenuItem>
-        <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-      </Menu>
-    </>
+      {!isMobile && (
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={menuOpened}
+          onClose={closeMenu}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+        >
+          <MenuItem onClick={accountSettingsHandler}>Account settings</MenuItem>
+          <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+        </Menu>
+      )}
+    </ThemeProvider>
   );
 };
 
