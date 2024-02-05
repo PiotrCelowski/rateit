@@ -6,6 +6,7 @@ build
 package-lock.json
 
 # misc
+.vscode
 .DS_Store
 .env.local
 .env.development.local
