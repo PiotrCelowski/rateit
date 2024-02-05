@@ -107,7 +107,7 @@ const Bar = () => {
   const closeMenu = () => {
     setAnchorEl(null);
   };
-  const AppBarMenuItems = ({ loggedIn, isAdmin, isMobile }) => (
+  const appBarMenuItems = ({ loggedIn, isAdmin, isMobile }) => (
     <>
       {loggedIn ? (
         <>
@@ -150,16 +150,16 @@ const Bar = () => {
     <ThemeProvider theme={lightPurpleTheme}>
       <Box>
         <AppBar position="static" color='primary'>
-          <Container maxWidth="xl">
+          <Container maxWidth="xl" disableGutters>
             <Toolbar>
               <Box sx={{ flexGrow: 1 }}>
                 <Logo onClick={goToMainPageHandler} />
               </Box>
               {isMobile
                 ? <MobileMenu open={openMobileMenu} setOpen={setOpenMobileMenu}>
-                    <AppBarMenuItems loggedIn={loggedIn} isAdmin={isAdmin} isMobile={isMobile} />
+                  {appBarMenuItems({loggedIn, isAdmin, isMobile})}
                   </MobileMenu>
-                : <AppBarMenuItems loggedIn={loggedIn} isAdmin={isAdmin} isMobile={isMobile} />
+                : <>{appBarMenuItems({loggedIn, isAdmin, isMobile})}</>
               }
             </Toolbar>
           </Container>
