@@ -15,11 +15,15 @@ export const lightPurpleTheme = createTheme({
           borderRadius: 100,
           boxShadow: 'none',
           textTransform: 'none',
+          fontSize: 15,
           fontWeight: 500,
-          fontSize: '15px',
+          lineHeight: 1.73,
+          letterSpacing: 0.46,
         },
         containedPrimary: {
+          padding: '7px 14px',
           border: '1px solid',
+          boxSizing: 'content-box',
           borderColor: '#fff',
           backgroundColor: '#fff',
           color: purple[300],
@@ -34,8 +38,10 @@ export const lightPurpleTheme = createTheme({
         outlinedPrimary: {
           border: '1px solid',
           borderColor: '#fff',
+          padding: '7px 14px',
           color: '#fff',
-          backgroundColor: purple[300],
+          backgroundColor: 'transparent',
+          boxSizing: 'content-box',
           boxShadow: 'none',
           '&:hover': {
             backgroundColor: '#fff',
