@@ -4,13 +4,14 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import { Form, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Avatar from '@mui/material/Avatar';
 import { deepOrange } from '@mui/material/colors';
 import Grid from "@mui/material/Grid";
 import { Button } from "@mui/material";
 import { uploadUserPhoto } from "../../api/FirestoreApi";
 import { updatePhoto } from "../../api/FirebaseAuthApi";
+import { loginActions } from "../../store/loginSlice";
 
 const UserSettingsForm = () => {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ const UserSettingsForm = () => {
     const userId = useSelector((state) => state.login.userId);
     const [firstLetter, setFirstLetter] = useState('');
     const [photo, setPhoto] = useState(userPhoto);
+    const dispatch = useDispatch()
 
     const updateUserHandler = async (event) => {
         event.preventDefault();
@@ -32,6 +34,7 @@ const UserSettingsForm = () => {
         }
         
         updatePhoto(userId, url);
+        dispatch(loginActions.setImageUrl(url))
 
         navigate("/", {state: {message: "Photo was uploaded!"}});
     }
