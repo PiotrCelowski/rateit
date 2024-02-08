@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 const ProposeCourseForm = () => {
   const navigate = useNavigate();
   const [technologies, setTechnologies] = useState([]);
+  // ToDo: add fetch options from Algolia
   const [options, setOptions] = useState(["technology1", "technology2", "technology3"])
 
   const goBackHandler = () => {
@@ -62,7 +63,7 @@ const ProposeCourseForm = () => {
 
   const renderTags = (value, getTagProps) => {
     return value.map((option, index) => (
-      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+      <Chip variant='filled' label={option} {...getTagProps({ index })} />
     ))
   }
 
@@ -85,65 +86,77 @@ const ProposeCourseForm = () => {
           sx={{ mt: 1, width: "100%" }}
           autoComplete="off"
         >
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            multiline
-            id="title"
-            label="Course name"
-            name="title"
-            autoFocus
-          />
-          <Grid container spacing={1} direction={"row"}>
-            <Grid item xs={4}>
+          <Grid container rowGap={5} direction={'column'} >
+            <Grid item>
               <TextField
-                margin="normal"
+                required
+                fullWidth
+                multiline
+                id="title"
+                label="Course name"
+                placeholder="Enter Course name"
+                hiddenLabel
+                name="title"
+                autoFocus
+              />
+            </Grid>
+            <Grid item>
+              <TextField
                 required
                 id="author"
                 label="Author"
+                placeholder="Enter Course Author"
+                hiddenLabel
                 name="author"
                 fullWidth
                 type="text"
               />
             </Grid>
-            <Grid item xs={4}>
+            {/* Todo: replace with dropzone */}
+            <Grid item xs={12}>
+              <Typography>Upload Course files</Typography>
+            </Grid>
+            <Grid item>
               <TextField
                 name="photo"
                 id="photo"
                 type="file"
                 fullWidth
-                sx={{
-                  marginTop: "16px"
-                }}
+              />
+            </Grid>
+          <Grid container direction={'row'} columnSpacing={2.5}>
+            <Grid item xs={12}>
+              <Typography>Technologies</Typography>
+            </Grid>
+            <Grid item xs={12} sm={8} md={6}>
+              <Autocomplete
+                multiple
+                id="technologies"
+                options={options}
+                freeSolo
+                value={technologies}
+                onChange={handleChangeTechnologies}
+                handleHomeEndKeys
+                renderTags={renderTags}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    // label=""
+                    hiddenLabel
+                    name="technologies"
+                    placeholder="Choose"
+                  />
+                )}
               />
             </Grid>
           </Grid>
-          <Grid container spacing={1} direction={"row"}>
-            <Grid item xs={12} sm={8} md={6}>
-            <Autocomplete
-              multiple
-              id="technologies"
-              options={options}
-              freeSolo
-              value={technologies}
-              onChange={handleChangeTechnologies}
-              handleHomeEndKeys
-              renderTags={renderTags}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label="Technologies"
-                  name="technologies"
-                  placeholder="Favorites"
-                />
-              )}
-            />
+
+          <Grid container columnSpacing={2.5} direction={"row"} alignItems="center">
+            <Grid item xs={12}>
+              <Typography>Choose type and level of your Course</Typography>
             </Grid>
-          </Grid>
-          <Grid container spacing={1} direction={"row"} alignItems="center">
-            <Grid item xs={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 margin="normal"
                 id="type"
@@ -161,7 +174,7 @@ const ProposeCourseForm = () => {
                 </MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={6}>
               <TextField
                 margin="normal"
                 id="level"
@@ -183,40 +196,33 @@ const ProposeCourseForm = () => {
               </TextField>
             </Grid>
           </Grid>
+          </Grid>
           <Grid
             container
-            spacing={2}
+            spacing={2.5}
             direction={"row"}
             justifyContent={"center"}
+            sx={{ mt: 3, mb: 5 }}
           >
-            <Grid item xs={4} alignContent={"center"}>
+            <Grid item xs={6} alignContent={"center"} >
               <Button
                 type="submit"
+                size='large'
+                color='secondary'
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
               >
                 Propose course
               </Button>
             </Grid>
-            <Grid item xs={4}>
-              {/* <Button
-                type="button"
-                fullWidth
-                variant="contained"
-                onClick={addTechnologyHandler}
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Add technology
-              </Button> */}
-            </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={6}>
               <Button
                 type="button"
+                size='large'
+                color='secondary'
                 fullWidth
                 variant="contained"
                 onClick={goBackHandler}
-                sx={{ mt: 3, mb: 2 }}
               >
                 Go back
               </Button>
