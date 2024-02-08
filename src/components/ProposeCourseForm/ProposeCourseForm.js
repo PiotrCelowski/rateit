@@ -5,18 +5,15 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { Form } from "react-router-dom";
-import { Button, MenuItem } from "@mui/material";
+import { Autocomplete, Button, Chip, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
 
 const ProposeCourseForm = () => {
   const navigate = useNavigate();
-  const [technologies, setTechnologies] = useState([
-    { id: "technology1", name: "Technology 1", label: "Technology 1" },
-    { id: "technology2", name: "Technology 2", label: "Technology 2" },
-    { id: "technology3", name: "Technology 3", label: "Technology 3" },
-  ]);
+  const [technologies, setTechnologies] = useState([]);
+  const [options, setOptions] = useState(["technology1", "technology2", "technology3"])
 
   const goBackHandler = () => {
     navigate("/");
@@ -27,9 +24,8 @@ const ProposeCourseForm = () => {
 
     const data = event.target;
 
-    const receivedTechnologies = technologies.map(technology => {
-      let techId = technology.id;
-      return capitalize(data[techId].value);
+    const receivedTechnologies = technologies.map((technology) => {
+      return capitalize(technology);
     }).filter(value => {
       return value.length > 0;
     })
@@ -60,16 +56,15 @@ const ProposeCourseForm = () => {
   function capitalize(technology) {
     return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
   }
-
-  const addTechnologyHandler = () => {
-    setTechnologies((oldTechnologies) => {
-      const newTechnology = { id: "technology" + (oldTechnologies.length + 1), name: "Technology " + (oldTechnologies.length + 1), label: "Technology " + (oldTechnologies.length + 1) };
-      const newTechnologies = [...oldTechnologies];
-      newTechnologies.push(newTechnology);
-      return newTechnologies;
-    })
+  const handleChangeTechnologies = (_event, newValue) => {
+    setTechnologies(newValue)
   }
 
+  const renderTags = (value, getTagProps) => {
+    return value.map((option, index) => (
+      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+    ))
+  }
 
   return (
     <Container component="main" maxWidth="md">
@@ -125,17 +120,27 @@ const ProposeCourseForm = () => {
             </Grid>
           </Grid>
           <Grid container spacing={1} direction={"row"}>
-            {technologies.map(technology => {
-              return (<Grid key={technology.id} item xs={4}>
+            <Grid item xs={12} sm={8} md={6}>
+            <Autocomplete
+              multiple
+              id="technologies"
+              options={options}
+              freeSolo
+              value={technologies}
+              onChange={handleChangeTechnologies}
+              handleHomeEndKeys
+              renderTags={renderTags}
+              renderInput={(params) => (
                 <TextField
-                  margin="normal"
-                  id={technology.id}
-                  label={technology.label}
-                  name={technology.name}
-                  fullWidth
+                  {...params}
+                  variant='outlined'
+                  label="Technologies"
+                  name="technologies"
+                  placeholder="Favorites"
                 />
-              </Grid>)
-            })}
+              )}
+            />
+            </Grid>
           </Grid>
           <Grid container spacing={1} direction={"row"} alignItems="center">
             <Grid item xs={4}>
@@ -195,7 +200,7 @@ const ProposeCourseForm = () => {
               </Button>
             </Grid>
             <Grid item xs={4}>
-              <Button
+              {/* <Button
                 type="button"
                 fullWidth
                 variant="contained"
@@ -203,7 +208,7 @@ const ProposeCourseForm = () => {
                 sx={{ mt: 3, mb: 2 }}
               >
                 Add technology
-              </Button>
+              </Button> */}
             </Grid>
             <Grid item xs={2}>
               <Button
