@@ -9,12 +9,14 @@ import { Autocomplete, Button, Chip, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
+import { Dropzone } from "../Dropzone/Dropzone";
 
 const ProposeCourseForm = () => {
   const navigate = useNavigate();
   const [technologies, setTechnologies] = useState([]);
   // ToDo: add fetch options from Algolia
   const [options, setOptions] = useState(["technology1", "technology2", "technology3"])
+  const [file, setFile] = useState(null)
 
   const goBackHandler = () => {
     navigate("/");
@@ -43,8 +45,8 @@ const ProposeCourseForm = () => {
 
     let url = "/static/images/no-image.jpg";
 
-    if (data.photo.files[0]) {
-      url = await uploadPhoto(data.photo.files[0], proposedCourse.id, proposedCourse.title, proposedCourse.author);
+    if (file) {
+      url = await uploadPhoto(file, proposedCourse.id, proposedCourse.title, proposedCourse.author);
     }
 
     proposedCourse["photoUrl"] = url;
@@ -97,7 +99,7 @@ const ProposeCourseForm = () => {
                 placeholder="Enter Course name"
                 hiddenLabel
                 name="title"
-                autoFocus
+                // autoFocus
               />
             </Grid>
             <Grid item>
@@ -117,11 +119,9 @@ const ProposeCourseForm = () => {
               <Typography>Upload Course files</Typography>
             </Grid>
             <Grid item>
-              <TextField
-                name="photo"
-                id="photo"
-                type="file"
-                fullWidth
+              <Dropzone
+                file={file}
+                setFile={setFile}
               />
             </Grid>
           <Grid container direction={'row'} columnSpacing={2.5}>
