@@ -3,7 +3,7 @@ import { Typography, alpha } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import { useTheme } from "@mui/material";
 
-export const Dropzone = ({ file, setFile }) => {
+export const Dropzone = ({ file, setFile, ...props }) => {
   const theme = useTheme();
   const focusedStyle = {
     borderColor: alpha(
@@ -46,9 +46,9 @@ export const Dropzone = ({ file, setFile }) => {
     padding: "40px",
     borderWidth: 2,
     borderRadius: theme.shape.borderRadius,
-    borderColor: theme.palette.grey[300],
+    borderColor: theme.palette.divider,
     borderStyle: "dashed",
-    backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.background.default,
     color: theme.palette.text.disabled,
     outline: "none",
     transition: "border .24s ease-in-out",
@@ -89,7 +89,7 @@ export const Dropzone = ({ file, setFile }) => {
   return (
     <div className="container">
       <div {...getRootProps({ style })}>
-        <input {...getInputProps()} />
+        <input {...getInputProps({...props})} />
         {isDragActive ? (
           <Typography variant="body1">Drop here</Typography>
         ) : acceptedFiles?.length > 0 ? (

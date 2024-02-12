@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import { Container, LabelTitle, SectionTitle } from './ProposeCourseForm.styled'
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { Form } from "react-router-dom";
-import { Autocomplete, Button, Chip, MenuItem } from "@mui/material";
+import { Autocomplete, Box, Button, Chip, MenuItem, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
 import { Dropzone } from "../Dropzone/Dropzone";
+
+const ENUM_TYPES = ['Video', 'Book']
+const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
 
 const ProposeCourseForm = () => {
   const navigate = useNavigate();
@@ -50,10 +51,11 @@ const ProposeCourseForm = () => {
     }
 
     proposedCourse["photoUrl"] = url;
+    console.log('form values', proposedCourse)
 
-    await addCourse(proposedCourse);
+    // await addCourse(proposedCourse);
 
-    navigate("/", { state: { message: "Course was proposed!" } });
+    // navigate("/", { state: { message: "Course was proposed!" } });
   }
 
   function capitalize(technology) {
@@ -70,95 +72,82 @@ const ProposeCourseForm = () => {
   }
 
   return (
-    <Container component="main" maxWidth="md">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+    <Container component="main" maxWidth="lg" disableGutters>
+      <SectionTitle component="h1" variant={"h3"}>
+        Please provide details about the course
+      </SectionTitle>
+      <Stack
+        direction={"column"}
+        useFlexGap
+        rowGap={{ xs: 2.5, sm: 5 }}
+        component={Form}
+        onSubmit={proposeCourse}
+        sx={{ mt: 1, width: "100%" }}
+        autoComplete="off"
       >
-        <Typography component="h1" variant="h5">
-          Please provide details about the course
-        </Typography>
-        <Box
-          component={Form}
-          onSubmit={proposeCourse}
-          sx={{ mt: 1, width: "100%" }}
-          autoComplete="off"
-        >
-          <Grid container rowGap={5} direction={'column'} >
-            <Grid item>
-              <TextField
-                required
-                fullWidth
-                multiline
-                id="title"
-                label="Course name"
-                placeholder="Enter Course name"
-                hiddenLabel
-                name="title"
-                // autoFocus
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                required
-                id="author"
-                label="Author"
-                placeholder="Enter Course Author"
-                hiddenLabel
-                name="author"
-                fullWidth
-                type="text"
-              />
-            </Grid>
-            {/* Todo: replace with dropzone */}
-            <Grid item xs={12}>
-              <Typography>Upload Course files</Typography>
-            </Grid>
-            <Grid item>
-              <Dropzone
-                file={file}
-                setFile={setFile}
-              />
-            </Grid>
-          <Grid container direction={'row'} columnSpacing={2.5}>
-            <Grid item xs={12}>
-              <Typography>Technologies</Typography>
-            </Grid>
-            <Grid item xs={12} sm={8} md={6}>
-              <Autocomplete
-                multiple
-                id="technologies"
-                options={options}
-                freeSolo
-                value={technologies}
-                onChange={handleChangeTechnologies}
-                handleHomeEndKeys
-                renderTags={renderTags}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    // label=""
-                    hiddenLabel
-                    name="technologies"
-                    placeholder="Choose"
-                  />
-                )}
-              />
-            </Grid>
+        <TextField
+          required
+          fullWidth
+          multiline
+          id="title"
+          label="Course name"
+          placeholder="Enter Course name"
+          hiddenLabel
+          name="title"
+          // autoFocus
+        />
+        <TextField
+          required
+          id="author"
+          label="Author"
+          placeholder="Enter Course Author"
+          hiddenLabel
+          name="author"
+          fullWidth
+          type="text"
+        />
+        {/* Todo: replace with dropzone */}
+        <Grid container direction={"row"} columnSpacing={2.5}>
+          <Grid item xs={12}>
+            <LabelTitle htmlFor="photo">Upload Course files</LabelTitle>
           </Grid>
+          <Grid item xs={12}>
+            <Dropzone file={file} setFile={setFile} id="photo" />
+          </Grid>
+        </Grid>
 
-          <Grid container columnSpacing={2.5} direction={"row"} alignItems="center">
-            <Grid item xs={12}>
-              <Typography>Choose type and level of your Course</Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
+        <Grid container direction={"row"} columnSpacing={2.5}>
+          <Grid item xs={12}>
+            <LabelTitle htmlFor="technologies">Technologies</LabelTitle>
+          </Grid>
+          <Grid item xs={12} sm={8} md={6}>
+            <Autocomplete
+              multiple
+              id="technologies"
+              options={options}
+              freeSolo
+              value={technologies}
+              onChange={handleChangeTechnologies}
+              handleHomeEndKeys
+              renderTags={renderTags}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  hiddenLabel
+                  name="technologies"
+                  placeholder="Choose"
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+
+        <Box>
+          <LabelTitle>Choose type and level of your Course</LabelTitle>
+          <Grid container spacing={2.5} direction={"row"} alignItems="center">
+            <Grid item xs={12} sm={6}>
               <TextField
-                margin="normal"
                 id="type"
                 label="Type"
                 name="type"
@@ -166,17 +155,15 @@ const ProposeCourseForm = () => {
                 fullWidth
                 defaultValue={""}
               >
-                <MenuItem key={"Video"} value={"Video"}>
-                  Video
-                </MenuItem>
-                <MenuItem key={"Book"} value={"Book"}>
-                  Book
-                </MenuItem>
+                {ENUM_TYPES.map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
-                margin="normal"
                 id="level"
                 label="Level"
                 name="level"
@@ -184,52 +171,47 @@ const ProposeCourseForm = () => {
                 select
                 defaultValue={""}
               >
-                <MenuItem key={"Beginner"} value={"Beginner"}>
-                  Beginner
-                </MenuItem>
-                <MenuItem key={"Intermediate"} value={"Intermediate"}>
-                  Intermediate
-                </MenuItem>
-                <MenuItem key={"Expert"} value={"Expert"}>
-                  Expert
-                </MenuItem>
+                {ENUM_LEVELS.map((level) => (
+                  <MenuItem key={level} value={level}>
+                    {level}
+                  </MenuItem>
+                ))}
               </TextField>
             </Grid>
           </Grid>
-          </Grid>
-          <Grid
-            container
-            spacing={2.5}
-            direction={"row"}
-            justifyContent={"center"}
-            sx={{ mt: 3, mb: 5 }}
-          >
-            <Grid item xs={6} alignContent={"center"} >
-              <Button
-                type="submit"
-                size='large'
-                color='secondary'
-                fullWidth
-                variant="contained"
-              >
-                Propose course
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button
-                type="button"
-                size='large'
-                color='secondary'
-                fullWidth
-                variant="contained"
-                onClick={goBackHandler}
-              >
-                Go back
-              </Button>
-            </Grid>
-          </Grid>
         </Box>
-      </Box>
+        <Grid
+          container
+          spacing={2.5}
+          direction={"row"}
+          justifyContent={"stretch"}
+          sx={{ mt: { xs: 2.5, md: 5 }, mb: 5 }}
+        >
+          <Grid item xs={12} sm={true}>
+            <Button
+              type="submit"
+              size="large"
+              color="secondary"
+              fullWidth
+              variant="contained"
+            >
+              Propose course
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={true}>
+            <Button
+              type="button"
+              size="large"
+              color="secondary"
+              fullWidth
+              variant="contained"
+              onClick={goBackHandler}
+            >
+              Go back
+            </Button>
+          </Grid>
+        </Grid>
+      </Stack>
     </Container>
   );
 };

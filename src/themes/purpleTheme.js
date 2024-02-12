@@ -54,3 +54,24 @@ export const lightPurpleTheme = createTheme({
     }
   }
 })
+
+export const mainTheme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 100,
+          boxShadow: 'none',
+          textTransform: 'none',
+          letterSpacing: 0.46,
+        },
+        contained: {
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
+        },
+      }
+    }
+  }
+})
