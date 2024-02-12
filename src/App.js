@@ -23,9 +23,9 @@ function App() {
         { path: "/", element: <LandingPage /> },
         { path: "/login", element: <LoginPage /> },
         { path: "/register", element: <RegisterPage /> },
-        { path: "/propose", element: <ProposeCoursePage /> },
+        // { path: "/propose", element: <ProposeCoursePage /> },
 
-        // { path: "/propose", element: loggedIn ? <ProposeCoursePage /> : <Navigate to="/login" /> },
+        { path: "/propose", element: loggedIn ? <ProposeCoursePage /> : <Navigate to="/login" /> },
         { path: "/pending", element: loggedIn ? <PendingCoursesPage /> : <Navigate to="/login" /> },
         { path: "/edit", element: loggedIn ? <EditCoursePage /> : <Navigate to="/login" /> },
         { path: "/user", element: loggedIn ? <UserSettingsPage /> : <Navigate to="/login" /> }

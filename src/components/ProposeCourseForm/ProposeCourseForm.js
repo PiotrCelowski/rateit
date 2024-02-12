@@ -3,11 +3,12 @@ import { Container, LabelTitle, SectionTitle } from './ProposeCourseForm.styled'
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { Form } from "react-router-dom";
-import { Autocomplete, Box, Button, Chip, MenuItem, Stack } from "@mui/material";
+import { Autocomplete, Box, Button, Chip, MenuItem, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
 import { Dropzone } from "../Dropzone/Dropzone";
+import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
 
 const ENUM_TYPES = ['Video', 'Book']
 const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
@@ -18,6 +19,8 @@ const ProposeCourseForm = () => {
   // ToDo: add fetch options from Algolia
   const [options, setOptions] = useState(["technology1", "technology2", "technology3"])
   const [file, setFile] = useState(null)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const goBackHandler = () => {
     navigate("/");
@@ -53,9 +56,9 @@ const ProposeCourseForm = () => {
     proposedCourse["photoUrl"] = url;
     console.log('form values', proposedCourse)
 
-    // await addCourse(proposedCourse);
+    await addCourse(proposedCourse);
 
-    // navigate("/", { state: { message: "Course was proposed!" } });
+    navigate("/", { state: { message: "Course was proposed!" } });
   }
 
   function capitalize(technology) {
@@ -106,13 +109,16 @@ const ProposeCourseForm = () => {
           fullWidth
           type="text"
         />
-        {/* Todo: replace with dropzone */}
         <Grid container direction={"row"} columnSpacing={2.5}>
           <Grid item xs={12}>
             <LabelTitle htmlFor="photo">Upload Course files</LabelTitle>
           </Grid>
           <Grid item xs={12}>
-            <Dropzone file={file} setFile={setFile} id="photo" />
+            {
+              isMobile
+              ? <DropzoneMobile file={file} setFile={setFile} id="photo" />
+              : <Dropzone file={file} setFile={setFile} id="photo" />
+            }
           </Grid>
         </Grid>
 

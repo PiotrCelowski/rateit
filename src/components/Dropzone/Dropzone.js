@@ -1,10 +1,20 @@
 import React, { useCallback, useMemo } from "react";
-import { Typography, alpha } from "@mui/material";
+import { Box, Link, Typography, alpha } from "@mui/material";
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { useDropzone } from "react-dropzone";
 import { useTheme } from "@mui/material";
 
+export const MAX_SIZE = 3145728;
+export const ACCEPT_TYPES = {
+  'image/jpeg': [],
+  'image/png': [],
+  'image/svg+xml': [],
+  'image/gif': []
+}
+
 export const Dropzone = ({ file, setFile, ...props }) => {
   const theme = useTheme();
+
   const focusedStyle = {
     borderColor: alpha(
       theme.palette.action.focus,
@@ -17,6 +27,7 @@ export const Dropzone = ({ file, setFile, ...props }) => {
   };
 
   const acceptStyle = {
+    color: theme.palette.success.dark,
     borderColor: alpha(
       theme.palette.success.main,
       0.2 + theme.palette.action.hoverOpacity
@@ -28,6 +39,7 @@ export const Dropzone = ({ file, setFile, ...props }) => {
   };
 
   const rejectStyle = {
+    color: theme.palette.error.dark,
     borderColor: alpha(
       theme.palette.error.main,
       0.2 + theme.palette.action.hoverOpacity
@@ -39,11 +51,10 @@ export const Dropzone = ({ file, setFile, ...props }) => {
   };
 
   const baseStyle = {
-    flex: 1,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "40px",
+    padding: theme.spacing(3),
     borderWidth: 2,
     borderRadius: theme.shape.borderRadius,
     borderColor: theme.palette.divider,
@@ -59,8 +70,6 @@ export const Dropzone = ({ file, setFile, ...props }) => {
     setFile(newFile);
   }, []);
 
-  // Todo: add accepted file types, style with icon and figma text
-
   const {
     acceptedFiles,
     getRootProps,
@@ -69,11 +78,15 @@ export const Dropzone = ({ file, setFile, ...props }) => {
     isDragAccept,
     isDragReject,
     isDragActive,
+    open
   } = useDropzone({
     onDrop,
+    noClick: true,
+    noKeyboard: true,
     multiple: false,
     maxFiles: 1,
-    accept: { "image/*": [] },
+    maxSize: MAX_SIZE,
+    accept: ACCEPT_TYPES
   });
 
   const style = useMemo(
@@ -90,15 +103,36 @@ export const Dropzone = ({ file, setFile, ...props }) => {
     <div className="container">
       <div {...getRootProps({ style })}>
         <input {...getInputProps({...props})} />
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 1,
+          minHeight: '108px'
+        }}>
+          <Box sx={{ padding: 1, display: isDragActive ? 'none' : 'flex' }}>
+            <UploadFileIcon color={acceptedFiles?.length > 0 ? 'inherit' : 'primary'} fontSize='medium' />
+          </Box>
         {isDragActive ? (
-          <Typography variant="body1">Drop here</Typography>
+          <Typography variant="body1">{isDragReject ? "Incorrect file type" : 'Drop here'}</Typography>
         ) : acceptedFiles?.length > 0 ? (
-          <Typography variant="body1">{file.name}</Typography>
+          <>
+            <Typography variant="body1">{file.name}</Typography>
+            <Link onClick={open} sx={{ cursor: 'pointer', textUnderlinePosition: 'under' }}>Replace</Link>
+          </>
         ) : (
-          <Typography variant="body1">
-            Drag 'n' drop some files here, or click to select files
-          </Typography>
-        )}
+          <>
+            <Typography component={'div'} variant="body1" color='text.primary'>
+              <Link onClick={open} sx={{ marginInlineEnd: 1, cursor: 'pointer', textUnderlinePosition: 'under' }}>
+                Click to upload
+              </Link>
+                or drag and drop
+            </Typography>
+            <Typography component={'div'} color='text.secondary'>{'SVG, PNG, JPG or GIF (max. 3MB)'}</Typography>
+          </>
+          )}
+        </Box>
       </div>
     </div>
   );
