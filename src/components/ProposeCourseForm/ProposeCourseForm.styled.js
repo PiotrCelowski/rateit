@@ -5,6 +5,7 @@ const StyledContainer = styled(Container)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginBottom: theme.spacing(5),
     [theme.breakpoints.between('sm', 'md')]: {
       marginTop: theme.spacing(2)
     },

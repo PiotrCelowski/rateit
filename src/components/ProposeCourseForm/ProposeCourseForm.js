@@ -75,7 +75,7 @@ const ProposeCourseForm = () => {
   }
 
   return (
-    <Container component="main" maxWidth="lg" disableGutters>
+    <Container component="main" maxWidth="md" disableGutters>
       <SectionTitle component="h1" variant={"h3"}>
         Please provide details about the course
       </SectionTitle>
@@ -85,7 +85,7 @@ const ProposeCourseForm = () => {
         rowGap={{ xs: 2.5, sm: 5 }}
         component={Form}
         onSubmit={proposeCourse}
-        sx={{ mt: 1, width: "100%" }}
+        sx={{ width: "100%" }}
         autoComplete="off"
       >
         <TextField
@@ -191,7 +191,7 @@ const ProposeCourseForm = () => {
           spacing={2.5}
           direction={"row"}
           justifyContent={"stretch"}
-          sx={{ mt: { xs: 2.5, md: 5 }, mb: 5 }}
+          sx={{ mb: 2.5 }}
         >
           <Grid item xs={12} sm={true}>
             <Button
