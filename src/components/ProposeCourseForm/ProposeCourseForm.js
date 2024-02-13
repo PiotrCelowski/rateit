@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Container, LabelTitle, SectionTitle } from './ProposeCourseForm.styled'
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -9,6 +9,7 @@ import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
 import { Dropzone } from "../Dropzone/Dropzone";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
+import { useRefinementList } from 'react-instantsearch-hooks-web';
 
 const ENUM_TYPES = ['Video', 'Book']
 const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
@@ -16,11 +17,28 @@ const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
 const ProposeCourseForm = () => {
   const navigate = useNavigate();
   const [technologies, setTechnologies] = useState([]);
-  // ToDo: add fetch options from Algolia
-  const [options, setOptions] = useState(["technology1", "technology2", "technology3"])
   const [file, setFile] = useState(null)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const { items } = useRefinementList({
+    attribute: "technologies",
+    operator: "and"
+  });
+
+  const mockTech = [
+    {
+      value: "React",
+      label: "React"
+    },
+    {
+      value: "Java",
+      label: "Java"
+    },
+  ]
+
+  const options = useMemo(() => {
+    return items?.length > 0 ? items : mockTech
+  }, [items])
 
   const goBackHandler = () => {
     navigate("/");
@@ -32,7 +50,7 @@ const ProposeCourseForm = () => {
     const data = event.target;
 
     const receivedTechnologies = technologies.map((technology) => {
-      return capitalize(technology);
+      return capitalize(technology.value);
     }).filter(value => {
       return value.length > 0;
     })
@@ -54,7 +72,6 @@ const ProposeCourseForm = () => {
     }
 
     proposedCourse["photoUrl"] = url;
-    console.log('form values', proposedCourse)
 
     await addCourse(proposedCourse);
 
@@ -64,13 +81,18 @@ const ProposeCourseForm = () => {
   function capitalize(technology) {
     return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
   }
-  const handleChangeTechnologies = (_event, newValue) => {
+  const handleChangeTechnologies = (_event, newValue, action, { option }) => {
+    if (action === 'createOption') {
+      if (!option.length) return;
+
+      return setTechnologies((prevState) => ([ ...prevState, { value: option, label: capitalize(option)}]))
+    }
     setTechnologies(newValue)
   }
 
   const renderTags = (value, getTagProps) => {
     return value.map((option, index) => (
-      <Chip variant='filled' label={option} {...getTagProps({ index })} />
+      <Chip variant='filled' label={option.label} {...getTagProps({ index })} />
     ))
   }
 
@@ -133,6 +155,7 @@ const ProposeCourseForm = () => {
               options={options}
               freeSolo
               value={technologies}
+              getOptionLabel={((option) => (option.label))}
               onChange={handleChangeTechnologies}
               handleHomeEndKeys
               renderTags={renderTags}
