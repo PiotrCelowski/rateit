@@ -10,10 +10,19 @@ import ProposeCoursePage from "./pages/ProposeCoursePage";
 import PendingCoursesPage from "./pages/PendingCoursesPage";
 import EditCoursePage from "./pages/EditCoursePage";
 import UserSettingsPage from "./pages/UserSettingsPage";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
+import { ProtectedRoute } from "./pages/ProtectedRoute";
+import { auth } from "./configuration/firebase/FirebaseCommon";
 
 function App() {
-  const loggedIn = useSelector((state) => state.login.isLoggedIn);
+  // const loggedIn = useSelector((state) => state.login.isLoggedIn);
+  // console.log('loggedIn', loggedIn)
+
+  // Todo: try this one - https://github.com/remix-run/react-router/blob/dev/examples/auth-router-provider/src/App.tsx
+  const authLoader = async () => {
+    const user = auth.currentUser
+    return { loggedIn: user }
+  }
 
   const router = createBrowserRouter([
     {
@@ -23,10 +32,15 @@ function App() {
         { path: "/", element: <LandingPage /> },
         { path: "/login", element: <LoginPage /> },
         { path: "/register", element: <RegisterPage /> },
-        { path: "/propose", element: loggedIn ? <ProposeCoursePage /> : <Navigate to="/login" /> },
-        { path: "/pending", element: loggedIn ? <PendingCoursesPage /> : <Navigate to="/login" /> },
-        { path: "/edit", element: loggedIn ? <EditCoursePage /> : <Navigate to="/login" /> },
-        { path: "/user", element: loggedIn ? <UserSettingsPage /> : <Navigate to="/login" /> }
+        { path: '/',
+          loader: authLoader,
+          element: <ProtectedRoute />,
+          children: [
+          { path: "/propose", element: <ProposeCoursePage /> },
+          { path: "/pending", element: <PendingCoursesPage /> },
+          { path: "/edit", element: <EditCoursePage /> },
+          { path: "/user", element: <UserSettingsPage /> }
+        ]}
       ]
     }
   ])
