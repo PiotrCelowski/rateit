@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   isUserAdmin,
   signInWithGoogle,
@@ -64,6 +64,8 @@ export default function SignIn() {
     await signInWithGoogle();
     setAuthCallback();
   };
+  const location = useLocation()
+  const navigatePath = location?.state?.from ? location?.state?.from?.pathname : '/'
 
   function setAuthCallback() {
     onAuthStateChanged(auth, (user) => {
@@ -71,7 +73,7 @@ export default function SignIn() {
         user.getIdTokenResult().then((token) => {
           dispatch(loginActions.setLoggedIn(true));
           if (isUserAdmin(token)) dispatch(loginActions.setAdmin(true));
-          navigate("/", {state: {message: "Login successfull!"}});
+          navigate(navigatePath, { state: { message: "Login successfull!" } });
         });
       } else {
         //do nothing

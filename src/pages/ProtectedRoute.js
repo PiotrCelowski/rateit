@@ -1,13 +1,14 @@
-import { Navigate, Outlet, useLoaderData } from "react-router-dom";
+import { Navigate, Outlet, useLoaderData, useLocation } from "react-router-dom";
 
 export const ProtectedRoute = ({
   redirectPath = '/login',
   children,
 }) => {
   const { loggedIn } = useLoaderData()
-  console.log('isAllowed', loggedIn)
+  const location = useLocation()
+
   if (!loggedIn) {
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
 
   return children ? children : <Outlet />;

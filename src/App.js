@@ -12,16 +12,12 @@ import EditCoursePage from "./pages/EditCoursePage";
 import UserSettingsPage from "./pages/UserSettingsPage";
 // import { useSelector } from "react-redux";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
-import { auth } from "./configuration/firebase/FirebaseCommon";
+import { isUserSignedIn } from "./api/FirebaseAuthApi";
 
 function App() {
-  // const loggedIn = useSelector((state) => state.login.isLoggedIn);
-  // console.log('loggedIn', loggedIn)
-
-  // Todo: try this one - https://github.com/remix-run/react-router/blob/dev/examples/auth-router-provider/src/App.tsx
-  const authLoader = async () => {
-    const user = auth.currentUser
-    return { loggedIn: user }
+  const authLoader = () => {
+    const loggedIn = isUserSignedIn()
+    return { loggedIn }
   }
 
   const router = createBrowserRouter([
