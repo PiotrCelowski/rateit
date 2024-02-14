@@ -12,7 +12,7 @@ const LandingPage = () => {
         <React.Fragment>
             <CourseDetailsOverlay />
             <CourseRatingOverlay />
-            <Box pl={3} pr={3} pt={3} sx={{flexGrow: 1}}>
+            <Box px={{ xs: 2.5, md: 3 }} py={3} sx={{ flexGrow: 1 }}>
                 <Grid container spacing={5} direction="column">
                     <Grid item>
                         <Searcher isApproved={true} />

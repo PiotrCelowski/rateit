@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 
 const RegisterPage = () => {
     return(
-        <Box pl={3} pr={3} pt={3} sx={{flexGrow: 1}}>
+        <Box px={{ xs: 2.5, md: 3 }} py={3} sx={{ flexGrow: 1 }}>
             <RegisterForm />
         </Box>
     )
