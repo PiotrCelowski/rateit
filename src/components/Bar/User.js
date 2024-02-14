@@ -22,6 +22,7 @@ export const User = () => {
 
   return (
     <MenuItem
+      noStipes
       onClick={accountSettingsHandler}
       sx={{
         gap: 1,
