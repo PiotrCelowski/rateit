@@ -24,6 +24,8 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { Stack } from "@mui/material";
+import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -94,21 +96,13 @@ export default function SignIn() {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography component="h1" variant="h5">
+    <Container component="main" maxWidth='xs'>
+      <Stack direction='column' rowGap={2} width={'100%'} mt={8}>
+        <Typography component="h1" variant="h5" textAlign={'center'}>
           Sign in
         </Typography>
-        <Box component="form" onSubmit={sumbitHandler} sx={{ mt: 1 }}>
+        <Stack direction='column' component="form" onSubmit={sumbitHandler} rowGap={2.5} width={'100%'}>
           <TextField
-            margin="normal"
             required
             fullWidth
             id="email"
@@ -118,7 +112,6 @@ export default function SignIn() {
             autoFocus
           />
           <TextField
-            margin="normal"
             required
             fullWidth
             name="password"
@@ -168,14 +161,12 @@ export default function SignIn() {
               </IconButton>
             </Grid>
           </Grid>
-          <Button
+          <PrimaryButton
             type="submit"
-            fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
           >
             Sign In
-          </Button>
+          </PrimaryButton>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
@@ -188,8 +179,8 @@ export default function SignIn() {
               </Link>
             </Grid>
           </Grid>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
       <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={closeSnackbar}>
         <Alert onClose={closeSnackbar} severity="error" sx={{ width: '100%' }}>
           {errorMessage}
