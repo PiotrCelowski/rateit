@@ -56,13 +56,25 @@ export default function SignIn() {
   };
 
   const facebookHandler = async (event) => {
-    await signInWithFacebook();
-    setAuthCallback();
+    try {
+      await signInWithFacebook();
+      setAuthCallback();
+    } catch (error) {
+      console.log('signInWithFacebook [error]:', error?.message)
+      setError(error?.message || 'Error: Auth with Facebook was not completed');
+      setSnackbarOpened(true);
+    }
   };
 
   const googleHandler = async (event) => {
-    await signInWithGoogle();
-    setAuthCallback();
+    try {
+      await signInWithGoogle();
+      setAuthCallback();
+    } catch (error) {
+      console.log('signInWithGoogle [error]:', error?.message)
+      setError(error?.message || 'Error: Auth with Google was not completed');
+      setSnackbarOpened(true);
+    }
   };
   const location = useLocation()
   const navigatePath = location?.state?.from ? location?.state?.from?.pathname : '/'
