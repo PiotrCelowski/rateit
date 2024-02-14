@@ -11,14 +11,8 @@ import PendingCoursesPage from "./pages/PendingCoursesPage";
 import EditCoursePage from "./pages/EditCoursePage";
 import UserSettingsPage from "./pages/UserSettingsPage";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
-import { isUserSignedIn } from "./api/FirebaseAuthApi";
 
 function App() {
-  const authLoader = () => {
-    const loggedIn = isUserSignedIn()
-    return { loggedIn }
-  }
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -28,7 +22,6 @@ function App() {
         { path: "/login", element: <LoginPage /> },
         { path: "/register", element: <RegisterPage /> },
         { path: '/',
-          loader: authLoader,
           element: <ProtectedRoute />,
           children: [
           { path: "/propose", element: <ProposeCoursePage /> },
