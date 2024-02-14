@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import CookieBanner from "../components/CookieBanner/CookieBanner";
 import { ThemeProvider } from "@mui/material";
 import { mainTheme } from "../themes/purpleTheme";
+import { SnackBarMessage } from "../components/SnackbarMessage/SnackbarMessage";
 
 function RootLayout() {
     return (
@@ -16,6 +17,7 @@ function RootLayout() {
                 <Footer />
             </Stack>
             <CookieBanner />
+            <SnackBarMessage />
         </ThemeProvider>
     )
 }
