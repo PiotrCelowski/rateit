@@ -1,10 +1,8 @@
-import React, {useState} from "react";
-import Button from "@mui/material/Button";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -22,10 +20,11 @@ import { auth } from "../../configuration/firebase/FirebaseCommon";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import IconButton from "@mui/material/IconButton";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { Stack } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import { Divider, Stack } from "@mui/material";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
+import { PasswordInput } from "../PasswordInput/PasswordInput";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -45,12 +44,12 @@ export default function SignIn() {
       data.get("email"),
       data.get("password"),
       data.get("rememberMe")
-    ).then(() => setAuthCallback())
+    )
+      .then(() => setAuthCallback())
       .catch((error) => {
         setError(error.message);
         setSnackbarOpened(true);
       });
-
   };
 
   const closeSnackbar = () => {
@@ -62,8 +61,8 @@ export default function SignIn() {
       await signInWithFacebook();
       setAuthCallback();
     } catch (error) {
-      console.log('signInWithFacebook [error]:', error?.message)
-      setError(error?.message || 'Error: Auth with Facebook was not completed');
+      console.log("signInWithFacebook [error]:", error?.message);
+      setError(error?.message || "Error: Auth with Facebook was not completed");
       setSnackbarOpened(true);
     }
   };
@@ -73,8 +72,8 @@ export default function SignIn() {
       await signInWithGoogle();
       setAuthCallback();
     } catch (error) {
-      console.log('signInWithGoogle [error]:', error?.message)
-      setError(error?.message || 'Error: Auth with Google was not completed');
+      console.log("signInWithGoogle [error]:", error?.message);
+      setError(error?.message || "Error: Auth with Google was not completed");
       setSnackbarOpened(true);
     }
   };
@@ -96,89 +95,68 @@ export default function SignIn() {
   }
 
   return (
-    <Container component="main" maxWidth='xs'>
-      <Stack direction='column' rowGap={2} width={'100%'} mt={8}>
-        <Typography component="h1" variant="h5" textAlign={'center'}>
-          Sign in
+    <Container component="main" maxWidth="xs" sx={{ paddingY: 4, my: { xs: 1, sm: 4 } }}>
+      <Stack direction="column" rowGap={2} width={"100%"}>
+        <Typography component="h1" variant="h5" textAlign={"center"} mb={1}>
+          Sign In
         </Typography>
-        <Stack direction='column' component="form" onSubmit={sumbitHandler} rowGap={2.5} width={'100%'}>
+        <Stack component="form" onSubmit={sumbitHandler} direction="column" width={"100%"} rowGap={2.5}>
           <TextField
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Email"
             name="email"
             autoComplete="email"
             autoFocus
           />
-          <TextField
+          <PasswordInput
             required
-            fullWidth
             name="password"
-            label="Password"
-            type="password"
-            id="password"
             autoComplete="current-password"
           />
-          <Grid container>
-            <Grid item xs={10}>
+
+          <Stack direction="row" columnGap={1} alignItems="baseline">
+            <Box sx={{ flexGrow: 1 }}>
               <FormControlLabel
                 control={<Checkbox color="primary" defaultChecked />}
                 name="rememberMe"
                 label="Remember me"
               />
-            </Grid>
-            <Grid item xs={1}>
-              <IconButton
-                onClick={googleHandler}
-                sx={{
-                  height: "100%",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <GoogleIcon />
-              </IconButton>
-            </Grid>
-            <Grid item xs={1}>
-              <IconButton
-                onClick={facebookHandler}
-                sx={{
-                  height: "100%",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <FacebookIcon />
-              </IconButton>
-            </Grid>
-          </Grid>
-          <PrimaryButton
-            type="submit"
-            variant="contained"
-          >
+            </Box>
+            {/* Todo: uncomment when forgot password feature will be added */}
+            {/* <Link href="#" variant="body2">
+              Forgot password?
+            </Link> */}
+          </Stack>
+
+          <PrimaryButton type="submit" variant="contained" size="large">
             Sign In
           </PrimaryButton>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
+
+          <Stack direction={"row"} columnGap={1.5} justifyContent={"center"} mt={2}>
+            <Typography variant="body2">New on our platform?</Typography>
+            <Link href="/register" variant="body2">
+              Create an account
+            </Link>
+          </Stack>
+
+          <Divider />
+
+          <Stack mt={1} direction={"row"} columnGap={5} justifyContent="center" alignItems="center">
+            <Typography component={"div"} variant="overline" color="text.secondary">
+              Or sign in with
+            </Typography>
+
+            <IconButton onClick={googleHandler} color="default" size="large">
+              <GoogleIcon />
+            </IconButton>
+
+            <IconButton onClick={facebookHandler} color="default" size="large">
+              <FacebookIcon />
+            </IconButton>
+          </Stack>
+
         </Stack>
       </Stack>
       <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={closeSnackbar}>
