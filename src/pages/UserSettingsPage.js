@@ -4,7 +4,7 @@ import UserSettingsForm from "../components/UserSettingsForm/UserSettingsForm";
 
 const UserSettingsPage = () => {
     return (
-        <Box pl={3} pr={3} pt={3} sx={{flexGrow: 1}}>
+        <Box px={{ xs: 2.5, md: 3 }} py={3} sx={{ flexGrow: 1 }}>
             <UserSettingsForm />
         </Box>
     )
