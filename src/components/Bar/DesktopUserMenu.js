@@ -46,7 +46,6 @@ export const DesktopUserMenu = () => {
         anchorEl={anchorEl}
         open={menuOpened}
         onClose={closeMenu}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         MenuListProps={{
           "aria-labelledby": "menu-button",

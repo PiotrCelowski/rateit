@@ -3,8 +3,8 @@ import { MenuItem, alpha, styled } from "@mui/material";
 const StyledMenuItem = styled(MenuItem, {
   shouldForwardProp: (prop) => prop !== "noStipes",
 })(({ noStipes, theme }) => ({
-  paddingTop: 18.5,
-  paddingBottom: 18.5,
+  paddingTop: 18,
+  paddingBottom: 18,
   paddingLeft: 20,
   paddingRight: 20,
   fontSize: 20,
