@@ -5,7 +5,6 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   isUserAdmin,
@@ -105,6 +104,7 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
+            type='email'
             label="Email"
             name="email"
             autoComplete="email"

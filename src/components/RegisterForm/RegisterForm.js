@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { useNavigate } from "react-router-dom";
 import { signUpWithEmail } from "../../api/FirebaseAuthApi";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { Link, Stack } from "@mui/material";
+import { PasswordInput } from "../PasswordInput/PasswordInput";
+import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -44,21 +44,21 @@ export default function SignUp() {
     }
 
     const saveConfirmedPassword = (event) => {
-        setConfirmedPassword(event.currentTarget.value);
-        checkPasswordAndEnableButton(password, event.currentTarget.value, email);
+        setConfirmedPassword(event.target.value);
+        checkPasswordAndEnableButton(password, event.target.value, email);
     }
 
     const savePassword = (event) => {
-        setPassword(event.currentTarget.value);
-        checkPasswordAndEnableButton(event.currentTarget.value, confirmedPassword, email);
+        setPassword(event.target.value);
+        checkPasswordAndEnableButton(event.target.value, confirmedPassword, email);
     }
 
     function checkPasswordAndEnableButton(password, confirmation, emailParam) {
         setIsPasswordConfirmed(false);
         setButtonEnabled(false);
-        if (password === confirmation && password.length > 0) {
+        if (password === confirmation && password?.length > 0) {
             setIsPasswordConfirmed(true);
-            if (emailParam.length > 0) {
+            if (emailParam?.length > 0) {
                 setButtonEnabled(true);
             }
         }
@@ -66,61 +66,54 @@ export default function SignUp() {
 
     return (
         <>
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Typography component="h1" variant="h5">
+            <Stack direction="column" rowGap={2} width={"100%"}>
+                <Typography component="h1" variant="h5" textAlign={"center"} mb={1}>
                     Create account
                 </Typography>
-                <Box component="form" onSubmit={sumbitHandler} sx={{ mt: 1 }}>
+                <Stack component="form" onSubmit={sumbitHandler} direction="column" width={"100%"} rowGap={2.5}>
                     <TextField
-                        margin="normal"
                         required
                         fullWidth
                         id="email"
+                        type='email'
                         label="Email Address"
                         name="email"
                         autoComplete="email"
                         onChange={saveEmail}
                         autoFocus
                     />
-                    <TextField
-                        margin="normal"
+                    <PasswordInput
                         required
-                        fullWidth
+                        autoComplete="new-password"
                         name="password"
                         label="Password"
                         type="password"
                         id="password"
                         onChange={savePassword}
-                        autoComplete="current-password"
                     />
-                    <TextField
-                        margin="normal"
+                    <PasswordInput
                         required
-                        fullWidth
+                        autoComplete="new-password"
                         name="confirm-password"
                         label="Confirm password"
-                        type="password"
                         onChange={saveConfirmedPassword}
                         id="confirm-password"
                         error={Boolean(!isPasswordConfirmed)}
                     />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                    <PrimaryButton type="submit" variant="contained" size="large"
                         disabled={Boolean(!buttonEnabled)}
+                        sx={{ mt: 1 }}
                     >
                         Sign Up
-                    </Button>
-                </Box>
-            </Box>
+                    </PrimaryButton>
+                </Stack>
+                <Stack direction={"row"} columnGap={1.5} justifyContent={"center"} mt={2}>
+                    <Typography variant="body2">Already have an account?</Typography>
+                    <Link href="/login" variant="body2">
+                    Sign In
+                    </Link>
+                </Stack>
+            </Stack>
             <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={closeSnackbar}>
                 <Alert onClose={closeSnackbar} severity="error" sx={{ width: '100%' }}>
                     {errorMessage}
