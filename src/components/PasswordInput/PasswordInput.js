@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 
-export const PasswordInput = ({ id = 'password', label = "Password", name = 'password', autoComplete = 'new-password', required = false, ...controlProps }) => {
+export const PasswordInput = forwardRef(( { id = 'password', label = "Password", name = 'password', autoComplete = 'new-password', required = false, ...controlProps }, ref) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => setShowPassword((show) => !show);
@@ -17,6 +17,7 @@ export const PasswordInput = ({ id = 'password', label = "Password", name = 'pas
     <FormControl variant="outlined" required={required} fullWidth {...controlProps}>
       <InputLabel htmlFor={id}>{label}</InputLabel>
       <OutlinedInput
+        inputRef={ref}
         name={name}
         label={label}
         id={id}
@@ -41,4 +42,4 @@ export const PasswordInput = ({ id = 'password', label = "Password", name = 'pas
       />
     </FormControl>
   );
-};
+});
