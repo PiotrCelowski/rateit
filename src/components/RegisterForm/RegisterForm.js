@@ -65,10 +65,9 @@ export default function SignUp() {
     }
 
     return (
-        <Container component="main" maxWidth="xs">
+        <>
             <Box
                 sx={{
-                    marginTop: 8,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -127,6 +126,6 @@ export default function SignUp() {
                     {errorMessage}
                 </Alert>
             </Snackbar>
-        </Container>
+        </>
     );
 }

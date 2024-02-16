@@ -95,7 +95,7 @@ export default function SignIn() {
   }
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ paddingY: 4, my: { xs: 1, sm: 4 } }}>
+    <>
       <Stack direction="column" rowGap={2} width={"100%"}>
         <Typography component="h1" variant="h5" textAlign={"center"} mb={1}>
           Sign In
@@ -164,6 +164,6 @@ export default function SignIn() {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </Container>
+    </>
   );
 }
