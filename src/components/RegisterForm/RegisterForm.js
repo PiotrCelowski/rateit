@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
@@ -9,92 +9,48 @@ import { Link, Stack } from "@mui/material";
 import { PasswordInput } from "../PasswordInput/PasswordInput";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 import { useForm, Controller } from "react-hook-form";
+import { emailRule } from "../../utils/validateRules";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export default function SignUp() {
-  const { control, watch, handleSubmit, formState: { errors } } = useForm({
+  const { control, watch, handleSubmit, formState: { errors, dirtyFields }, trigger } = useForm({
     defaultValues: {
       email: '',
       password: '',
-      confirmedPassword: ''
+      confirmation: ''
     }
   })
-  console.log('errors', errors)
 
   const navigate = useNavigate();
   const [errorMessage, setError] = useState([]);
   const [snackbarOpened, setSnackbarOpened] = useState(false);
-  // const [password, setPassword] = useState("");
-  // const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(true);
-  // const [confirmedPassword, setConfirmedPassword] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [buttonEnabled, setButtonEnabled] = useState(false);
 
-  // const sumbitHandler = async (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   signUpWithEmail(data.get("email"), data.get("password"))
-  //     .then(() =>
-  //       navigate("/", {
-  //         state: { message: "Account was created successfully!" },
-  //       })
-  //     )
-  //     .catch((error) => {
-  //       setError(error.message);
-  //       setSnackbarOpened(true);
-  //     });
-  // };
-
-  const onSubmit = async (data) => {
-    console.log('data', data)
-    // signUpWithEmail(data.get("email"), data.get("password"))
-    //   .then(() =>
-    //     navigate("/", {
-    //       state: { message: "Account was created successfully!" },
-    //     })
-    //   )
-    //   .catch((error) => {
-    //     setError(error.message);
-    //     setSnackbarOpened(true);
-    //   });
+  const onSubmit = async ({ email, password }) => {
+    try {
+      await signUpWithEmail(email, password)
+      navigate("/", {
+        state: { message: "Account was created successfully!" },
+      })
+    } catch (error) {
+      setError(error.message);
+      setSnackbarOpened(true);
+    }
   };
 
   const closeSnackbar = () => {
     setSnackbarOpened(false);
   };
 
-  // const saveEmail = (event) => {
-  //   setEmail(event.currentTarget.value);
-  //   checkPasswordAndEnableButton(
-  //     password,
-  //     confirmedPassword,
-  //     event.currentTarget.value
-  //   );
-  // };
-
-  // const saveConfirmedPassword = (event) => {
-  //   setConfirmedPassword(event.target.value);
-  //   checkPasswordAndEnableButton(password, event.target.value, email);
-  // };
-
-  // const savePassword = (event) => {
-  //   setPassword(event.target.value);
-  //   checkPasswordAndEnableButton(event.target.value, confirmedPassword, email);
-  // };
-
-  // function checkPasswordAndEnableButton(password, confirmation, emailParam) {
-  //   setIsPasswordConfirmed(false);
-  //   setButtonEnabled(false);
-  //   if (password === confirmation && password?.length > 0) {
-  //     setIsPasswordConfirmed(true);
-  //     if (emailParam?.length > 0) {
-  //       setButtonEnabled(true);
-  //     }
-  //   }
-  // }
+  const [ passwordValue, confirmationValue ] = watch(["password", 'confirmation'])
+  useEffect(() => {
+    if (dirtyFields?.password && dirtyFields?.confirmation) {
+      // -- revalidates both fields onChange one of them --
+      trigger(['password', 'confirmation'])
+    }
+  }, [passwordValue, confirmationValue])
 
   return (
     <>
@@ -104,6 +60,7 @@ export default function SignUp() {
         </Typography>
         <Stack
           component="form"
+          noValidate
           onSubmit={handleSubmit(onSubmit)}
           direction="column"
           width={"100%"}
@@ -112,7 +69,7 @@ export default function SignUp() {
           <Controller
             control={control}
             name="email"
-            rules={{ required: "Email is required" }}
+            rules={{ required: "Email is required", ...emailRule }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -122,13 +79,15 @@ export default function SignUp() {
                 label="Email Address"
                 autoComplete="email"
                 autoFocus
+                error={Boolean(errors?.email)}
+                helperText={errors?.email?.message}
               />
             )}
           />
           <Controller
             control={control}
             name="password"
-            rules={{ required: "Password is required" }}
+            rules={{ required: "Password is required", minLength: { value: 8, message: 'Your password should contain at least 8 characters' }}}
             render={({ field }) => (
               <PasswordInput
                 {...field}
@@ -136,20 +95,23 @@ export default function SignUp() {
                 label="Password"
                 type="password"
                 id="password"
+                error={Boolean(errors?.password) || Boolean(errors?.confirmation?.type === 'validate')}
+                errorMessage={errors?.password?.message}
               />
             )}
           />
           <Controller
             control={control}
-            name="confirmedPassword"
-            rules={{ required: "Type password again" }}
+            name="confirmation"
+            rules={{ required: "Confirm your password", validate: (value) => passwordValue === value || 'The passwords do not match' }}
             render={({ field }) => (
               <PasswordInput
                 {...field}
                 autoComplete="new-password"
                 label="Confirm password"
-                id="confirmedPassword"
-                error={Boolean(errors?.confirmedPassword?.message)}
+                id="confirmation"
+                error={Boolean(errors?.confirmation)}
+                errorMessage={errors?.confirmation?.message}
               />
             )}
           />
@@ -157,7 +119,7 @@ export default function SignUp() {
             type="submit"
             variant="contained"
             size="large"
-            // disabled={Boolean(!buttonEnabled)}
+            disabled={Boolean(Object.keys(errors)?.length)}
             sx={{ mt: 1 }}
           >
             Sign Up
