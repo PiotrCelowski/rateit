@@ -10,13 +10,14 @@ import { PasswordInput } from "../PasswordInput/PasswordInput";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 import { useForm, Controller } from "react-hook-form";
 import { emailRule } from "../../utils/validateRules";
+import { AuthErrorCodes } from "@firebase/auth";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export default function SignUp() {
-  const { control, watch, handleSubmit, formState: { errors, dirtyFields }, trigger } = useForm({
+  const { control, watch, handleSubmit, formState: { errors, dirtyFields }, trigger, setError, setFocus } = useForm({
     defaultValues: {
       email: '',
       password: '',
@@ -25,7 +26,7 @@ export default function SignUp() {
   })
 
   const navigate = useNavigate();
-  const [errorMessage, setError] = useState([]);
+  const [errorMessage, setErrorMessage] = useState([]);
   const [snackbarOpened, setSnackbarOpened] = useState(false);
 
   const onSubmit = async ({ email, password }) => {
@@ -35,7 +36,14 @@ export default function SignUp() {
         state: { message: "Account was created successfully!" },
       })
     } catch (error) {
-      setError(error.message);
+      if (error.code === AuthErrorCodes.EMAIL_EXISTS) {
+        setFocus('email')
+        setError('email')
+        // -- or set error message directly to the email input field --
+        // setError('email', { message: 'This email already in use' })
+        // return;
+      }
+      setErrorMessage(error.message);
       setSnackbarOpened(true);
     }
   };
