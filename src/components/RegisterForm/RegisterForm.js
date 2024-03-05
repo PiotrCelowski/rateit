@@ -71,14 +71,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5" textAlign={"center"} mb={1}>
           Create account
         </Typography>
-        <Stack
-          component="form"
-          noValidate
-          onSubmit={handleSubmit(onSubmit)}
-          direction="column"
-          width={"100%"}
-          rowGap={2.5}
-        >
+        <Stack component="form" noValidate onSubmit={handleSubmit(onSubmit)} direction="column" width={"100%"} rowGap={2.5}>
           <Controller
             control={control}
             name="email"
@@ -139,23 +132,14 @@ export default function SignUp() {
             Sign Up
           </PrimaryButton>
         </Stack>
-        <Stack
-          direction={"row"}
-          columnGap={1.5}
-          justifyContent={"center"}
-          mt={2}
-        >
+        <Stack direction={"row"} columnGap={1.5} justifyContent={"center"} mt={2}>
           <Typography variant="body2">Already have an account?</Typography>
           <Link href="/login" variant="body2">
             Sign In
           </Link>
         </Stack>
       </Stack>
-      <Snackbar
-        open={snackbarOpened}
-        autoHideDuration={6000}
-        onClose={closeSnackbar}
-      >
+      <Snackbar open={snackbarOpened} autoHideDuration={6000} onClose={closeSnackbar}>
         <Alert onClose={closeSnackbar} severity="error" sx={{ width: "100%" }}>
           {errorMessage}
         </Alert>
