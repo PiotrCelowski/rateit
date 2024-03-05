@@ -9,7 +9,7 @@ import { Link, Stack } from "@mui/material";
 import { PasswordInput } from "../PasswordInput/PasswordInput";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 import { useForm, Controller } from "react-hook-form";
-import { emailRule } from "../../utils/validateRules";
+import { emailRule, passwordRule } from "../../utils/validateRules";
 import { AuthErrorCodes } from "@firebase/auth";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -17,7 +17,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 export default function SignUp() {
-  const { control, watch, handleSubmit, formState: { errors, dirtyFields }, trigger, setError, setFocus } = useForm({
+  const { control, watch, handleSubmit, formState: { errors, dirtyFields }, trigger, setError } = useForm({
     defaultValues: {
       email: '',
       password: '',
@@ -36,14 +36,19 @@ export default function SignUp() {
         state: { message: "Account was created successfully!" },
       })
     } catch (error) {
-      if (error.code === AuthErrorCodes.EMAIL_EXISTS) {
-        setFocus('email')
-        setError('email')
+      if (error?.code === AuthErrorCodes.EMAIL_EXISTS) {
+        // -- set error state to the email input field and use toast notification --
+        // setError('email', { type: 'firebaseError' }, { shouldFocus: true })
         // -- or set error message directly to the email input field --
-        // setError('email', { message: 'This email already in use' })
-        // return;
+        return setError('email', { type: 'firebaseError', message: 'This email already in use' }, { shouldFocus: true })
       }
-      setErrorMessage(error.message);
+      if (error?.code === AuthErrorCodes.WEAK_PASSWORD) {
+        // -- set error state to the password input field and use toast notification --
+        // setError('password', { type: 'firebaseError' }, { shouldFocus: true })
+        // -- or set error message directly to the email input field --
+        return setError('password', { type: 'firebaseError', message: 'Password should be at least 6 characters' }, { shouldFocus: true })
+      }
+      setErrorMessage(error?.message || 'Server error. Try again later.');
       setSnackbarOpened(true);
     }
   };
@@ -78,7 +83,7 @@ export default function SignUp() {
             control={control}
             name="email"
             rules={{ required: "Email is required", ...emailRule }}
-            render={({ field }) => (
+            render={({ field: { ref, ...field } }) => (
               <TextField
                 {...field}
                 fullWidth
@@ -87,6 +92,7 @@ export default function SignUp() {
                 label="Email Address"
                 autoComplete="email"
                 autoFocus
+                inputRef={ref}
                 error={Boolean(errors?.email)}
                 helperText={errors?.email?.message}
               />
@@ -95,7 +101,7 @@ export default function SignUp() {
           <Controller
             control={control}
             name="password"
-            rules={{ required: "Password is required", minLength: { value: 8, message: 'Your password should contain at least 8 characters' }}}
+            rules={{ required: "Password is required", ...passwordRule }}
             render={({ field }) => (
               <PasswordInput
                 {...field}

@@ -25,7 +25,7 @@ import { Divider, Stack } from "@mui/material";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 import { PasswordInput } from "../PasswordInput/PasswordInput";
 import { useForm, Controller } from "react-hook-form";
-import { emailRule } from "../../utils/validateRules";
+import { emailRule, passwordRule } from "../../utils/validateRules";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -37,7 +37,7 @@ export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState([]);
   const [snackbarOpened, setSnackbarOpened] = useState(false);
 
-  const { control, handleSubmit, formState: { errors }, setError, setFocus } = useForm({
+  const { control, handleSubmit, formState: { errors }, setError } = useForm({
     defaultValues: {
       email: '',
       password: '',
@@ -51,20 +51,18 @@ export default function SignIn() {
     } catch (error) {
       // -- handle firebase errors with codes --
       if (error?.code === AuthErrorCodes.INVALID_PASSWORD) {
-        setFocus('password')
-        setError('password')
+        // -- set error state to the password input field and use toast notification --
+        // setError('password', { type: 'firebaseError' }, { shouldFocus: true })
         // -- or set error message directly to the password input field --
-        // setError('password', { message: 'Wrong password' })
-        // return;
+        return setError('password', { type: 'firebaseError', message: 'Wrong password' }, { shouldFocus: true });
       }
       if (error?.code === AuthErrorCodes.USER_DELETED) {
-        setFocus('email')
-        setError('email')
+        // -- set error state to the email input field and use toast notification --
+        // setError('email', { type: 'firebaseError' }, { shouldFocus: true })
         // -- or set error message directly to the email input field --
-        // setError('email', { message: 'User not found' })
-        // return;
+        return setError('email', { type: 'firebaseError', message: 'User not found' }, { shouldFocus: true });
       }
-      setErrorMessage(error.message);
+      setErrorMessage(error?.message || 'Server error. Try again later.');
       setSnackbarOpened(true);
     }
   }
@@ -122,7 +120,7 @@ export default function SignIn() {
             control={control}
             name="email"
             rules={{ required: "Email is required", ...emailRule }}
-            render={({ field }) => (
+            render={({ field: { ref, ...field } }) => (
               <TextField
                 {...field}
                 required
@@ -132,6 +130,7 @@ export default function SignIn() {
                 label="Email"
                 autoComplete="email"
                 autoFocus
+                inputRef={ref}
                 error={Boolean(errors.email)}
                 helperText={errors?.email?.message}
               />
@@ -139,7 +138,7 @@ export default function SignIn() {
           <Controller
             control={control}
             name="password"
-            rules={{ required: "Enter your password" }}
+            rules={{ required: "Enter your password", minLength: passwordRule.minLength, maxLength: passwordRule.maxLength }}
             render={({ field }) => (
               <PasswordInput
                 {...field}
