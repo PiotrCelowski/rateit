@@ -27,12 +27,12 @@ export const signUpWithEmail = async (email, password) => {
 };
 
 export const signInWithGoogle = async () => {
-  var provider = new GoogleAuthProvider();
+  const provider = new GoogleAuthProvider();
   return await signInWithPopup(auth, provider);
 };
 
 export const signInWithFacebook = async () => {
-  var provider = new FacebookAuthProvider();
+  const provider = new FacebookAuthProvider();
   return await signInWithPopup(auth, provider);
 };
 
