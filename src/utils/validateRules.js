@@ -15,7 +15,7 @@ const passwordRule = {
     message: 'Password length should not exceed 150 characters'
   },
   pattern: {
-    value: /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}/,
+    value: /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}/,
     message: 'Your password must contain at least one number, one uppercase and one lowercase letter'
   }
 }
