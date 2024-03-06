@@ -16,5 +16,8 @@ export const PrimaryButton = styled(Button)(({theme}) => ({
   color: theme.palette.common.white,
   '&:hover': {
     backgroundColor: theme.palette.secondary.main,
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: theme.typography.pxToRem(18),
   }
 }))
