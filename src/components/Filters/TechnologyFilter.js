@@ -20,7 +20,8 @@ const TechnologyFilter = ({ items, checkItem, setItemsSearcher }) => {
                 name="facetSearch"
                 label="Search by..."
                 onChange={onSearchHandler}
-                sx={{ width: "150px" }}
+                fullWidth
+                size='small'
             />
             {Object.entries(items).map((item) => {
                 return (
