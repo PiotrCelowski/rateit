@@ -27,6 +27,10 @@ export const DropzoneMobile = ({ file, setFile, ...props }) => {
     setFile(newFile);
   }, []);
 
+  const onFileDialogCancel = useCallback(() => {
+    setFile(null);
+  }, []);
+
   const {
     acceptedFiles,
     getRootProps,
@@ -34,6 +38,7 @@ export const DropzoneMobile = ({ file, setFile, ...props }) => {
     open
   } = useDropzone({
     onDrop,
+    onFileDialogCancel,
     noClick: true,
     noKeyboard: true,
     multiple: false,

@@ -6,158 +6,144 @@ import TextField from "@mui/material/TextField";
 import { Form, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from '@mui/material/Avatar';
-import { deepOrange } from '@mui/material/colors';
-import Grid from "@mui/material/Grid";
-import { Button } from "@mui/material";
+import deepPurple from '@mui/material/colors/deepPurple';
+import Stack from "@mui/material/Stack"
+import { styled, useMediaQuery, useTheme } from "@mui/material";
 import { uploadUserPhoto } from "../../api/FirestoreApi";
 import { updatePhoto } from "../../api/FirebaseAuthApi";
 import { loginActions } from "../../store/loginSlice";
+import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
+import { Dropzone } from "../Dropzone/Dropzone";
+import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
+import { SectionTitle } from "../ProposeCourseForm/ProposeCourseForm.styled";
+import { useForm } from "react-hook-form";
+
+const GridTemplateBox = styled(Box)(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "auto 1fr",
+  columnGap: theme.spacing(3),
+  rowGap: theme.spacing(2),
+  placeItems: "center",
+}));
 
 const UserSettingsForm = () => {
-    const navigate = useNavigate();
-    const userEmail = useSelector((state) => state.login.email);
-    const userPhoto = useSelector((state) => state.login.imageUrl);
-    const userId = useSelector((state) => state.login.userId);
-    const [firstLetter, setFirstLetter] = useState('');
-    const [photo, setPhoto] = useState(userPhoto);
-    const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const userEmail = useSelector((state) => state.login.email);
+  const userPhoto = useSelector((state) => state.login.imageUrl);
+  const userId = useSelector((state) => state.login.userId);
+  const [photo, setPhoto] = useState(userPhoto);
+  const [file, setFile] = useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const dispatch = useDispatch();
+  const firstLetter = userEmail?.charAt(0)?.toUpperCase() || "N";
+  const { handleSubmit } = useForm();
 
-    const updateUserHandler = async (event) => {
-        event.preventDefault();
+  const updateUserHandler = async (data) => {
+    let url = "/static/images/no-image.jpg";
 
-        const data = event.target;
-
-        let url = "/static/images/no-image.jpg";
-
-        if (data.photo.files[0]) {
-            url = await uploadUserPhoto(data.photo.files[0], userId);
-        }
-        
-        updatePhoto(userId, url);
-        dispatch(loginActions.setImageUrl(url))
-
-        navigate("/", {state: {message: "Photo was uploaded!"}});
+    if (file) {
+      url = await uploadUserPhoto(file, userId);
     }
+    try {
+      updatePhoto(userId, url);
+      dispatch(loginActions.setImageUrl(url));
 
-    const goBackHandler = () => {
-        navigate("/");
+      navigate("/", { state: { message: "Photo was uploaded!" } });
+    } catch (error) {
+      // Todo: add error handling with a toast message or any other solution to notify user about an error
+      const { code, message } = error;
+      if (code && message) return console.log(`Error ${code}: ${message}`);
+      return console.log("Submit Error:", error);
     }
+  };
 
-    const deleteAccountHandler = () => {
+  const goBackHandler = () => {
+    navigate("/");
+  };
 
-    }
+  const deleteAccountHandler = () => {};
 
-    const displayPhotoHandler = (event) => {
-        setPhoto(URL.createObjectURL(event.target.files[0]))
-    }
+  const displayPhotoHandler = () => {
+    setPhoto(URL.createObjectURL(file));
+  };
 
-    useEffect(() => {
-        setFirstLetter(userEmail.charAt(0).toUpperCase());
-    }, [userEmail]);
+  useEffect(() => {
+    if (file) return displayPhotoHandler();
+    return setPhoto(userPhoto);
+  }, [file]);
 
-    return (
-        <Container component="main" maxWidth="md">
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <Typography component="h1" variant="h5">
-                    User settings
-                </Typography>
-                <Box
-                    component={Form}
-                    onSubmit={updateUserHandler}
-                    sx={{ mt: 1, width: "100%" }}
-                    autoComplete="off"
-                >
-                    <Grid container spacing={1} direction={"row"}>
-                        <Grid item xs={2} sx={{ display: "flex", justifyContent: "right", alignItems: "center", paddingRight: "20px" }}>
-                            <Typography component="p">
-                                Email
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={10} sx={{ display: "flex", justifyContent: "right", alignItems: "center" }}>
-                            <TextField
-                                margin="normal"
-                                disabled
-                                fullWidth
-                                multiline
-                                id="name"
-                                name="name"
-                                autoFocus
-                                defaultValue={userEmail}
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container spacing={1} direction={"row"}>
-                        <Grid item xs={2} sx={{ display: "flex", justifyContent: "right", alignItems: "center", paddingRight: "20px" }}>
-                            <Avatar sx={{ bgcolor: deepOrange[500] }} src={photo ? photo : ''} >
-                                {firstLetter}
-                            </Avatar>
-                        </Grid>
-                        <Grid item xs={10} sx={{ display: "flex", justifyContent: "right", alignItems: "center" }}>
-                            <TextField
-                                name="photo"
-                                id="photo"
-                                type="file"
-                                fullWidth
-                                sx={{
-                                    marginTop: "16px"
-                                }}
-                                onChange={displayPhotoHandler}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={2}
-                        direction={"row"}
-                        justifyContent={"center"}
-                    >
-                        <Grid item xs={2} alignContent={"center"}>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Apply
-                            </Button>
-                        </Grid>
-                        <Grid item xs={4} alignContent={"center"}>
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                onClick={deleteAccountHandler}
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Delete account
-                            </Button>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                onClick={goBackHandler}
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Go back
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Box>
-            </Box>
-        </Container>
-    );
-}
+  return (
+    <Container component="main" maxWidth="md" disableGutters>
+      <SectionTitle component="h1" variant={"h3"} align={isMobile ? "left" : "center"}>
+        User settings
+      </SectionTitle>
+      <Stack 
+        component={Form}
+        onSubmit={handleSubmit(updateUserHandler)}
+        autoComplete="off"
+				direction={"column"} useFlexGap rowGap={{ xs: 2.5, sm: 5 }} sx={{ width: "100%" }}
+      >
+        <GridTemplateBox>
+          <Typography component="label" htmlFor="name" variant="body1">
+            Email
+          </Typography>
+          <TextField
+            disabled
+            fullWidth
+            multiline
+            id="name"
+            name="name"
+            autoFocus
+            variant="outlined"
+            defaultValue={userEmail}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+          <Avatar
+            sx={{
+              bgcolor: deepPurple[500],
+              width: { xs: 60, sm: 100 },
+              height: { xs: 60, sm: 100 },
+              fontSize: { xs: 20, sm: 32 },
+            }}
+            src={photo ? photo : ""}
+          >
+            {firstLetter}
+          </Avatar>
+          <Box width={"100%"}>
+            {isMobile ? (
+              <DropzoneMobile file={file} setFile={setFile} id="photo" />
+            ) : (
+              <Dropzone file={file} setFile={setFile} id="photo" />
+            )}
+          </Box>
+        </GridTemplateBox>
+
+        <Stack direction={{ xs: "column", sm: "row" }} useFlexGap gap={2} mt={2}>
+          <PrimaryButton type="submit" variant="contained">
+            Apply
+          </PrimaryButton>
+          <PrimaryButton
+            type="button"
+            variant="contained"
+            onClick={deleteAccountHandler}
+            sx={{ flexGrow: 1 }}
+          >
+            Delete account
+          </PrimaryButton>
+          <PrimaryButton
+            type="button"
+            variant="contained"
+            onClick={goBackHandler}
+          >
+            Go back
+          </PrimaryButton>
+        </Stack>
+      </Stack>
+    </Container>
+  );
+};
 
 export default UserSettingsForm;
