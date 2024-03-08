@@ -5,9 +5,6 @@ import { useMediaQuery, useTheme } from "@mui/material";
 export const FilterMobileButton = ({ onClick }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
-  const isHidden = useMediaQuery(theme.breakpoints.up('md'))
-
-  if (isHidden) return null
 
   return (
     <IconButton size={isMobile ? 'small' : 'large'} sx={{ flexShrink: 0 }} onClick={onClick}>

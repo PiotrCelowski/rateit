@@ -9,12 +9,13 @@ import CourseRatingOverlay from "../components/CourseRatingOverlay/CourseRatingO
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import { FilterMobileButton } from "../components/Filters/FilterMobileButton";
-import Filters from "../components/Filters/Filters";
-import Drawer from "@mui/material/Drawer"
-import { Backdrop, IconButton, Toolbar, Typography } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { FiltersDrawer } from "../components/Filters/FiltersDrawer";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const LandingPage = () => {
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
     const [openFiltersDrawer, setOpenFiltersDrawer] = React.useState(false);
 
     const toggleFiltersDrawer = (newOpen) => () => {
@@ -30,7 +31,7 @@ const LandingPage = () => {
                     <Grid container spacing={5} direction="column">
                         <Grid item>
                             <Stack direction='row' gap={3} alignItems='center'>
-                                <FilterMobileButton onClick={toggleFiltersDrawer(true)} />
+                                {isMobile && <FilterMobileButton onClick={toggleFiltersDrawer(true)} />}
                                 <Box sx={{ flexGrow: 1 }}>
                                     <Searcher isApproved={true} />
                                 </Box>
@@ -42,20 +43,7 @@ const LandingPage = () => {
                     </Grid>
                 </Box>
                 <CustomPagination />
-                <>
-                    <Drawer open={openFiltersDrawer} onClose={toggleFiltersDrawer(false)} anchor="left" variant='persistent'>
-                        <Box sx={{ width: 256 }} role="presentation">
-                            <Toolbar>
-                                <Typography component='h2' variant='h5' flexGrow={1}>Filters</Typography>
-                                <IconButton onClick={toggleFiltersDrawer(false)}>
-                                    <Close />
-                                </IconButton>
-                            </Toolbar>
-                            <Filters />
-                        </Box>
-                    </Drawer>
-                    <Backdrop open={openFiltersDrawer} onClick={toggleFiltersDrawer(false)} />
-                </>
+                {isMobile && <FiltersDrawer open={openFiltersDrawer} toggle={toggleFiltersDrawer} />}
             </Container>
         </React.Fragment>)
 }
