@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from "react";
 import { loginActions } from "../../store/loginSlice";
 import CardMedia from '@mui/material/CardMedia';
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const Course = (props) => {
   const dispatch = useDispatch();
@@ -32,16 +33,24 @@ const Course = (props) => {
     dispatch(courseRatingActions.toggleCourseRating());
     dispatch(courseRatingActions.setCurrentCourseId(props.id));
   };
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const mediaHeight = isMobile ? 180 : 200
 
   return (
-    <Card sx={{ display: "grid", gridTemplateRows: "1fr auto" }}>
+    <Card sx={{ display: "grid", gridTemplateRows: `${mediaHeight}px 1fr` }}>
       <CardMedia
         component="img"
-        height="150"
         image={props.photoUrl}
         alt={props.title}
+        sx={{
+          height: {
+            xs: 180,
+            sm: 200
+          }
+        }}
       />
-      <CardContent sx={{ paddingBottom: "0px", minHeight: "150px" }}>
+      <CardContent sx={{ paddingBottom: "0px", minHeight: "100px" }}>
         <Grid container direction="column" height="100%" justifyContent="space-between" >
           <Grid item>
             <CourseHeader {...props} />
@@ -51,7 +60,7 @@ const Course = (props) => {
           </Grid>
         </Grid>
       </CardContent>
-      <CardActions sx={{ paddingLeft: "16px" }}>
+      <CardActions sx={{ justifyContent: 'space-between', px: 1.5, "& .MuiButton-root": { textTransform: 'uppercase' } }}>
         <Button size="small" onClick={openCourseHandler}>
           Show ratings
         </Button>
