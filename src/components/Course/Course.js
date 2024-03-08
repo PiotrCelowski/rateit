@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { loginActions } from "../../store/loginSlice";
 import CardMedia from '@mui/material/CardMedia';
 import { useMediaQuery, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Course = (props) => {
   const dispatch = useDispatch();
@@ -24,9 +25,14 @@ const Course = (props) => {
     }
   }, [dispatch]);
 
+  // const openCourseHandler = () => {
+  //   dispatch(courseDetailsActions.setCurrentCourseId(props.id));
+  //   dispatch(courseDetailsActions.toggleCourseDetails());
+  // };
+  const navigate = useNavigate()
+
   const openCourseHandler = () => {
-    dispatch(courseDetailsActions.setCurrentCourseId(props.id));
-    dispatch(courseDetailsActions.toggleCourseDetails());
+    navigate(`/courses/${props.id}`)
   };
 
   const openCourseRatingHandler = () => {
