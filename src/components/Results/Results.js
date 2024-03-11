@@ -46,7 +46,8 @@ const Results = (props) => {
             lg: "repeat(3, 1fr)",
             sm: "repeat(2, 1fr)",
             xs: "repeat(1, 1fr)"
-          }
+          },
+          justifyItems: 'center'
         }}
       >
         {algoliaResults.map(result => {
