@@ -43,10 +43,11 @@ const Results = (props) => {
           gap: 2,
           gridTemplateColumns: {
             xl: "repeat(4, 1fr)",
-            md: "repeat(3, 1fr)",
+            lg: "repeat(3, 1fr)",
             sm: "repeat(2, 1fr)",
             xs: "repeat(1, 1fr)"
-          }
+          },
+          justifyItems: 'center'
         }}
       >
         {algoliaResults.map(result => {

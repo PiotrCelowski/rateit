@@ -12,6 +12,10 @@ import EditCoursePage from "./pages/EditCoursePage";
 import UserSettingsPage from "./pages/UserSettingsPage";
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { SigninLayout } from "./utils/SigninLayout";
+import { CourseDetaisPage, getCourseDetails } from "./pages/CourseDetaisPage";
+import { ErrorPage } from "./pages/ErrorPage";
+import { redirectToHome } from "./utils/redirectToHome";
+import { ResponsivePageLayout } from "./utils/ResponsivePageLayout";
 
 function App() {
   const router = createBrowserRouter([
@@ -20,6 +24,22 @@ function App() {
       element: <RootLayout />,
       children: [
         { path: "/", element: <LandingPage /> },
+        { 
+          path: '/courses',
+          element: <ResponsivePageLayout />,
+          children: [
+            {
+              index: true,
+              loader: redirectToHome,
+            },
+            {
+              path: ":courseID",
+              element: <CourseDetaisPage />,
+              loader: getCourseDetails,
+              errorElement: <ErrorPage />
+            }
+          ]
+        },
         {
           element: <SigninLayout />,
           children: [

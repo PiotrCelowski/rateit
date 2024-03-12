@@ -49,22 +49,24 @@ const CourseDetailsOverlay = () => {
   };
 
   const fetchCurrentCourse = useCallback(async () => {
-    if (currentCourseId != null) {
+    if (currentCourseId !== null) {
       setIsLoading(true);
       const response = await fetchCourse(currentCourseId);
-      setCurrentCourse((oldState) => {
-        return {
-          title: response.data().title,
-          author: response.data().author,
-          rating: response.data().rating,
-          ratingVotes: response.data().ratingVotes,
-          codeSnippetsWorking: response.data().codeSnippetsWorking,
-          easilyExplained: response.data().easilyExplained,
-          keptUpToDate: response.data().keptUpToDate,
-          topicCoverage: response.data().topicCoverage,
-          organization: response.data().organization
-        };
-      });
+      if (response.exists()) {
+        setCurrentCourse((oldState) => {
+          return {
+            title: response.data()?.title,
+            author: response.data()?.author,
+            rating: response.data()?.rating,
+            ratingVotes: response.data()?.ratingVotes,
+            codeSnippetsWorking: response.data()?.codeSnippetsWorking,
+            easilyExplained: response.data()?.easilyExplained,
+            keptUpToDate: response.data()?.keptUpToDate,
+            topicCoverage: response.data()?.topicCoverage,
+            organization: response.data()?.organization
+          };
+        });
+      }
       setIsLoading(false);
     }
   }, [currentCourseId]);

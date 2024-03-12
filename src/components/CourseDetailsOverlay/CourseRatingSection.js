@@ -9,40 +9,40 @@ const CourseRatingSection = (props) => {
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
         <Typography variant="body2">Overall rating:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.rating} readOnly />
+          <Rating name="read-only" value={props?.rating} readOnly />
           <Typography component="div" color="text.secondary">
-            ({props.ratingVotes})
+            ({props?.ratingVotes})
           </Typography>
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
         <Typography variant="body2">Are code snippets working:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.codeSnippetsWorking} readOnly />
+          <Rating name="read-only" value={props?.codeSnippetsWorking} readOnly />
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
         <Typography variant="body2">Is simply explained:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.easilyExplained} readOnly />
+          <Rating name="read-only" value={props?.easilyExplained} readOnly />
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
         <Typography variant="body2">Is up to date:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.keptUpToDate} readOnly />
+          <Rating name="read-only" value={props?.keptUpToDate} readOnly />
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
         <Typography variant="body2">Is everything covered:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.topicCoverage} readOnly />
+          <Rating name="read-only" value={props?.topicCoverage} readOnly />
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent={"space-between"} spacing={2}>
         <Typography variant="body2">Is well organized:</Typography>
         <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.organization} readOnly />
+          <Rating name="read-only" value={props?.organization} readOnly />
         </Stack>
       </Stack>
     </Stack>

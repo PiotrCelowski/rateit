@@ -12,7 +12,7 @@ const CourseFooter = (props) => {
         </Grid>
         <Grid item>
           <Typography component="div" color="text.secondary">
-            ({props.ratingVotes})
+            ({props?.ratingVotes || 0})
           </Typography>
         </Grid>
       </Grid>

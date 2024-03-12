@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Dropzone } from "../Dropzone/Dropzone";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
 import { useRefinementList } from 'react-instantsearch-hooks-web';
+import { capitalize } from "../../utils/helpers";
 
 const ENUM_TYPES = ['Video', 'Book']
 const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
@@ -78,9 +79,6 @@ const ProposeCourseForm = () => {
     navigate("/", { state: { message: "Course was proposed!" } });
   }
 
-  function capitalize(technology) {
-    return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
-  }
   const handleChangeTechnologies = (_event, newValue, action, { option }) => {
     if (action === 'createOption') {
       if (!option.length) return;

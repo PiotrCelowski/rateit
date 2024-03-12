@@ -10,7 +10,7 @@ const CourseHeader = (props) => {
       <Typography
         variant="body1"
         color="text.secondary"
-        fontSize="12px"
+        fontSize={{ xs: 14, sm: 16 }}
         align="left"
       >
         By {props.author}
