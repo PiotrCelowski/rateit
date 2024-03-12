@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { fetchCourse, updateCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { Form } from "react-router-dom";
+import { capitalize } from "../../utils/helpers";
 
 const initialCourseState = {
   id: "",
@@ -101,10 +102,6 @@ const PendingCourseEditForm = () => {
     navigate("/", { state: { message: "Course approved!" } });
   }
 
-  function capitalize(technology) {
-    return technology.charAt(0).toUpperCase() + technology.slice(1).toLowerCase();
-  }
-
   const addTechnologyHandler = () => {
     setTechnologies((oldTechnologies) => {
       const newTechnology = { id: "technology" + (oldTechnologies.length + 1), name: "Technology " + (oldTechnologies.length + 1), label: "Technology " + (oldTechnologies.length + 1) };
@@ -181,8 +178,8 @@ const PendingCourseEditForm = () => {
             </Grid>
           </Grid>
           <Grid container spacing={1} direction={"row"}>
-            {technologies.map(technology => {
-              return (<Grid item xs={4}>
+            {technologies.map((technology, index) => {
+              return (<Grid item xs={4} key={index}>
                 <TextField
                   margin="normal"
                   InputLabelProps={{ shrink: true }}
