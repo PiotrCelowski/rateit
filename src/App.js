@@ -2,7 +2,7 @@ import React from "react";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
-import { Outlet, RouterProvider, createBrowserRouter, json } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import RootLayout from "./utils/RootLayout";
 import { InstantSearch } from 'react-instantsearch-hooks-web';
 import { searchClient } from "./configuration/algolia/algolia-config";
