@@ -6,7 +6,7 @@ import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-d
 export const ErrorPage = () => {
   const error = useRouteError();
   const navigate = useNavigate()
-  const goBack = () => navigate(-1)
+  const goBack = () => navigate(-1, { replace: true })
 
   if (isRouteErrorResponse(error)) {
     return (
@@ -16,13 +16,14 @@ export const ErrorPage = () => {
         flexGrow: 1,
         padding: 2,
         placeSelf: 'center',
+        justifyContent: 'center',
         alignItems: 'center',
       }}>
         <Typography variant='h4' component='div'>Oops!</Typography>
-        <Typography variant='h2' component='h2'>{error?.status}</Typography>
+        <Typography variant='h2' component='h2' gutterBottom>{error?.status}</Typography>
         <Typography variant='body1' component='p'>{error?.statusText}</Typography>
         {error.data?.message && <Typography variant='body2' component='div'>{error.data.message}</Typography>}
-        <Button variant="contained" color="primary" fullWidth sx={{ textTransform: 'uppercase', mt: 3 }} onClick={goBack}>
+        <Button variant='contained' color="inherit" sx={{ textTransform: 'uppercase', mt: 4, minWidth: 120 }} onClick={goBack}>
           Go Back
         </Button>
       </Box>

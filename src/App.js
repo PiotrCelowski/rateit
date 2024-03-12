@@ -14,6 +14,8 @@ import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { SigninLayout } from "./utils/SigninLayout";
 import { CourseDetaisPage, getCourseDetails } from "./pages/CourseDetaisPage";
 import { ErrorPage } from "./pages/ErrorPage";
+import { redirectToHome } from "./utils/redirectToHome";
+import { ResponsivePageLayout } from "./utils/ResponsivePageLayout";
 
 function App() {
   const router = createBrowserRouter([
@@ -24,8 +26,12 @@ function App() {
         { path: "/", element: <LandingPage /> },
         { 
           path: '/courses',
-          // Todo: add index route element
+          element: <ResponsivePageLayout />,
           children: [
+            {
+              index: true,
+              loader: redirectToHome,
+            },
             {
               path: ":courseID",
               element: <CourseDetaisPage />,
