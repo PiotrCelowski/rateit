@@ -1,5 +1,9 @@
 import { json, useLoaderData } from "react-router-dom"
 import { fetchCourse } from "../api/FirestoreApi";
+import WorkIcon from '@mui/icons-material/Work';
+import Box from "@mui/material/Box";
+import { Breadcrumbs } from "../components/Breadcrumbs/Breadcrumbs";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 export const getCourseDetails = async ({ params }) => {
   const { courseID } = params
@@ -19,7 +23,7 @@ export const getCourseDetails = async ({ params }) => {
           topicCoverage: response.data()?.topicCoverage,
           organization: response.data()?.organization
         }
-        return { data: courseData }
+        return { data: courseData, id: courseID }
       }
       if (!response?.exists()) {
         throw new json('Not Found',
@@ -34,12 +38,28 @@ export const getCourseDetails = async ({ params }) => {
 }
 
 export const CourseDetaisPage = () => {
-  const { data } = useLoaderData()
+  const { data, id } = useLoaderData()
+  // -- if we want to use Breadcrumbs only for desktop view -- ?
+  const theme = useTheme()
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'))
+
   if (typeof data === 'string') return <div>No course found</div>
 
+  // console.log('data', data)
+  const crumbs = [
+    {
+      title: 'Course Page',
+      icon: <WorkIcon />,
+      to: `/courses/${id}`
+    }
+  ]
+
   return (
-    <div>
-      Course Name: { data?.title }
-    </div>
+    <>
+      {isDesktop && <Breadcrumbs crumbs={crumbs} />}
+      <Box>
+        Course Name: { data?.title }
+      </Box>
+    </>
   )
 }
