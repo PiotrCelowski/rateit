@@ -27,7 +27,7 @@ export const getCourseDetails = async ({ params }) => {
       }
       if (!response?.exists()) {
         throw new json('Not Found',
-          { status: 404, statusText: "Course is not exists in DB" },
+          { status: 404, statusText: "Course is not present in DB" },
         );
       }
       return { data: 'No course' }
