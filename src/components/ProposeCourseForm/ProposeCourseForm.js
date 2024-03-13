@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Dropzone } from "../Dropzone/Dropzone";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
 import { useRefinementList } from 'react-instantsearch-hooks-web';
-import { capitalize } from "../../utils/helpers";
+import { capitalize, capitalizeFewWords } from "../../utils/helpers";
 
 const ENUM_TYPES = ['Video', 'Book']
 const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
@@ -59,7 +59,7 @@ const ProposeCourseForm = () => {
     const proposedCourse = {
       id: uuidv4(),
       title: capitalize(data.title.value),
-      author: capitalize(data.author.value),
+      author: capitalizeFewWords(data.author.value),
       technologies: receivedTechnologies,
       type: capitalize(data.type.value),
       level: capitalize(data.level.value),

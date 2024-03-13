@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { fetchCourse, updateCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { Form } from "react-router-dom";
-import { capitalize } from "../../utils/helpers";
+import { capitalize, capitalizeFewWords } from "../../utils/helpers";
 
 const initialCourseState = {
   id: "",
@@ -82,7 +82,7 @@ const PendingCourseEditForm = () => {
     const proposedCourse = {
       id: data.courseId.value,
       title: capitalize(data.title.value),
-      author: capitalize(data.author.value),
+      author: capitalizeFewWords(data.author.value),
       technologies: receivedTechnologies,
       type: capitalize(data.type.value),
       level: capitalize(data.level.value),
