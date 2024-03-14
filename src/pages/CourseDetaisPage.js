@@ -1,9 +1,13 @@
-import { json, useLoaderData } from "react-router-dom"
+import { json, useLoaderData } from "react-router-dom";
 import { fetchCourse } from "../api/FirestoreApi";
 import WorkIcon from '@mui/icons-material/Work';
-import Box from "@mui/material/Box";
+import Container from '@mui/material/Container';
 import { Breadcrumbs } from "../components/Breadcrumbs/Breadcrumbs";
-import { Container, Grid, Rating, Stack, Typography, styled } from "@mui/material";
+import { Hero } from "../components/CourseDetailsPage/Hero";
+
+const mock = {
+  description: "This course is designed for absolute beginners in Figma. Starting from the basics, you will gain the confidence to create interfaces and work with user experience. From foundational tools to advanced techniques, you'll have everything you need for successful design.",
+}
 
 export const getCourseDetails = async ({ params }) => {
   const { courseID } = params
@@ -24,7 +28,8 @@ export const getCourseDetails = async ({ params }) => {
           topicCoverage: response.get('topicCoverage'),
           organization: response.get('organization'),
           photoUrl: response.get('photoUrl'),
-          technologies: response.get('technologies')
+          technologies: response.get('technologies'),
+          description: response?.get('description') || mock.description
         }
         return { data: courseData }
       }
@@ -41,11 +46,11 @@ export const getCourseDetails = async ({ params }) => {
 }
 
 export const CourseDetaisPage = () => {
-  const { data: { id, ...data } } = useLoaderData()
+  const { data: { id, ...courseData } } = useLoaderData()
 
-  if (typeof data === 'string') return <div>No course found</div>
+  if (typeof courseData === 'string') return <div>No course found</div>
 
-  console.log('data', data)
+  // console.log('courseData', courseData)
   const crumbs = [
     {
       title: 'Course Page',
@@ -54,97 +59,10 @@ export const CourseDetaisPage = () => {
     }
   ]
 
-// Todo: dont forget to export styled components
-const RaitingText = styled(Typography) ({
-  fontWeight: 700,
-  fontSize: '20px',
-  lineHeight: 1.5,
-  letterSpacing: '0.15px',
-  color: '#FFB400'
-})
-const CourseTitle = styled(Typography) (({ theme }) => ({
-  fontSize: theme.typography.pxToRem(60),
-  fontWeight: 400,
-  lineHeight: 1.2,
-  letterSpacing: '-0.5px',
-  textAlign: 'left',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: theme.typography.pxToRem(40),
-  }
-}))
-const CourseAuthor = styled(Typography) (({ theme }) => ({
-  color: 'text.secondary',
-  textTransform: 'capitalize',
-  [theme.breakpoints.down('lg')]: {
-    fontSize: theme.typography.pxToRem(24),
-  }
-}))
-
-const mock = {
-  description: "This course is designed for absolute beginners in Figma. Starting from the basics, you will gain the confidence to create interfaces and work with user experience. From foundational tools to advanced techniques, you'll have everything you need for successful design.",
-}
   return (
     <Container maxWidth="xl" disableGutters>
       <Breadcrumbs crumbs={crumbs} />
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6} order={1}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "100%",
-              gap: 5,
-            }}
-          >
-            <Stack direction="column" useFlexGap gap={1.5}>
-              <CourseTitle component="h1">{data?.title}</CourseTitle>
-              <CourseAuthor component="div" variant="h4">
-                Created by {data?.author}
-              </CourseAuthor>
-              <Stack direction="row" alignItems="center" useFlexGap gap={0.5}>
-                <RaitingText component="div">
-                  {data?.rating?.toFixed(1)}
-                </RaitingText>
-                <Rating name="read-only" value={data?.rating} readOnly />
-                <Typography
-                  component="div"
-                  variant="body1"
-                  color="text.secondary"
-                >
-                  ({data?.ratingVotes || 0} ratings)
-                </Typography>
-              </Stack>
-            </Stack>
-            <Stack direction="column" useFlexGap gap={2}>
-              <Typography
-                component="div"
-                sx={(theme) => ({
-                  fontWeight: 400,
-                  fontSize: theme.typography.pxToRem(48),
-                  lineHeight: 1.16,
-                  [theme.breakpoints.down("lg")]: {
-                    fontSize: theme.typography.pxToRem(32),
-                  },
-                })}
-              >
-                Description
-              </Typography>
-              <Typography component="div" variant="h5">
-                {data?.description || mock?.description}
-              </Typography>
-            </Stack>
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={6} order={{ xs: 0, md: 1 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'clip', maxHeight: { xs: 280, sm: 400, md: 570, lg: 600 } }}>
-            <img
-              src={data?.photoUrl}
-              alt={data?.title}
-              loading="lazy"
-            />
-          </Box>
-        </Grid>
-      </Grid>
+      <Hero data={courseData} />
     </Container>
   );
 }
