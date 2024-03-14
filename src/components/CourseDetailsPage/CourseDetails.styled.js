@@ -28,4 +28,13 @@ const CourseAuthor = styled(Typography) (({ theme }) => ({
   }
 }))
 
-export { RaitingText, CourseTitle, CourseAuthor }
+const Subheader = styled(Typography) (({ theme }) => ({
+  fontWeight: 400,
+  fontSize: theme.typography.pxToRem(48),
+  lineHeight: 1.16,
+  [theme.breakpoints.down("lg")]: {
+    fontSize: theme.typography.pxToRem(32),
+  }
+}))
+
+export { RaitingText, CourseTitle, CourseAuthor, Subheader }

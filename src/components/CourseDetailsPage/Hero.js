@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import Rating from "@mui/material/Rating";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { CourseTitle, CourseAuthor, RaitingText } from "./CourseDetails.styled";
+import { CourseTitle, CourseAuthor, RaitingText, Subheader } from "./CourseDetails.styled";
 
 export const Hero = ({
   data: { title, author, rating, ratingVotes, description, photoUrl }
@@ -42,19 +42,9 @@ export const Hero = ({
             </Stack>
           </Stack>
           {description && <Stack direction="column" useFlexGap gap={2}>
-            <Typography
-              component="div"
-              sx={(theme) => ({
-                fontWeight: 400,
-                fontSize: theme.typography.pxToRem(48),
-                lineHeight: 1.16,
-                [theme.breakpoints.down("lg")]: {
-                  fontSize: theme.typography.pxToRem(32),
-                },
-              })}
-            >
+            <Subheader component='h3'>
               Description
-            </Typography>
+            </Subheader>
             <Typography
               component="div"
               variant="h5"
