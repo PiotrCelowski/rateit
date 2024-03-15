@@ -8,6 +8,8 @@ import { Box, alpha } from "@mui/material";
 import { purple } from "@mui/material/colors";
 import { CourseTopicsList } from "../components/CourseDetailsPage/CourseTopicsList";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
+import { Subheader } from "../components/CourseDetailsPage/CourseDetails.styled";
+import CourseRatingSection from "../components/CourseDetailsOverlay/CourseRatingSection";
 
 const mock = {
   description: "This course is designed for absolute beginners in Figma. Starting from the basics, you will gain the confidence to create interfaces and work with user experience. From foundational tools to advanced techniques, you'll have everything you need for successful design.",
@@ -103,9 +105,27 @@ export const CourseDetaisPage = () => {
       </Box>
 
       <Container maxWidth="xl" disableGutters sx={{ px }}>
-        <Grid container columns={2} width={'100%'}>
-          <Grid xs={2} lg={1}>Overall rating</Grid>
-          <Grid xs={2} lg={1}>Comments from the course</Grid>
+        <Grid container columns={2} width={'100%'} spacing={3}>
+          <Grid xs={2} md={1}>
+            <Subheader mb={{ xs: 4, mb: 5 }}>Overall rating</Subheader>
+            {/* <Box sx={{
+              height: 300,
+              // bgcolor: 'secondary.dark',
+              // color: 'white',
+              width: '100%',
+              maxWidth: 686
+            }}> */}
+              <CourseRatingSection {...courseData}/>
+            {/* </Box> */}
+          </Grid>
+          <Grid xs={2} md={1}>
+            <Subheader mb={{ xs: 4, mb: 5 }}>Comments from the course</Subheader>
+            <Box sx={{
+              height: 300,
+              bgcolor: 'secondary.light',
+              width: '100%'
+            }}>Comments area</Box>
+          </Grid>
         </Grid>
       </Container>
     </>

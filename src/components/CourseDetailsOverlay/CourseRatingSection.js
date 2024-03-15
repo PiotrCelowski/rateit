@@ -1,51 +1,64 @@
 import React from 'react';
 import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from '@mui/material/Typography';
+import { alpha, styled } from "@mui/material";
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: '1fr auto 30px',
+  gap: theme.spacing(2),
+  padding: `${theme.spacing(0.75)} ${theme.spacing(1)}`,
+
+  fontSize: theme.typography.h5.fontSize,
+  lineHeight: theme.typography.h5.lineHeight,
+  fontWeight: 400,
+  letterSpacing: 0,
+  [theme.breakpoints.down('lg')]: {
+    fontSize: theme.typography.subtitle1.fontSize,
+    lineHeight: theme.typography.subtitle1.lineHeight,
+  },
+  "&:nth-of-type(odd)": { 
+    backgroundColor: alpha(theme.palette.secondary.main, 0.15)
+  }
+}))
 
 const CourseRatingSection = (props) => {
   return (
-    <Stack spacing={1}>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Overall rating:</Typography>
-        <Stack width="170px" direction="row">
+    <List sx={{ 
+      width: '100%',
+      maxWidth: 686
+    }}>
+      <StyledListItem>
+        <ListItemText>Overall rating:</ListItemText>
           <Rating name="read-only" value={props?.rating} readOnly />
           <Typography component="div" color="text.secondary">
             ({props?.ratingVotes})
           </Typography>
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Are code snippets working:</Typography>
-        <Stack width="170px" direction="row">
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText>Are code snippets working:</ListItemText>
           <Rating name="read-only" value={props?.codeSnippetsWorking} readOnly />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is simply explained:</Typography>
-        <Stack width="170px" direction="row">
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText>Is simply explained:</ListItemText>
           <Rating name="read-only" value={props?.easilyExplained} readOnly />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is up to date:</Typography>
-        <Stack width="170px" direction="row">
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText>Is up to date:</ListItemText>
           <Rating name="read-only" value={props?.keptUpToDate} readOnly />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is everything covered:</Typography>
-        <Stack width="170px" direction="row">
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText>Is everything covered:</ListItemText>
           <Rating name="read-only" value={props?.topicCoverage} readOnly />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is well organized:</Typography>
-        <Stack width="170px" direction="row">
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText>Is well organized:</ListItemText>
           <Rating name="read-only" value={props?.organization} readOnly />
-        </Stack>
-      </Stack>
-    </Stack>
+      </StyledListItem>
+    </List>
   )
 }
 
