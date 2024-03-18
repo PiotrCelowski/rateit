@@ -37,8 +37,8 @@ export const CourseTopicsList = ({ title, list }) => {
         {title}
       </Subheader>
       <StyledList>
-        { list && list.map((item) => (
-          <ListItem>
+        { list && list.map((item, index) => (
+          <ListItem key={index}>
             <ListItemIcon><CheckIcon color='success' /></ListItemIcon>
             {item}
           </ListItem>

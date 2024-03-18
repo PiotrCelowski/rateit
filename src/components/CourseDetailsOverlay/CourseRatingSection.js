@@ -8,7 +8,7 @@ import { alpha, styled } from "@mui/material";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   display: 'grid',
-  gridTemplateColumns: '1fr auto 30px',
+  gridTemplateColumns: '1fr auto minmax(30px, auto)',
   gap: theme.spacing(2),
   padding: `${theme.spacing(0.75)} ${theme.spacing(1)}`,
 
@@ -35,7 +35,7 @@ const CourseRatingSection = (props) => {
         <ListItemText>Overall rating:</ListItemText>
           <Rating name="read-only" value={props?.rating} readOnly />
           <Typography component="div" color="text.secondary">
-            ({props?.ratingVotes})
+            ({props?.ratingVotes || 0})
           </Typography>
       </StyledListItem>
       <StyledListItem>

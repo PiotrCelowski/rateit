@@ -4,12 +4,13 @@ import WorkIcon from '@mui/icons-material/Work';
 import Container from '@mui/material/Container';
 import { Breadcrumbs } from "../components/Breadcrumbs/Breadcrumbs";
 import { Hero } from "../components/CourseDetailsPage/Hero";
-import { Box, alpha } from "@mui/material";
+import { Box, Stack, Typography, alpha } from "@mui/material";
 import { purple } from "@mui/material/colors";
 import { CourseTopicsList } from "../components/CourseDetailsPage/CourseTopicsList";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import { Subheader } from "../components/CourseDetailsPage/CourseDetails.styled";
 import CourseRatingSection from "../components/CourseDetailsOverlay/CourseRatingSection";
+import { CourseCommentsList } from "../components/CourseDetailsPage/CourseCommentsList";
 
 const mock = {
   description: "This course is designed for absolute beginners in Figma. Starting from the basics, you will gain the confidence to create interfaces and work with user experience. From foundational tools to advanced techniques, you'll have everything you need for successful design.",
@@ -107,24 +108,30 @@ export const CourseDetaisPage = () => {
       <Container maxWidth="xl" disableGutters sx={{ px }}>
         <Grid container columns={2} width={'100%'} spacing={3}>
           <Grid xs={2} md={1}>
-            <Subheader mb={{ xs: 4, mb: 5 }}>Overall rating</Subheader>
-            {/* <Box sx={{
-              height: 300,
-              // bgcolor: 'secondary.dark',
-              // color: 'white',
+            <Box sx={{
               width: '100%',
+              marginX: { xs: 'auto', md: 0 },
               maxWidth: 686
-            }}> */}
+            }}>
+            <Subheader component='div' mb={{ xs: 4, mb: 5 }}>Overall rating</Subheader>
               <CourseRatingSection {...courseData}/>
-            {/* </Box> */}
+            </Box>
           </Grid>
           <Grid xs={2} md={1}>
             <Subheader mb={{ xs: 4, mb: 5 }}>Comments from the course</Subheader>
-            <Box sx={{
-              height: 300,
-              bgcolor: 'secondary.light',
-              width: '100%'
-            }}>Comments area</Box>
+            <CourseCommentsList courseID={id} />
+            {/* {!comments.length && <Typography variant="body1">No comments yet</Typography>}
+            {comments && <Stack
+              direction={'column'}
+              useFlexGap
+              spacing={{ xs: 2.5, md: 4 }}
+              width={'100%'}
+            >
+              {comments.map((comment, index) => (
+                <span key={index}>{comment?.text}</span>
+              ))}
+            </Stack>
+            } */}
           </Grid>
         </Grid>
       </Container>
