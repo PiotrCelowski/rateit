@@ -4,7 +4,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import Container from '@mui/material/Container';
 import { Breadcrumbs } from "../components/Breadcrumbs/Breadcrumbs";
 import { Hero } from "../components/CourseDetailsPage/Hero";
-import { Box, Stack, Typography, alpha } from "@mui/material";
+import { Box, alpha } from "@mui/material";
 import { purple } from "@mui/material/colors";
 import { CourseTopicsList } from "../components/CourseDetailsPage/CourseTopicsList";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
@@ -106,10 +106,9 @@ export const CourseDetaisPage = () => {
       </Box>
 
       <Container maxWidth="xl" disableGutters sx={{ px }}>
-        <Grid container columns={2} width={'100%'} spacing={3}>
+        <Grid container columns={2} columnSpacing={3} rowSpacing={{ xs: 7.5, sm: 10.5 }}>
           <Grid xs={2} md={1}>
             <Box sx={{
-              width: '100%',
               marginX: { xs: 'auto', md: 0 },
               maxWidth: 686
             }}>
@@ -120,18 +119,6 @@ export const CourseDetaisPage = () => {
           <Grid xs={2} md={1}>
             <Subheader mb={{ xs: 4, mb: 5 }}>Comments from the course</Subheader>
             <CourseCommentsList courseID={id} />
-            {/* {!comments.length && <Typography variant="body1">No comments yet</Typography>}
-            {comments && <Stack
-              direction={'column'}
-              useFlexGap
-              spacing={{ xs: 2.5, md: 4 }}
-              width={'100%'}
-            >
-              {comments.map((comment, index) => (
-                <span key={index}>{comment?.text}</span>
-              ))}
-            </Stack>
-            } */}
           </Grid>
         </Grid>
       </Container>

@@ -28,7 +28,7 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 const CourseRatingSection = (props) => {
   return (
     <List sx={{ 
-      width: '100%',
+      // width: '100%',
       maxWidth: 686
     }}>
       <StyledListItem>
