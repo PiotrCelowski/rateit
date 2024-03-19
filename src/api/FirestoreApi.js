@@ -18,6 +18,8 @@ export const addCourse = async (course) => {
             title: course.title,
             author: course.author,
             technologies: course.technologies,
+            features: course.features,
+            description: course.description,
             type: course.type,
             level: course.level,
             approved: course.approved,

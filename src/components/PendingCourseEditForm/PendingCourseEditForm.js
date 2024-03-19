@@ -16,6 +16,8 @@ const initialCourseState = {
   title: "",
   author: "",
   technologies: [],
+  features: [],
+  description: "",
   type: "",
   level: "",
   photoUrl: ""
@@ -46,6 +48,8 @@ const PendingCourseEditForm = () => {
           title: response.data().title,
           author: response.data().author,
           technologies: response.data().technologies,
+          features: response.data().features,
+          description: response.data().description,
           type: response.data().type,
           level: response.data().level,
           photoUrl: response.data().photoUrl
@@ -80,6 +84,7 @@ const PendingCourseEditForm = () => {
     })
 
     const proposedCourse = {
+      ...currentCourse,
       id: data.courseId.value,
       title: capitalize(data.title.value),
       author: capitalizeFewWords(data.author.value),

@@ -3,7 +3,7 @@ import { Container, LabelTitle, SectionTitle } from './ProposeCourseForm.styled'
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { Form } from "react-router-dom";
-import { Autocomplete, Box, Button, Chip, MenuItem, Stack, useMediaQuery, useTheme } from "@mui/material";
+import { Autocomplete, Box, Chip, MenuItem, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
