@@ -12,13 +12,33 @@ import { Subheader } from "../components/CourseDetailsPage/CourseDetails.styled"
 import CourseRatingSection from "../components/CourseDetailsOverlay/CourseRatingSection";
 import { CourseCommentsList } from "../components/CourseDetailsPage/CourseCommentsList";
 
+const mockComments = [
+  {
+    userId: "0000",
+    userName: "admin",
+    averageUserRating: 4,
+    comment: "Amazing course",
+    photoUrl: 'http://localhost:9199/v0/b/rateit-production.appspot.com/o/courseImages%2F3571f0b7-df37-40d7-b2a2-505ea7cbfd87?alt=media&token=a29b2aeb-dd4d-4e2a-8ec9-e946b97fc854',
+    createdAt: '23.12.23'
+  },
+  {
+    userId: "0001",
+    userName: "user",
+    averageUserRating: 3,
+    comment: "I dont like this course",
+    photoUrl: '',
+    createdAt: '23.12.23' // -- ToDo: add this field to firestore
+  }
+]
+
 const mock = {
   description: "This course is designed for absolute beginners in Figma. Starting from the basics, you will gain the confidence to create interfaces and work with user experience. From foundational tools to advanced techniques, you'll have everything you need for successful design.",
   features: [
     'Practical projects',
     'Personalized reviews from instructors',
     'Active student community for collaboration and support'
-  ]
+  ],
+  comments: new Array(8).fill(mockComments[0], 0, 4).fill(mockComments[1], 4)
 }
 
 export const getCourseDetails = async ({ params }) => {
@@ -41,7 +61,8 @@ export const getCourseDetails = async ({ params }) => {
           organization: response.get('organization'),
           photoUrl: response.get('photoUrl'),
           technologies: response.get('technologies'),
-          description: response?.get('description') || mock.description
+          description: response?.get('description') || mock.description,
+          comments: response?.get('comments') || mock.comments
         }
         return { data: courseData }
       }
@@ -99,7 +120,7 @@ export const CourseDetaisPage = () => {
         >
           <CourseTopicsList
             title="Key Course Topics"
-            list={courseData.technologies}
+            list={courseData?.technologies}
           />
           <CourseTopicsList title="Course Features" list={mock.features} />
         </Container>
@@ -118,7 +139,7 @@ export const CourseDetaisPage = () => {
           </Grid>
           <Grid xs={2} md={1}>
             <Subheader mb={{ xs: 4, mb: 5 }}>Comments from the course</Subheader>
-            <CourseCommentsList courseID={id} />
+            <CourseCommentsList comments={courseData?.comments || []} />
           </Grid>
         </Grid>
       </Container>
