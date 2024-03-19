@@ -21,7 +21,8 @@ export const addCourse = async (course) => {
             type: course.type,
             level: course.level,
             approved: course.approved,
-            photoUrl: course.photoUrl
+            photoUrl: course.photoUrl,
+            comments: []
         };
         await setDoc(doc(firestore, "courses", course.id), docData);
     } catch (error) {
@@ -97,7 +98,15 @@ export const updateCourse = async (course) => {
             type: course.type,
             level: course.level,
             approved: course.approved,
-            photoUrl: course.photoUrl
+            photoUrl: course.photoUrl,
+            comments: [
+                {
+                    userId: "0000",
+                    userName: "admin",
+                    averageUserRating: 4,
+                    comment: "Amazing course"
+                }
+            ]
         })
     } catch (error) {
         console.error(error);
