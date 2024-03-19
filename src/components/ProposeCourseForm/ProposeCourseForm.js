@@ -11,6 +11,7 @@ import { Dropzone } from "../Dropzone/Dropzone";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
 import { useRefinementList } from 'react-instantsearch-hooks-web';
 import { capitalize, capitalizeFewWords } from "../../utils/helpers";
+import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 
 const ENUM_TYPES = ['Video', 'Book']
 const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
@@ -18,6 +19,7 @@ const ENUM_LEVELS = ['Beginner', 'Intermediate', 'Expert']
 const ProposeCourseForm = () => {
   const navigate = useNavigate();
   const [technologies, setTechnologies] = useState([]);
+  const [features, setFeatures] = useState([]);
   const [file, setFile] = useState(null)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -41,28 +43,31 @@ const ProposeCourseForm = () => {
     return items?.length > 0 ? items : mockTech
   }, [items])
 
+  const featuresOptions = [] // -- replace it with preferred features options
+
   const goBackHandler = () => {
     navigate("/");
   };
+
+  const formatList = (collection) => {
+    const result = collection?.map((item) => capitalize(item?.value))?.filter(value => value?.length > 0)
+    return result
+  }
 
   const proposeCourse = async (event) => {
     event.preventDefault();
 
     const data = event.target;
 
-    const receivedTechnologies = technologies.map((technology) => {
-      return capitalize(technology.value);
-    }).filter(value => {
-      return value.length > 0;
-    })
-
     const proposedCourse = {
       id: uuidv4(),
       title: capitalize(data.title.value),
       author: capitalizeFewWords(data.author.value),
-      technologies: receivedTechnologies,
+      technologies: formatList(technologies),
       type: capitalize(data.type.value),
       level: capitalize(data.level.value),
+      description: capitalize(data.description.value),
+      features: formatList(features),
       approved: false,
     };
 
@@ -86,6 +91,15 @@ const ProposeCourseForm = () => {
       return setTechnologies((prevState) => ([ ...prevState, { value: option, label: capitalize(option)}]))
     }
     setTechnologies(newValue)
+  }
+
+  const handleChangeFeatures = (_event, newValue, action, { option }) => {
+    if (action === 'createOption') {
+      if (!option.length) return;
+
+      return setFeatures((prevState) => ([ ...prevState, { value: option, label: capitalize(option)}]))
+    }
+    setFeatures(newValue)
   }
 
   const renderTags = (value, getTagProps) => {
@@ -142,11 +156,9 @@ const ProposeCourseForm = () => {
           </Grid>
         </Grid>
 
-        <Grid container direction={"row"} columnSpacing={2.5}>
-          <Grid item xs={12}>
+        <Grid container spacing={2.5} direction={"row"}>
+          <Grid item xs={12} sm={6}>
             <LabelTitle htmlFor="technologies">Technologies</LabelTitle>
-          </Grid>
-          <Grid item xs={12} sm={8} md={6}>
             <Autocomplete
               multiple
               id="technologies"
@@ -164,6 +176,29 @@ const ProposeCourseForm = () => {
                   hiddenLabel
                   name="technologies"
                   placeholder="Choose"
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <LabelTitle htmlFor="features">Features</LabelTitle>
+            <Autocomplete
+              multiple
+              id="features"
+              options={featuresOptions}
+              freeSolo
+              value={features}
+              getOptionLabel={((option) => (option?.label))}
+              onChange={handleChangeFeatures}
+              handleHomeEndKeys
+              renderTags={renderTags}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  hiddenLabel
+                  name="features"
+                  placeholder="Add features"
                 />
               )}
             />
@@ -207,6 +242,22 @@ const ProposeCourseForm = () => {
             </Grid>
           </Grid>
         </Box>
+        <Box>
+          <LabelTitle htmlFor='description'>Provide description to your Course</LabelTitle>
+          <Grid container spacing={2.5} direction={"row"} alignItems="center">
+            <Grid item xs={12}>
+              <TextField
+                id="description"
+                name="description"
+                fullWidth
+                defaultValue={""}
+                multiline
+                minRows={3}
+                maxRows={12}
+              />
+            </Grid>
+          </Grid>
+        </Box>
         <Grid
           container
           spacing={2.5}
@@ -215,27 +266,21 @@ const ProposeCourseForm = () => {
           sx={{ mb: 2.5 }}
         >
           <Grid item xs={12} sm={true}>
-            <Button
+            <PrimaryButton
               type="submit"
-              size="large"
-              color="secondary"
               fullWidth
-              variant="contained"
             >
               Propose course
-            </Button>
+            </PrimaryButton>
           </Grid>
           <Grid item xs={12} sm={true}>
-            <Button
+            <PrimaryButton
               type="button"
-              size="large"
-              color="secondary"
               fullWidth
-              variant="contained"
               onClick={goBackHandler}
             >
               Go back
-            </Button>
+            </PrimaryButton>
           </Grid>
         </Grid>
       </Stack>
