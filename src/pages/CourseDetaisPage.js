@@ -17,8 +17,7 @@ const mockComments = [
     userName: "admin",
     averageUserRating: 4,
     comment: "Amazing course",
-    photoUrl: 'http://localhost:9199/v0/b/rateit-production.appspot.com/o/courseImages%2F3571f0b7-df37-40d7-b2a2-505ea7cbfd87?alt=media&token=a29b2aeb-dd4d-4e2a-8ec9-e946b97fc854',
-    createdAt: '23.12.23'
+    photoUrl: 'http://localhost:9199/v0/b/rateit-production.appspot.com/o/courseImages%2F3571f0b7-df37-40d7-b2a2-505ea7cbfd87?alt=media&token=a29b2aeb-dd4d-4e2a-8ec9-e946b97fc854'
   },
   {
     userId: "0001",
