@@ -66,7 +66,7 @@ export const Hero = ({
             flexDirection: "column",
             placeContent: 'center',
             overflow: "clip",
-            maxHeight: { xs: 280, sm: 400, md: 570, lg: 600 },
+            aspectRatio: '1.38 / 1'
           }}
         >
           <img src={photoUrl} alt={title} loading="lazy" />

@@ -2,8 +2,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { purple } from "@mui/material/colors";
-import { alpha } from "@mui/material";
-import styled from "@mui/system/styled";
+import { alpha, styled } from "@mui/material";
 
 const RaitingText = styled(Typography) ({
   fontWeight: 700,
@@ -25,7 +24,7 @@ const CourseTitle = styled(Typography) (({ theme }) => ({
 }))
 
 const CourseAuthor = styled(Typography) (({ theme }) => ({
-  color: 'text.secondary',
+  color: theme.palette.text.secondary,
   textTransform: 'capitalize',
   [theme.breakpoints.down('lg')]: {
     fontSize: theme.typography.pxToRem(24),
