@@ -27,10 +27,7 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 
 const CourseRatingSection = (props) => {
   return (
-    <List sx={{ 
-      // width: '100%',
-      maxWidth: 686
-    }}>
+    <List sx={{ maxWidth: 686 }}>
       <StyledListItem>
         <ListItemText>Overall rating:</ListItemText>
           <Rating name="read-only" value={props?.rating} readOnly />

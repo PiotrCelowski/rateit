@@ -56,7 +56,7 @@ export const getCourseDetails = async ({ params }) => {
           technologies: response.get('technologies'),
           features: response?.get('features'),
           description: response?.get('description'),
-          comments: response?.get('comments') || mock.comments
+          comments: response?.get('comments') || mock.comments // -- ToDo: remove mock comments
         }
         return { data: courseData }
       }
