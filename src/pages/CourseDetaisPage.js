@@ -2,13 +2,12 @@ import { json, useLoaderData } from "react-router-dom";
 import { fetchCourse } from "../api/FirestoreApi";
 import WorkIcon from '@mui/icons-material/Work';
 import Container from '@mui/material/Container';
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import { Breadcrumbs } from "../components/Breadcrumbs/Breadcrumbs";
 import { Hero } from "../components/CourseDetailsPage/Hero";
-import { Box, alpha } from "@mui/material";
-import { purple } from "@mui/material/colors";
 import { CourseTopicsList } from "../components/CourseDetailsPage/CourseTopicsList";
-import Grid from "@mui/material/Unstable_Grid2/Grid2";
-import { Subheader } from "../components/CourseDetailsPage/CourseDetails.styled";
+import { FeaturesSectionContainer, Subheader } from "../components/CourseDetailsPage/CourseDetails.styled";
 import CourseRatingSection from "../components/CourseDetailsOverlay/CourseRatingSection";
 import { CourseCommentsList } from "../components/CourseDetailsPage/CourseCommentsList";
 
@@ -27,17 +26,12 @@ const mockComments = [
     averageUserRating: 3,
     comment: "I dont like this course",
     photoUrl: '',
-    createdAt: '23.12.23' // -- ToDo: add this field to firestore
+    createdAt: 1710449636750 // -- ToDo: add this field to firestore
   }
 ]
 
 const mock = {
   description: "This course is designed for absolute beginners in Figma. Starting from the basics, you will gain the confidence to create interfaces and work with user experience. From foundational tools to advanced techniques, you'll have everything you need for successful design.",
-  features: [
-    'Practical projects',
-    'Personalized reviews from instructors',
-    'Active student community for collaboration and support'
-  ],
   comments: new Array(8).fill(mockComments[0], 0, 4).fill(mockComments[1], 4)
 }
 
@@ -61,7 +55,8 @@ export const getCourseDetails = async ({ params }) => {
           organization: response.get('organization'),
           photoUrl: response.get('photoUrl'),
           technologies: response.get('technologies'),
-          description: response?.get('description') || mock.description,
+          features: response?.get('features'),
+          description: response?.get('description'),
           comments: response?.get('comments') || mock.comments
         }
         return { data: courseData }
@@ -83,8 +78,8 @@ export const CourseDetaisPage = () => {
   const px = { xs: 2.5, md: 3 }
 
   if (typeof courseData === 'string') return <Box px={px}>No course found</Box>
+  const { technologies, features } = courseData
 
-  console.log('courseData', courseData)
   const crumbs = [
     {
       title: 'Course Page',
@@ -100,31 +95,10 @@ export const CourseDetaisPage = () => {
         <Hero data={courseData} />
       </Container>
 
-      <Box
-        sx={{
-          bgcolor: alpha(purple[700], 0.16),
-          paddingY: { xs: 2.5, lg: 5 },
-          marginY: "120px",
-        }}
-      >
-        <Container
-          maxWidth="xl"
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            gap: 3,
-            justifyContent: "space-between",
-            alignItems: { xs: "center", md: "start" },
-            px,
-          }}
-        >
-          <CourseTopicsList
-            title="Key Course Topics"
-            list={courseData?.technologies}
-          />
-          <CourseTopicsList title="Course Features" list={mock.features} />
-        </Container>
-      </Box>
+      <FeaturesSectionContainer maxWidth="xl" sx={{ px }}>
+        {technologies && <CourseTopicsList title="Key Course Topics" list={technologies} />}
+        {features && <CourseTopicsList title="Course Features" list={features} />}
+      </FeaturesSectionContainer>
 
       <Container maxWidth="xl" disableGutters sx={{ px }}>
         <Grid container columns={2} columnSpacing={3} rowSpacing={{ xs: 7.5, sm: 10.5 }}>
@@ -133,7 +107,7 @@ export const CourseDetaisPage = () => {
               marginX: { xs: 'auto', md: 0 },
               maxWidth: 686
             }}>
-            <Subheader component='div' mb={{ xs: 4, mb: 5 }}>Overall rating</Subheader>
+              <Subheader component='div' mb={{ xs: 4, mb: 5 }}>Overall rating</Subheader>
               <CourseRatingSection {...courseData}/>
             </Box>
           </Grid>

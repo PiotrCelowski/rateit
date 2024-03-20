@@ -64,6 +64,7 @@ export const Hero = ({
           sx={{
             display: "flex",
             flexDirection: "column",
+            placeContent: 'center',
             overflow: "clip",
             maxHeight: { xs: 280, sm: 400, md: 570, lg: 600 },
           }}

@@ -1,4 +1,8 @@
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import { purple } from "@mui/material/colors";
+import { alpha } from "@mui/material";
 import styled from "@mui/system/styled";
 
 const RaitingText = styled(Typography) ({
@@ -37,4 +41,34 @@ const Subheader = styled(Typography) (({ theme }) => ({
   }
 }))
 
-export { RaitingText, CourseTitle, CourseAuthor, Subheader }
+const ColoredBgBox = styled(Box) (({ theme }) => ({
+  backgroundColor: alpha(purple[700], 0.16),
+  paddingTop: theme.spacing(2.5),
+  paddingBottom: theme.spacing(2.5),
+  [theme.breakpoints.up('lg')]: {
+    paddingTop: theme.spacing(5),
+    paddingBottom: theme.spacing(5),
+  }
+}))
+
+const ResponsiveContainer = styled(Container)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: theme.spacing(3),
+  [theme.breakpoints.up('md')]: {
+    flexDirection: "row",
+    alignItems: "start"
+  }
+}))
+
+const FeaturesSectionContainer = ({ children, ...props }) => (
+  <ColoredBgBox marginY="120px">
+    <ResponsiveContainer {...props}>
+      {children}
+    </ResponsiveContainer>
+  </ColoredBgBox>
+)
+
+export { RaitingText, CourseTitle, CourseAuthor, Subheader, FeaturesSectionContainer }
