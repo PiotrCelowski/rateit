@@ -1,48 +1,75 @@
 import React from 'react';
 import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import { alpha, styled } from "@mui/material";
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  padding: `${theme.spacing(0.75)} ${theme.spacing(1)}`,
+  fontSize: theme.typography.h5.fontSize,
+  lineHeight: theme.typography.h5.lineHeight,
+  fontWeight: 400,
+  letterSpacing: 0,
+  [theme.breakpoints.down('lg')]: {
+    fontSize: theme.typography.subtitle1.fontSize,
+    lineHeight: theme.typography.subtitle1.lineHeight,
+  },
+  "&:nth-of-type(odd)": { 
+    backgroundColor: alpha(theme.palette.secondary.main, 0.15)
+  }
+}))
 
 const CourseRatingSection = (props) => {
+  console.log('props?.rating', props?.rating)
+  const mapFields = {
+    rating: {
+      value: props?.rating,
+      onChange: props?.ratingChangeHandler,
+      labelText: 'Overall rating:'
+    },
+    codeSnippetsWorking: {
+      value: props?.codeSnippetsWorking,
+      onChange: props?.snippetsChangeHandler,
+      labelText: 'Are code snippets working:',
+    },
+    easilyExplained: {
+      value: props?.easilyExplained,
+      onChange: props?.explanationHandler,
+      labelText: 'Is simply explained:',
+    },
+    keptUpToDate: {
+      value: props?.keptUpToDate,
+      onChange: props?.upToDateHandler,
+      labelText: 'Is up to date:',
+    },
+    topicCoverage: {
+      value: props?.topicCoverage,
+      onChange: props?.coverageHandler,
+      labelText: 'Is everything covered:',
+    },
+    organization: {
+      value: props?.organization,
+      onChange: props?.organizationHandler,
+      labelText: 'Is well organized:',
+    }
+  }
+
+  const renderListItem = (key) => {
+    return (
+      <StyledListItem key={key}>
+        <ListItemText>{mapFields[key]?.labelText}</ListItemText>
+        <Rating name={key} value={mapFields[key]?.value} onChange={mapFields[key]?.onChange}/>
+      </StyledListItem>
+    )
+  }
+
   return (
-    <Stack spacing={1}>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Overall rating:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.rating} onChange={props.ratingChangeHandler}/>
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Are code snippets working:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.codeSnippetsWorking} onChange={props.snippetsChangeHandler}/>
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is simply explained:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.easilyExplained} onChange={props.explanationHandler} />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is up to date:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.keptUpToDate} onChange={props.upToDateHandler} />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is everything covered:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.topicCoverage} onChange={props.coverageHandler} />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is well organized:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.organization} onChange={props.organizationHandler} />
-        </Stack>
-      </Stack>
-    </Stack>
+    <List sx={{ maxWidth: 686 }}>
+      {Object.keys(mapFields).map((key) => renderListItem(key))}
+    </List>
   )
 }
 

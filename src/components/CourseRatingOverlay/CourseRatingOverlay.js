@@ -15,6 +15,7 @@ import {
   fetchCourseRating,
   updateRating,
 } from "../../api/FirestoreApi";
+import { AddCommentSection } from "./AddCommentSection";
 
 const style = {
   position: "absolute",
@@ -56,7 +57,7 @@ const changeCourseRatingHandler = (state, action) => {
   };
 
   if (action.type === "RATING") {
-    courseRating.rating = parseInt(action.value);
+    courseRating.rating = action.value;
   }
 
   if (action.type === "SNIPPETS") {
@@ -125,6 +126,7 @@ const CourseRatingOverlay = () => {
   const fetchInitialRating = useCallback(async () => {
     if (currentCourseId != null) {
       const response = await fetchCourse(currentCourseId);
+      console.log('response', response.data())
       courseRatingDispatch({
         type: "INITIAL_UPDATE",
         id: response.data().id,
@@ -165,8 +167,8 @@ const CourseRatingOverlay = () => {
     fetchInitialRating();
   }, [fetchInitialRating]);
 
-  const ratingChangeHandler = (event) => {
-    courseRatingDispatch({ type: "RATING", value: event.target.value });
+  const ratingChangeHandler = (_event, value) => {
+    courseRatingDispatch({ type: "RATING", value: value });
   };
 
   const snippetsChangeHandler = (event) => {
@@ -217,6 +219,9 @@ const CourseRatingOverlay = () => {
     navigate("/", {state: {message: "Course was rated!"}})
   };
 
+  const [comment, setComment] = useState('')
+  const commentHandler = (event) => setComment(event.target.value)
+
   return (
     <Modal open={showCourse} onClose={closeCourseHandler}>
       <Box sx={style}>
@@ -246,6 +251,7 @@ const CourseRatingOverlay = () => {
           coverageHandler={coverageHandler}
           organizationHandler={organizationHandler}
         />
+        <AddCommentSection comment={comment} commentHandler={commentHandler} />
         <Box
           width="100"
           marginTop="20px"
