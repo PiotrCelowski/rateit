@@ -1,5 +1,5 @@
 export const firebaseDevelopmentConfig = {
-    apiKey: "AIzaSyCbVnNF5XUKPcHEYgIBdhG7XRTvLFZ0CEw",
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: "rateit-development.firebaseapp.com",
     projectId: "rateit-development",
     storageBucket: "rateit-development.appspot.com",
