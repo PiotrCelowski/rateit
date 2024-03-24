@@ -1,5 +1,5 @@
-export const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+export const firebaseProductionConfig = {
+  apiKey: "AIzaSyDuORNxvHJIfynvxVX3_0IMO5QDgyYl5cQ",
   authDomain: "rateit-production.firebaseapp.com",
   projectId: "rateit-production",
   storageBucket: "rateit-production.appspot.com",
