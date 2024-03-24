@@ -1,4 +1,4 @@
-export const firebaseConfig = {
+export const firebaseDevelopmentConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: "rateit-development.firebaseapp.com",
     projectId: "rateit-development",
