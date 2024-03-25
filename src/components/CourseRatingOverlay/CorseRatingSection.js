@@ -23,45 +23,26 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   }
 }))
 
-const CourseRatingSection = ({ control, ...props }) => {
+const CourseRatingSection = ({ control }) => {
   const mapFields = {
-    rating: {
-      value: props?.rating,
-      labelText: 'Overall rating:'
-    },
-    codeSnippetsWorking: {
-      value: props?.codeSnippetsWorking,
-      labelText: 'Are code snippets working:',
-    },
-    easilyExplained: {
-      value: props?.easilyExplained,
-      labelText: 'Is simply explained:',
-    },
-    keptUpToDate: {
-      value: props?.keptUpToDate,
-      labelText: 'Is up to date:',
-    },
-    topicCoverage: {
-      value: props?.topicCoverage,
-      labelText: 'Is everything covered:',
-    },
-    organization: {
-      value: props?.organization,
-      labelText: 'Is well organized:',
-    }
+    rating: 'Overall rating:',
+    codeSnippetsWorking: 'Are code snippets working:',
+    easilyExplained: 'Is simply explained:',
+    keptUpToDate: 'Is up to date:',
+    topicCoverage: 'Is everything covered:',
+    organization: 'Is well organized:',
   }
 
   const renderListItem = (key) => {
     return (
       <StyledListItem key={key}>
-        <ListItemText>{mapFields[key]?.labelText}</ListItemText>
+        <ListItemText>{mapFields[key]}</ListItemText>
         <Controller
           control={control}
           name={key}
-          defaultValue={mapFields[key]?.value || null}
-          render={({ field: { value, onChange } }) => (
-            <Rating value={value} onChange={(_event, newValue) => onChange(newValue)}/>
-          )}/>
+          render={({ field }) => (
+            <Rating value={field?.value || null} onChange={(_event, newValue) => field.onChange(newValue)}/>
+          )} />
       </StyledListItem>
     )
   }

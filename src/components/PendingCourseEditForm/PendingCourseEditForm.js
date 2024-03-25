@@ -30,6 +30,7 @@ const PendingCourseEditForm = () => {
   );
   const [currentCourse, setCurrentCourse] = useState(initialCourseState);
   const [isLoading, setIsLoading] = useState(true);
+  const [noCourse, setNoCourse] = useState(false)
   const [technologies, setTechnologies] = useState([]);
 
   const declineHandler = () => { };
@@ -41,20 +42,25 @@ const PendingCourseEditForm = () => {
   const fetchCurrentCourse = useCallback(async () => {
     if (currentCourseId != null) {
       const response = await fetchCourse(currentCourseId);
-      updateTechnologies(response.data().technologies);
-      setCurrentCourse((oldState) => {
-        return {
-          id: response.data().id,
-          title: response.data().title,
-          author: response.data().author,
-          technologies: response.data().technologies,
-          features: response.data().features,
-          description: response.data().description,
-          type: response.data().type,
-          level: response.data().level,
-          photoUrl: response.data().photoUrl
-        };
-      });
+      if (response.exists()) {
+        updateTechnologies(response.data()?.technologies);
+        setCurrentCourse((oldState) => {
+          return {
+            id: response.data().id,
+            title: response.data().title,
+            author: response.data().author,
+            technologies: response.data()?.technologies || [],
+            features: response.data()?.features || [],
+            description: response.data()?.description || '',
+            type: response.data().type,
+            level: response.data().level,
+            photoUrl: response.data().photoUrl
+          };
+        });
+      }
+      if (!response.exists()) {
+        setNoCourse(true)
+      }
       setIsLoading(false);
     }
   }, [currentCourseId]);
@@ -62,7 +68,7 @@ const PendingCourseEditForm = () => {
   const updateTechnologies = (technologies) => {
     const tempTechnologies = [];
     let i = 0;
-    technologies.forEach(technology => {
+    technologies?.forEach(technology => {
       i++;
       tempTechnologies.push({ id: "technology" + i, name: "Technology " + i, label: "Technology " + i, value: technology });
     })
@@ -76,7 +82,7 @@ const PendingCourseEditForm = () => {
   const approveCourse = async (event) => {
     const data = event.target;
 
-    const receivedTechnologies = technologies.map(technology => {
+    const receivedTechnologies = technologies?.map(technology => {
       let techId = technology.id;
       return capitalize(data[techId].value);
     }).filter(value => {
@@ -118,6 +124,10 @@ const PendingCourseEditForm = () => {
 
   if (isLoading) {
     return <Typography>Fetching data...</Typography>;
+  }
+
+  if (noCourse) {
+    return <Typography>No course found.</Typography>;
   }
 
   return (
@@ -183,7 +193,7 @@ const PendingCourseEditForm = () => {
             </Grid>
           </Grid>
           <Grid container spacing={1} direction={"row"}>
-            {technologies.map((technology, index) => {
+            {technologies && technologies?.map((technology, index) => {
               return (<Grid item xs={4} key={index}>
                 <TextField
                   margin="normal"

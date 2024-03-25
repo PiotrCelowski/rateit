@@ -1,4 +1,3 @@
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -38,9 +37,9 @@ export const CourseRatingOverlay = () => {
   );
 
   const closeCourseHandler = () => {
-    reset();
     setRatingId(null);
     dispatch(courseRatingActions.toggleCourseRating(null));
+    dispatch(courseRatingActions.setCurrentCourseId(null));
   };
 
   const setInitialValues = useCallback(async () => {
@@ -50,6 +49,7 @@ export const CourseRatingOverlay = () => {
         currentCourseId,
         getCurrentUser().uid
       );
+      if (maybeRatingSnap.empty) return;
 
       maybeRatingSnap.forEach((doc) => {
         const rating = doc.data();
@@ -64,47 +64,27 @@ export const CourseRatingOverlay = () => {
         }
       })
     }
-    console.log('formData', formData)
     return formData
   }, [currentCourseId])
 
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, formState: { defaultValues } } = useForm({
     defaultValues: setInitialValues
   })
 
   const onSubmit = (data) => {
-    console.log(data)
+    console.log(ratingId, data)
+    // ToDo: add submit functionality from src/components/CourseRatingOverlay/CourseRatingOverlay.js
     closeCourseHandler();
   }
 
   const fetchInitialRating = useCallback(async () => {
     if (currentCourseId !== null) {
       const response = await fetchCourse(currentCourseId);
-      console.log('response', response.data())
       setCurrentCourseData({
         id: response.get('id'),
         title: response.get('title'),
         author: response.get('author')
       });
-      // ToDo: set form values correctly
-
-      // const maybeRatingSnap = await fetchCourseRating(
-      //   currentCourseId,
-      //   getCurrentUser().uid
-      // );
-
-      // maybeRatingSnap.forEach((doc) => {
-      //   const rating = doc.data();
-      //   setRatingId(rating.id);
-      //   courseRatingDispatch({
-      //     rating: rating.rating,
-      //     codeSnippetsWorking: rating.codeSnippetsWorking,
-      //     easilyExplained: rating.easilyExplained,
-      //     keptUpToDate: rating.keptUpToDate,
-      //     topicCoverage: rating.topicCoverage,
-      //     organization: rating.organization
-      //   });
-      // });
     }
   }, [currentCourseId]);
 
@@ -116,18 +96,22 @@ export const CourseRatingOverlay = () => {
   return (
       <Dialog
         open={showCourse} onClose={closeCourseHandler}
+        maxWidth='sm'
         PaperProps={{
           component: 'form',
-          onSubmit: handleSubmit(onSubmit)
+          onSubmit: handleSubmit(onSubmit),
+          sx: {
+            width: '100%',
+            marginX: 0
+          }
         }}
       >
         <DialogTitle>{currentCourseData.title}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
+            {ratingId && "You already rated this course. Want to change the rating?"}
           </DialogContentText>
-            <CourseRatingSection control={control} {...initialFormState} />
+            <CourseRatingSection control={control} {...defaultValues} />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'center' }}>
           <PrimaryButton onClick={closeCourseHandler} sx={{ flexGrow: 0 }}>Cancel</PrimaryButton>
