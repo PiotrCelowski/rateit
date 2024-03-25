@@ -1,11 +1,12 @@
-import { firebaseConfig } from "./firebase-config";
+import { firebaseProductionConfig } from "./firebase-production-config";
+import { firebaseDevelopmentConfig } from "./firebase-development-config";
 import { initializeApp } from "firebase/app";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
-const app = initializeApp(firebaseConfig);
+const app = (process.env.REACT_APP_PROFILE === 'dev') ? initializeApp(firebaseDevelopmentConfig) : initializeApp(firebaseProductionConfig);
 
 const firestore = getFirestore(app);
 if(process.env.REACT_APP_PROFILE === 'dev') connectFirestoreEmulator(firestore, "localhost", 8080);
