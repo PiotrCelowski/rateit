@@ -26,7 +26,7 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   }
 }))
 
-const CourseRatingSection = ({ control }) => {
+const CourseRatingSection = ({ control, readOnly }) => {
   const mapFields = {
     rating: 'Overall rating:',
     codeSnippetsWorking: 'Are code snippets working:',
@@ -43,8 +43,9 @@ const CourseRatingSection = ({ control }) => {
         <Controller
           control={control}
           name={key}
-          render={({ field }) => (
-            <Rating value={field?.value || null} onChange={(_event, newValue) => field.onChange(newValue)}/>
+          rules={{ required: key === 'rating' ? 'Overall rating field is required for submit.' : false }}
+          render={({ field: { value, onChange, ...props} }) => (
+            <Rating {...props} value={value || null} onChange={(_event, newValue) => onChange(newValue)} readOnly={readOnly} />
           )} />
       </StyledListItem>
     )
