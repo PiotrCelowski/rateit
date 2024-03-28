@@ -3,7 +3,7 @@ import Rating from "@mui/material/Rating";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { alpha, styled } from "@mui/material";
+import { alpha, styled, useMediaQuery, useTheme } from "@mui/material";
 import { Controller } from 'react-hook-form';
 
 const ALERT_TEXT = '*Overall rating field is required for submit.'
@@ -29,6 +29,9 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 }))
 
 const CourseRatingSection = ({ control, readOnly }) => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   const mapFields = {
     rating: 'Overall rating:',
     codeSnippetsWorking: 'Are code snippets working:',
@@ -47,7 +50,7 @@ const CourseRatingSection = ({ control, readOnly }) => {
           name={key}
           rules={{ required: key === 'rating' ? ALERT_TEXT : false }}
           render={({ field: { value, onChange, ...props} }) => (
-            <Rating {...props} value={value || 0} onChange={(_event, newValue) => onChange(newValue)} readOnly={readOnly} />
+            <Rating {...props} value={value || 0} onChange={(_event, newValue) => onChange(newValue)} readOnly={readOnly} size={ isMobile ? 'small' : 'medium' } />
           )} />
       </StyledListItem>
     )
