@@ -6,7 +6,7 @@ import Avatar from "@mui/material/Avatar"
 import Box from "@mui/material/Box"
 import dayjs from "dayjs"
 
-export const CourseComment = ({ userName = 'user', averageUserRating, comment, photoUrl, createdAt }) => {
+export const CourseComment = ({ userName = 'user', rating, comment, photoUrl, createdAt }) => {
   const isValidTime = useMemo(() => createdAt && dayjs(createdAt).isValid(), [createdAt])
   const formattedTime = useMemo(() => isValidTime ? dayjs(createdAt).format('DD.MM.YY') : createdAt, [isValidTime, createdAt])
 
@@ -20,7 +20,7 @@ export const CourseComment = ({ userName = 'user', averageUserRating, comment, p
     }}>
       <Avatar src={photoUrl} alt={userName}>{userName[0]?.toUpperCase()}</Avatar>
       <Stack direction='column' useFlexGap spacing={1}>
-        <Rating readOnly value={averageUserRating} />
+        <Rating readOnly value={rating} />
         <Typography variant='subtitle2'>{userName} • {formattedTime}</Typography>
         <Typography variant="body1" whiteSpace='break-spaces'>{comment}</Typography>
       </Stack>

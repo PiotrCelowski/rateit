@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion } from "firebase/firestore";
 import { firestore, storage } from "../configuration/firebase/FirebaseCommon";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
@@ -23,7 +23,8 @@ export const addCourse = async (course) => {
             type: course.type,
             level: course.level,
             approved: course.approved,
-            photoUrl: course.photoUrl
+            photoUrl: course.photoUrl,
+            comments: []
         };
         await setDoc(doc(firestore, "courses", course.id), docData);
     } catch (error) {
@@ -42,7 +43,8 @@ export const addRating = async (rating) => {
             easilyExplained: rating.easilyExplained,
             keptUpToDate: rating.keptUpToDate,
             topicCoverage: rating.topicCoverage,
-            organization: rating.organization
+            organization: rating.organization,
+            comment: rating.comment
         };
         await setDoc(doc(firestore, "ratings", rating.id), docData);
     } catch (error) {
@@ -73,7 +75,8 @@ export const updateRating = async (rating) => {
             easilyExplained: rating.easilyExplained,
             keptUpToDate: rating.keptUpToDate,
             topicCoverage: rating.topicCoverage,
-            organization: rating.organization
+            organization: rating.organization,
+            comment: rating.comment
         })
     } catch (error) {
         console.error(error);
@@ -101,6 +104,17 @@ export const updateCourse = async (course) => {
             approved: course.approved,
             photoUrl: course.photoUrl
         })
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const addNewCommentToCourse = async (commentData) => {
+    try {
+        const existingRating = doc(firestore, "courses", commentData.courseId)
+        await updateDoc(existingRating, {
+            comments: arrayUnion(commentData)
+        });
     } catch (error) {
         console.error(error);
     }

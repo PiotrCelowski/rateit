@@ -6,6 +6,8 @@ import ListItemText from "@mui/material/ListItemText";
 import { alpha, styled } from "@mui/material";
 import { Controller } from 'react-hook-form';
 
+const ALERT_TEXT = '*Overall rating field is required for submit.'
+
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(1),
@@ -43,9 +45,9 @@ const CourseRatingSection = ({ control, readOnly }) => {
         <Controller
           control={control}
           name={key}
-          rules={{ required: key === 'rating' ? 'Overall rating field is required for submit.' : false }}
+          rules={{ required: key === 'rating' ? ALERT_TEXT : false }}
           render={({ field: { value, onChange, ...props} }) => (
-            <Rating {...props} value={value || null} onChange={(_event, newValue) => onChange(newValue)} readOnly={readOnly} />
+            <Rating {...props} value={value || 0} onChange={(_event, newValue) => onChange(newValue)} readOnly={readOnly} />
           )} />
       </StyledListItem>
     )

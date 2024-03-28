@@ -8,13 +8,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import CourseRatingSection from './CorseRatingSection';
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton"
-import { addRating, fetchCourse, fetchCourseRating, updateRating } from '../../api/FirestoreApi';
+import { addRating, fetchCourse, fetchCourseRating, updateRating, addNewCommentToCourse } from '../../api/FirestoreApi';
 import { getCurrentUser } from '../../api/FirebaseAuthApi';
 import { AddCommentSection } from './AddCommentSection';
 import { v4 as uuidv4 } from "uuid";
 import Box from '@mui/material/Box';
 import { StyledDialog } from './CourseRateDialog.styled';
-import { Typography } from '@mui/material';
+import { Alert, AlertTitle, Collapse, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 /*
 The flow was supposed to be like this:
@@ -29,8 +30,8 @@ The flow was supposed to be like this:
 */
 const initialCourseState = {
   id: "",
-  title: "",
-  author: ""
+  title: " ",
+  author: " "
 }
 const initialFormState = {
   rating: null,
@@ -41,7 +42,7 @@ const initialFormState = {
   organization: null,
   comment: ''
 }
-const loremIpsum = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. \nMany desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+
 const alreadyRatedAlert = "* You already rated this course."
 
 const NoCourseDialogBody = ({ closeHandler, errorText }) => (
@@ -63,6 +64,8 @@ export const CourseRatingOverlay = () => {
   const [currentCourseData, setCurrentCourseData] = useState(initialCourseState)
   const [ratingId, setRatingId] = useState(null);
   const [noCourse, setNoCourse] = useState('');
+  const navigate = useNavigate()
+  const isAlreadyRated = Boolean(ratingId)
 
   const showCourse = useSelector((state) => state.courseRating.isRatingOpened);
   const currentCourseId = useSelector(
@@ -94,7 +97,7 @@ export const CourseRatingOverlay = () => {
           keptUpToDate: rating.keptUpToDate,
           topicCoverage: rating.topicCoverage,
           organization: rating.organization,
-          comment: rating?.comment || loremIpsum
+          comment: rating?.comment || ''
         }
       })
     }
@@ -106,39 +109,55 @@ export const CourseRatingOverlay = () => {
   })
 
   const onSubmit = async(data) => {
-    console.log(ratingId, data)
-    // ToDo: add submit functionality with rating collection api
-    const newRating = {
-      id: uuidv4(),
-      courseId: currentCourseId,
-      userId: getCurrentUser().uid,
+    console.log('ratingId, data', ratingId, data)
+    const currentUser = getCurrentUser()
+    const newRatingId = isAlreadyRated ? ratingId : uuidv4()
 
-      rating: data.rating,
-      codeSnippetsWorking: data.codeSnippetsWorking,
-      easilyExplained: data.easilyExplained,
-      keptUpToDate: data.keptUpToDate,
-      topicCoverage: data.topicCoverage,
-      organization: data.organization,
-      comment: data.comment
+    const newRating = {
+      id: newRatingId,
+      courseId: currentCourseId,
+      userId: currentUser.uid,
+      // -- should we send 0 or currentRating values? --
+      rating: data?.rating || 0,
+      codeSnippetsWorking: data?.codeSnippetsWorking || 0,
+      easilyExplained: data?.easilyExplained || 0,
+      keptUpToDate: data?.keptUpToDate || 0,
+      topicCoverage: data?.topicCoverage || 0,
+      organization: data?.organization || 0,
+      comment: data?.comment
     };
-    console.log('newRating', newRating)
+  
     try {
-      await addRating(newRating)
-      // ToDo: add comment to comments array in course collection
+      // -- maybe we can add an update rating+comment feature here in the future --
+      if (ratingId) {
+        // -- do nothing for now --
+        console.log('omg! ratingId is already exists! We should update it, but we cant :)', ratingId)
+        // await updateRating(newRating); -- here we can update rating in the future
+      } else {
+        // -- adds new rating to firestore collection "ratings" --
+        await addRating(newRating)
+      }
+
+      if (data?.comment?.length) {
+        const commentData = {
+          ratingId: newRatingId,
+          courseId: currentCourseId,
+          userId: currentUser.uid,
+          userName: currentUser?.displayName || currentUser?.email,
+          photoUrl: currentUser?.photoURL || '',
+          rating: data?.rating || 0,
+          comment: data.comment
+        }
+        // -- pushes overall rating and new comment to comment array of current course in firestore "courses" collection --
+        await addNewCommentToCourse(commentData)
+      }
+
       closeCourseHandler()
-      // navigate("/", {state: {message: "Course was rated!"}})
+      navigate("/", { state: { message: "Course was rated!" } })
     } catch (error) {
       console.log('submit error', error)
+      // ToDo: add error handling (toast notification or add server error to errors.root with useForm() functions)
     }
-    // if (ratingId) {
-    //   // do nothing
-    //   // await updateRating(newRating);
-    // } else {
-    //   await addRating({ ...newRating, id: uuidv4() });
-    // }
-
-    // closeCourseHandler();
-    // navigate("/", {state: {message: "Course was rated!"}})
   }
 
   const fetchInitialRating = useCallback(async () => {
@@ -165,7 +184,6 @@ export const CourseRatingOverlay = () => {
     fetchInitialRating();
   }, [fetchInitialRating]);
 
-  const isAlredyRated = Boolean(ratingId)
 
   if (noCourse?.length) return (
     <StyledDialog open={showCourse} onClose={closeCourseHandler}>
@@ -196,19 +214,23 @@ export const CourseRatingOverlay = () => {
             {alreadyRatedAlert}
           </DialogContentText>
         )}
-        <CourseRatingSection control={control} {...defaultValues} readOnly={isAlredyRated} />
+        <CourseRatingSection control={control} {...defaultValues} readOnly={isAlreadyRated} />
 
-        {errors?.rating?.message && <DialogContentText variant='caption' color='error'>{errors?.rating?.message}</DialogContentText>}
+        <Collapse in={Boolean(errors?.rating?.message)}>
+          <Alert severity='error'>
+            {errors?.rating?.message}
+          </Alert>
+        </Collapse>
 
         <Box sx={{ mt: 1, paddingX: { xs: 2, sm: 0 } }}>
-          <AddCommentSection control={control} readOnly={isAlredyRated} />
+          <AddCommentSection control={control} readOnly={isAlreadyRated} />
         </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "center" }}>
         <PrimaryButton onClick={closeCourseHandler} sx={{ flexGrow: 0 }}>
           Cancel
         </PrimaryButton>
-        <PrimaryButton type="submit" sx={{ flexGrow: 0 }} disabled={isAlredyRated}>
+        <PrimaryButton type="submit" sx={{ flexGrow: 0 }} disabled={isAlreadyRated || Boolean(Object.keys(errors)?.length)}>
           Submit
         </PrimaryButton>
       </DialogActions>
