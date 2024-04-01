@@ -135,7 +135,7 @@ const UserSettingsForm = () => {
           </PrimaryButton>
           <PrimaryButton
             type="button"
-            variant="contained"
+            variant="outlined"
             onClick={goBackHandler}
           >
             Go back
