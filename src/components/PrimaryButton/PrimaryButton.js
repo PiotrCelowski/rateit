@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import { alpha, styled } from '@mui/material/styles';
 
-export const PrimaryButton = styled(Button)(({ theme, variant, color }) => ({
+export const PrimaryButton = styled(Button)(({ theme, variant }) => ({
   padding: `${theme.typography.pxToRem(7)} ${theme.typography.pxToRem(14)}`,
   minWidth: '120px',
   height: theme.typography.pxToRem(40),

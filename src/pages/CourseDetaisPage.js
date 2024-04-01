@@ -10,6 +10,7 @@ import { CourseTopicsList } from "../components/CourseDetailsPage/CourseTopicsLi
 import { FeaturesSectionContainer, Subheader } from "../components/CourseDetailsPage/CourseDetails.styled";
 import CourseRatingSection from "../components/CourseDetailsOverlay/CourseRatingSection";
 import { CourseCommentsList } from "../components/CourseDetailsPage/CourseCommentsList";
+import { isEmpty } from "lodash";
 
 export const getCourseDetails = async ({ params }) => {
   const { courseID } = params
@@ -72,8 +73,8 @@ export const CourseDetaisPage = () => {
       </Container>
 
       <FeaturesSectionContainer maxWidth="xl" sx={{ px }}>
-        {technologies && <CourseTopicsList title="Key Course Topics" list={technologies} />}
-        {features && <CourseTopicsList title="Course Features" list={features} />}
+        {!isEmpty(technologies) && <CourseTopicsList title="Key Course Topics" list={technologies} />}
+        {!isEmpty(features) && <CourseTopicsList title="Course Features" list={features} />}
       </FeaturesSectionContainer>
 
       <Container maxWidth="xl" disableGutters sx={{ px }}>

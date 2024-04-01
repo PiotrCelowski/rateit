@@ -1,165 +1,166 @@
-import React, { useState, useEffect, useCallback, useReducer } from "react";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { useSelector, useDispatch } from "react-redux";
-import { courseRatingActions } from "../../store/courseRatingSlice";
-import { fetchCourse } from "../../api/FirestoreApi";
-import CourseRatingSection from "./CourseRatingSection";
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { useDispatch, useSelector } from 'react-redux';
+import { courseRatingActions } from '../../store/courseRatingSlice';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import CourseRatingSection from './CourseRatingSection';
+import { PrimaryButton } from "../PrimaryButton/PrimaryButton"
+import { addRating, fetchCourse, fetchCourseRating, updateRating, addNewCommentToCourse } from '../../api/FirestoreApi';
+import { getCurrentUser } from '../../api/FirebaseAuthApi';
+import { AddCommentSection } from './AddCommentSection';
 import { v4 as uuidv4 } from "uuid";
-import { getCurrentUser } from "../../api/FirebaseAuthApi";
-import { useNavigate } from "react-router-dom";
-import {
-  addRating,
-  fetchCourseRating,
-  updateRating,
-} from "../../api/FirestoreApi";
-import { AddCommentSection } from "./AddCommentSection";
+import Box from '@mui/material/Box';
+import { StyledDialog } from './CourseRateDialog.styled';
+import { Alert, Collapse, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { isEmpty } from 'lodash';
+import { NoCourseDialogBody } from './NoCourseDialogBody';
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 2,
-};
+const ALERT_TEXT = 'All rating fields are required.'
+const alreadyRatedAlert = "* You already rated this course."
 
 const initialCourseState = {
   id: "",
-  title: "",
-  author: "",
-  rating: 0,
-  ratingVotes: 0,
-  codeSnippetsWorking: 0,
-  easilyExplained: 0,
-  keptUpToDate: 0,
-  topicCoverage: 0,
-  organization: 0
-};
+  title: " ",
+  author: " "
+}
+const initialFormState = {
+  rating: null,
+  codeSnippetsWorking: null,
+  easilyExplained: null,
+  keptUpToDate: null,
+  topicCoverage: null,
+  organization: null,
+  comment: ''
+}
 
-const changeCourseRatingHandler = (state, action) => {
-  const courseRating = {
-    id: state.id,
-    title: state.title,
-    author: state.author,
-    release: state.release,
-    rating: state.rating,
-    ratingVotes: state.ratingVotes,
-    codeSnippetsWorking: state.codeSnippetsWorking,
-    easilyExplained: state.easilyExplained,
-    keptUpToDate: state.keptUpToDate,
-    topicCoverage: state.topicCoverage,
-    organization: state.organization
-  };
 
-  if (action.type === "RATING") {
-    courseRating.rating = action.value;
-  }
+export const CourseRatingOverlay = () => {
+  const dispatch = useDispatch();
+  const [currentCourseData, setCurrentCourseData] = useState(initialCourseState)
+  const [ratingId, setRatingId] = useState(null);
+  const [noCourse, setNoCourse] = useState('');
+  const navigate = useNavigate()
+  const isAlreadyRated = Boolean(ratingId)
 
-  if (action.type === "SNIPPETS") {
-    courseRating.codeSnippetsWorking = parseInt(action.value);
-  }
-
-  if (action.type === "EXPLAINED") {
-    courseRating.easilyExplained = parseInt(action.value);
-  }
-
-  if (action.type === "UPTODATE") {
-    courseRating.keptUpToDate = parseInt(action.value);
-  }
-
-  if (action.type === "COVERAGE") {
-    courseRating.topicCoverage = parseInt(action.value);
-  }
-
-  if (action.type === "ORGANIZATION") {
-    courseRating.organization = parseInt(action.value);
-  }
-
-  if (action.type === "INITIAL_UPDATE") {
-    courseRating.id = action.id;
-    courseRating.title = action.title;
-    courseRating.author = action.author;
-    courseRating.release = parseInt(action.release);
-    courseRating.rating = parseInt(action.rating);
-    courseRating.codeSnippetsWorking = parseInt(action.codeSnippetsWorking);
-    courseRating.easilyExplained = parseInt(action.easilyExplained);
-    courseRating.keptUpToDate = parseInt(action.keptUpToDate);
-    courseRating.topicCoverage = parseInt(action.topicCoverage);
-    courseRating.organization = parseInt(action.organization);
-  }
-
-  if (action.type === "INITIAL_RATING_UPDATE") {
-    courseRating.rating = parseInt(action.rating);
-    courseRating.codeSnippetsWorking = parseInt(action.codeSnippetsWorking);
-    courseRating.easilyExplained = parseInt(action.easilyExplained);
-    courseRating.keptUpToDate = parseInt(action.keptUpToDate);
-    courseRating.topicCoverage = parseInt(action.topicCoverage);
-    courseRating.organization = parseInt(action.organization);
-  }
-
-  return courseRating;
-};
-
-const CourseRatingOverlay = () => {
-  const navigate = useNavigate();
   const showCourse = useSelector((state) => state.courseRating.isRatingOpened);
   const currentCourseId = useSelector(
     (state) => state.courseRating.currentCourseId
   );
-  const dispatch = useDispatch();
-  const [currentCourseRating, courseRatingDispatch] = useReducer(
-    changeCourseRatingHandler,
-    initialCourseState
-  );
-  const [ratingId, setRatingId] = useState(null);
 
   const closeCourseHandler = () => {
     setRatingId(null);
     dispatch(courseRatingActions.toggleCourseRating(null));
+    dispatch(courseRatingActions.setCurrentCourseId(null));
   };
 
-  const fetchInitialRating = useCallback(async () => {
-    if (currentCourseId != null) {
-      const response = await fetchCourse(currentCourseId);
-      console.log('response', response.data())
-      courseRatingDispatch({
-        type: "INITIAL_UPDATE",
-        id: response.data().id,
-        title: response.data().title,
-        author: response.data().author,
-        release: response.data().release,
-        rating: response.data().rating,
-        ratingVotes: response.data().ratingVotes,
-        codeSnippetsWorking: response.data().codeSnippetsWorking,
-        easilyExplained: response.data().easilyExplained,
-        keptUpToDate: response.data().keptUpToDate,
-        topicCoverage: response.data().topicCoverage,
-        organization: response.data().organization
-      });
-
+  const setInitialValues = useCallback(async () => {
+    let formData = initialFormState
+    if (currentCourseId !== null) {
       const maybeRatingSnap = await fetchCourseRating(
         currentCourseId,
         getCurrentUser().uid
       );
+      if (maybeRatingSnap.empty) return;
 
       maybeRatingSnap.forEach((doc) => {
         const rating = doc.data();
         setRatingId(rating.id);
-        courseRatingDispatch({
-          type: "INITIAL_RATING_UPDATE",
+        formData = {
           rating: rating.rating,
           codeSnippetsWorking: rating.codeSnippetsWorking,
           easilyExplained: rating.easilyExplained,
           keptUpToDate: rating.keptUpToDate,
           topicCoverage: rating.topicCoverage,
-          organization: rating.organization
-        });
+          organization: rating.organization,
+          comment: rating?.comment || ''
+        }
+      })
+    }
+    return formData
+  }, [currentCourseId])
+
+  const { control, handleSubmit, formState: { defaultValues, errors } } = useForm({
+    defaultValues: setInitialValues
+  })
+
+  const onSubmit = async(data) => {
+    const currentUser = getCurrentUser()
+    const newRatingId = isAlreadyRated ? ratingId : uuidv4()
+
+    const newRating = {
+      id: newRatingId,
+      courseId: currentCourseId,
+      userId: currentUser.uid,
+      // -- should we send 0 or currentRating values? --
+      rating: data?.rating || 0,
+      codeSnippetsWorking: data?.codeSnippetsWorking || 0,
+      easilyExplained: data?.easilyExplained || 0,
+      keptUpToDate: data?.keptUpToDate || 0,
+      topicCoverage: data?.topicCoverage || 0,
+      organization: data?.organization || 0,
+      comment: data?.comment
+    };
+  
+    try {
+      // -- maybe we can add an update rating+comment feature here in the future --
+      if (ratingId) {
+        // -- do nothing for now --
+        console.log('omg! ratingId is already exists! We should update it, but we cant :)', ratingId)
+        // await updateRating(newRating); -- here we can update rating in the future
+      } else {
+        // -- adds new rating to firestore collection "ratings" --
+        await addRating(newRating)
+      }
+
+      if (data?.comment?.length) {
+        const commentData = {
+          ratingId: newRatingId,
+          courseId: currentCourseId,
+          userId: currentUser.uid,
+          userName: currentUser?.displayName || currentUser?.email,
+          photoUrl: currentUser?.photoURL || '',
+          rating: data?.rating || 0,
+          comment: data.comment
+        }
+        // -- pushes overall rating and new comment to comment array of current course in firestore "courses" collection --
+        await addNewCommentToCourse(commentData)
+      }
+      closeCourseHandler()
+      navigate("/", { state: { message: "Course was rated!" } })
+    } catch (error) {
+      console.log('submit rating error:', error)
+      navigate("/", {
+        state: {
+          message: error?.message
+            ? `Oops! We got an error: ${error.message}`
+            : "Oops! Some error occured. Course wasn't rated.",
+          severity: "error",
+        },
       });
+    }
+  }
+
+  const fetchInitialRating = useCallback(async () => {
+    if (currentCourseId !== null) {
+      try {
+        const response = await fetchCourse(currentCourseId);
+  
+        if (!response?.exists()) return setNoCourse("Course is not present in DB");
+  
+        return setCurrentCourseData({
+          id: response.get('id'),
+          title: response.get('title'),
+          author: response.get('author')
+        });
+      } catch (error) {
+        console.log('fetchInitialRating [error]', error)
+        setNoCourse(error?.message || 'Unknown error');
+      }
+    
     }
   }, [currentCourseId]);
 
@@ -167,102 +168,56 @@ const CourseRatingOverlay = () => {
     fetchInitialRating();
   }, [fetchInitialRating]);
 
-  const ratingChangeHandler = (_event, value) => {
-    courseRatingDispatch({ type: "RATING", value: value });
-  };
 
-  const snippetsChangeHandler = (event) => {
-    courseRatingDispatch({ type: "SNIPPETS", value: event.target.value });
-  };
-
-  const explanationHandler = (event) => {
-    courseRatingDispatch({
-      type: "EXPLAINED",
-      value: event.target.value,
-    });
-  };
-
-  const upToDateHandler = (event) => {
-    courseRatingDispatch({ type: "UPTODATE", value: event.target.value });
-  };
-
-  const coverageHandler = (event) => {
-    courseRatingDispatch({ type: "COVERAGE", value: event.target.value });
-  };
-
-  const organizationHandler = (event) => {
-    courseRatingDispatch({ type: "ORGANIZATION", value: event.target.value });
-  };
-
-  const rateItHandler = async () => {
-    const newRating = {
-      id: ratingId ? ratingId : null,
-      courseId: currentCourseId,
-      userId: getCurrentUser().uid,
-      rating: currentCourseRating.rating,
-      codeSnippetsWorking: currentCourseRating.codeSnippetsWorking,
-      easilyExplained: currentCourseRating.easilyExplained,
-      keptUpToDate: currentCourseRating.keptUpToDate,
-      topicCoverage: currentCourseRating.topicCoverage,
-      organization: currentCourseRating.organization
-    };
-
-    if (ratingId) {
-      await updateRating(newRating);
-    } else {
-      await addRating({ ...newRating, id: uuidv4() });
-    }
-
-    setRatingId(null);
-    dispatch(courseRatingActions.toggleCourseRating(null));
-
-    navigate("/", {state: {message: "Course was rated!"}})
-  };
-
-  const [comment, setComment] = useState('')
-  const commentHandler = (event) => setComment(event.target.value)
+  if (noCourse?.length) return (
+    <StyledDialog open={showCourse} onClose={closeCourseHandler}>
+      <NoCourseDialogBody closeHandler={closeCourseHandler} errorText={noCourse} />
+    </StyledDialog>
+  )
 
   return (
-    <Modal open={showCourse} onClose={closeCourseHandler}>
-      <Box sx={style}>
+    <StyledDialog
+      open={showCourse}
+      onClose={closeCourseHandler}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{
+        component: "form",
+        onSubmit: handleSubmit(onSubmit),
+      }}
+    >
+      <DialogTitle variant="h4">
+        {currentCourseData.title}
+        <Typography variant="body1" color="text.secondary" textTransform="capitalize" marginTop={1}>
+          By {currentCourseData.author}
+        </Typography>
+      </DialogTitle>
+      <DialogContent>
         {ratingId && (
-          <Typography variant="subtitle2" component="div" align="center">
-            {"You already rated this course. Want to change the rating?"}
-          </Typography>
+          <DialogContentText color="text.primary" mb={2} variant="subtitle2" component="div" align="center">
+            {alreadyRatedAlert}
+          </DialogContentText>
         )}
-        <Typography variant="h6" component="div" fontSize="20px" align="left">
-          {currentCourseRating.title}
-        </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          fontSize="12px"
-          align="left"
-          marginBottom="20px"
-        >
-          {currentCourseRating.author}
-        </Typography>
-        <CourseRatingSection
-          {...currentCourseRating}
-          ratingChangeHandler={ratingChangeHandler}
-          snippetsChangeHandler={snippetsChangeHandler}
-          explanationHandler={explanationHandler}
-          upToDateHandler={upToDateHandler}
-          coverageHandler={coverageHandler}
-          organizationHandler={organizationHandler}
-        />
-        <AddCommentSection comment={comment} commentHandler={commentHandler} />
-        <Box
-          width="100"
-          marginTop="20px"
-          sx={{ display: "flex", justifyContent: "center" }}
-        >
-          <Button onClick={rateItHandler}>Rate it</Button>
-          <Button onClick={closeCourseHandler}>Close</Button>
-        </Box>
-      </Box>
-    </Modal>
-  );
-};
+        <CourseRatingSection control={control} {...defaultValues} readOnly={isAlreadyRated} />
 
-export default CourseRatingOverlay;
+        <Collapse in={!isEmpty(errors)}>
+          <Alert severity='error'>
+            {ALERT_TEXT}
+          </Alert>
+        </Collapse>
+
+        <Box sx={{ mt: 1, paddingX: { xs: 2, sm: 0 } }}>
+          <AddCommentSection control={control} readOnly={isAlreadyRated} />
+        </Box>
+      </DialogContent>
+      <DialogActions sx={{ justifyContent: "center", '& .MuiButton-root': { flexGrow: 0 } }}>
+        <PrimaryButton type='button' variant='outlined' onClick={closeCourseHandler}>
+          Cancel
+        </PrimaryButton>
+        {!isAlreadyRated && <PrimaryButton type="submit" variant='contained' disabled={Boolean(Object.keys(errors)?.length)}>
+          Submit
+        </PrimaryButton>}
+      </DialogActions>
+    </StyledDialog>
+  );
+}

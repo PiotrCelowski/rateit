@@ -5,13 +5,12 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import CustomPagination from "../components/Pagination/CustomPagination";
 // import CourseDetailsOverlay from "../components/CourseDetailsOverlay/CourseDetailsOverlay";
-// import CourseRatingOverlay from "../components/CourseRatingOverlay/CourseRatingOverlay";
+import { CourseRatingOverlay } from "../components/CourseRatingOverlay/CourseRatingOverlay";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import { FilterMobileButton } from "../components/Filters/FilterMobileButton";
 import { FiltersDrawer } from "../components/Filters/FiltersDrawer";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { CourseRatingOverlay } from "../components/CourseRatingOverlay/CourseRatingOverlayTrue";
 import { useSelector } from "react-redux";
 
 const LandingPage = () => {

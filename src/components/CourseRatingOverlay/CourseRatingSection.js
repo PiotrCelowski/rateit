@@ -3,71 +3,59 @@ import Rating from "@mui/material/Rating";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { alpha, styled } from "@mui/material";
+import { alpha, styled, useMediaQuery, useTheme } from "@mui/material";
+import { Controller } from 'react-hook-form';
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(1),
-  padding: `${theme.spacing(0.75)} ${theme.spacing(1)}`,
-  fontSize: theme.typography.h5.fontSize,
-  lineHeight: theme.typography.h5.lineHeight,
-  fontWeight: 400,
-  letterSpacing: 0,
-  [theme.breakpoints.down('lg')]: {
+  padding: `${theme.spacing(0.75)} ${theme.spacing(2)}`,
+  '& .MuiListItemText-root .MuiTypography-root': {
+    fontWeight: 400,
+    letterSpacing: 0,
     fontSize: theme.typography.subtitle1.fontSize,
     lineHeight: theme.typography.subtitle1.lineHeight,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.pxToRem(14),
+      lineHeight: 1.75,
+      letterSpacing: 0.15,
+    },
   },
   "&:nth-of-type(odd)": { 
     backgroundColor: alpha(theme.palette.secondary.main, 0.15)
   }
 }))
 
-const CourseRatingSection = (props) => {
-  console.log('props?.rating', props?.rating)
+const CourseRatingSection = ({ control, readOnly }) => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   const mapFields = {
-    rating: {
-      value: props?.rating,
-      onChange: props?.ratingChangeHandler,
-      labelText: 'Overall rating:'
-    },
-    codeSnippetsWorking: {
-      value: props?.codeSnippetsWorking,
-      onChange: props?.snippetsChangeHandler,
-      labelText: 'Are code snippets working:',
-    },
-    easilyExplained: {
-      value: props?.easilyExplained,
-      onChange: props?.explanationHandler,
-      labelText: 'Is simply explained:',
-    },
-    keptUpToDate: {
-      value: props?.keptUpToDate,
-      onChange: props?.upToDateHandler,
-      labelText: 'Is up to date:',
-    },
-    topicCoverage: {
-      value: props?.topicCoverage,
-      onChange: props?.coverageHandler,
-      labelText: 'Is everything covered:',
-    },
-    organization: {
-      value: props?.organization,
-      onChange: props?.organizationHandler,
-      labelText: 'Is well organized:',
-    }
+    rating: 'Overall rating:',
+    codeSnippetsWorking: 'Are code snippets working:',
+    easilyExplained: 'Is simply explained:',
+    keptUpToDate: 'Is up to date:',
+    topicCoverage: 'Is everything covered:',
+    organization: 'Is well organized:',
   }
 
   const renderListItem = (key) => {
     return (
       <StyledListItem key={key}>
-        <ListItemText>{mapFields[key]?.labelText}</ListItemText>
-        <Rating name={key} value={mapFields[key]?.value} onChange={mapFields[key]?.onChange}/>
+        <ListItemText sx={{ fontSize: 'inherit'}}>{mapFields[key]}</ListItemText>
+        <Controller
+          control={control}
+          name={key}
+          rules={{ required: true }}
+          render={({ field: { value, onChange, ...props} }) => (
+            <Rating {...props} value={value || 0} onChange={(_event, newValue) => onChange(newValue)} readOnly={readOnly} size={ isMobile ? 'small' : 'medium' } />
+          )} />
       </StyledListItem>
     )
   }
 
   return (
-    <List sx={{ maxWidth: 686 }}>
+    <List disablePadding>
       {Object.keys(mapFields).map((key) => renderListItem(key))}
     </List>
   )
