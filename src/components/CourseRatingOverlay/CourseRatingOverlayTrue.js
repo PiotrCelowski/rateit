@@ -14,8 +14,9 @@ import { AddCommentSection } from './AddCommentSection';
 import { v4 as uuidv4 } from "uuid";
 import Box from '@mui/material/Box';
 import { StyledDialog } from './CourseRateDialog.styled';
-import { Alert, AlertTitle, Collapse, Typography } from '@mui/material';
+import { Alert, Collapse, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { isEmpty } from 'lodash';
 
 /*
 The flow was supposed to be like this:
@@ -28,6 +29,8 @@ The flow was supposed to be like this:
 7. New rating is added to ratings collection, firebase functions recalculate average ratings for this course (now there are ratings of (user A + user B divided by 2) and populates the course document with new averaged values.
 8. And now User B should not be able to update the rating anymore. When he clicks rate it, he sees amount of stars he send, but he is not able to change them and also submit button is disabled.
 */
+const ALERT_TEXT = '*All rating fields are required.'
+
 const initialCourseState = {
   id: "",
   title: " ",
@@ -216,9 +219,9 @@ export const CourseRatingOverlay = () => {
         )}
         <CourseRatingSection control={control} {...defaultValues} readOnly={isAlreadyRated} />
 
-        <Collapse in={Boolean(errors?.rating?.message)}>
+        <Collapse in={!isEmpty(errors)}>
           <Alert severity='error'>
-            {errors?.rating?.message}
+            {ALERT_TEXT}
           </Alert>
         </Collapse>
 
