@@ -55,7 +55,7 @@ const NoCourseDialogBody = ({ closeHandler, errorText }) => (
       <DialogContentText>{errorText || "Course is not present in DB"}</DialogContentText>
     </DialogContent>
     <DialogActions sx={{ justifyContent: "center" }}>
-      <PrimaryButton onClick={closeHandler} sx={{ flexGrow: 0 }}>
+      <PrimaryButton variant='outlined' onClick={closeHandler} sx={{ flexGrow: 0 }}>
         Close
       </PrimaryButton>
     </DialogActions>
@@ -154,12 +154,18 @@ export const CourseRatingOverlay = () => {
         // -- pushes overall rating and new comment to comment array of current course in firestore "courses" collection --
         await addNewCommentToCourse(commentData)
       }
-
       closeCourseHandler()
       navigate("/", { state: { message: "Course was rated!" } })
     } catch (error) {
-      console.log('submit error', error)
-      // ToDo: add error handling (toast notification or add server error to errors.root with useForm() functions)
+      console.log('submit rating error:', error)
+      navigate("/", {
+        state: {
+          message: error?.message
+            ? `Oops! We got an error: ${error.message}`
+            : "Oops! Some error occured. Course wasn't rated.",
+          severity: "error",
+        },
+      });
     }
   }
 
@@ -229,13 +235,13 @@ export const CourseRatingOverlay = () => {
           <AddCommentSection control={control} readOnly={isAlreadyRated} />
         </Box>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "center" }}>
-        <PrimaryButton onClick={closeCourseHandler} sx={{ flexGrow: 0 }}>
+      <DialogActions sx={{ justifyContent: "center", '& .MuiButton-root': { flexGrow: 0 } }}>
+        <PrimaryButton type='button' variant='outlined' onClick={closeCourseHandler}>
           Cancel
         </PrimaryButton>
-        <PrimaryButton type="submit" sx={{ flexGrow: 0 }} disabled={isAlreadyRated || Boolean(Object.keys(errors)?.length)}>
+        {!isAlreadyRated && <PrimaryButton type="submit" variant='contained' disabled={Boolean(Object.keys(errors)?.length)}>
           Submit
-        </PrimaryButton>
+        </PrimaryButton>}
       </DialogActions>
     </StyledDialog>
   );
