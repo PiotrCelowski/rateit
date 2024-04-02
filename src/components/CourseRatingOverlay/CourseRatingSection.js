@@ -1,48 +1,63 @@
 import React from 'react';
 import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import { alpha, styled, useMediaQuery, useTheme } from "@mui/material";
+import { Controller } from 'react-hook-form';
 
-const CourseRatingSection = (props) => {
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  padding: `${theme.spacing(0.75)} ${theme.spacing(2)}`,
+  '& .MuiListItemText-root .MuiTypography-root': {
+    fontWeight: 400,
+    letterSpacing: 0,
+    fontSize: theme.typography.subtitle1.fontSize,
+    lineHeight: theme.typography.subtitle1.lineHeight,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: theme.typography.pxToRem(14),
+      lineHeight: 1.75,
+      letterSpacing: 0.15,
+    },
+  },
+  "&:nth-of-type(odd)": { 
+    backgroundColor: alpha(theme.palette.secondary.main, 0.15)
+  }
+}))
+
+const CourseRatingSection = ({ control, readOnly }) => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const mapFields = {
+    rating: 'Overall rating:',
+    codeSnippetsWorking: 'Are code snippets working:',
+    easilyExplained: 'Is simply explained:',
+    keptUpToDate: 'Is up to date:',
+    topicCoverage: 'Is everything covered:',
+    organization: 'Is well organized:',
+  }
+
+  const renderListItem = (key) => {
+    return (
+      <StyledListItem key={key}>
+        <ListItemText sx={{ fontSize: 'inherit'}}>{mapFields[key]}</ListItemText>
+        <Controller
+          control={control}
+          name={key}
+          rules={{ required: true }}
+          render={({ field: { value, onChange, ...props} }) => (
+            <Rating {...props} value={value || 0} onChange={(_event, newValue) => onChange(newValue)} readOnly={readOnly} size={ isMobile ? 'small' : 'medium' } />
+          )} />
+      </StyledListItem>
+    )
+  }
+
   return (
-    <Stack spacing={1}>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Overall rating:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.rating} onChange={props.ratingChangeHandler}/>
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Are code snippets working:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.codeSnippetsWorking} onChange={props.snippetsChangeHandler}/>
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is simply explained:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.easilyExplained} onChange={props.explanationHandler} />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is up to date:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.keptUpToDate} onChange={props.upToDateHandler} />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is everything covered:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.topicCoverage} onChange={props.coverageHandler} />
-        </Stack>
-      </Stack>
-      <Stack direction="row" justifyContent={"space-between"} spacing={2}>
-        <Typography variant="body2">Is well organized:</Typography>
-        <Stack width="170px" direction="row">
-          <Rating name="read-only" value={props.organization} onChange={props.organizationHandler} />
-        </Stack>
-      </Stack>
-    </Stack>
+    <List disablePadding>
+      {Object.keys(mapFields).map((key) => renderListItem(key))}
+    </List>
   )
 }
 

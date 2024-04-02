@@ -268,6 +268,7 @@ const ProposeCourseForm = () => {
           <Grid item xs={12} sm={true}>
             <PrimaryButton
               type="submit"
+              variant='contained'
               fullWidth
             >
               Propose course
@@ -276,6 +277,7 @@ const ProposeCourseForm = () => {
           <Grid item xs={12} sm={true}>
             <PrimaryButton
               type="button"
+              variant='outlined'
               fullWidth
               onClick={goBackHandler}
             >

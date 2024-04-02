@@ -4,13 +4,14 @@ import ResultsArea from "../components/ResultsArea/ResultsArea";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import CustomPagination from "../components/Pagination/CustomPagination";
-import CourseDetailsOverlay from "../components/CourseDetailsOverlay/CourseDetailsOverlay";
-import CourseRatingOverlay from "../components/CourseRatingOverlay/CourseRatingOverlay";
+// import CourseDetailsOverlay from "../components/CourseDetailsOverlay/CourseDetailsOverlay";
+import { CourseRatingOverlay } from "../components/CourseRatingOverlay/CourseRatingOverlay";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import { FilterMobileButton } from "../components/Filters/FilterMobileButton";
 import { FiltersDrawer } from "../components/Filters/FiltersDrawer";
 import { useMediaQuery, useTheme } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const LandingPage = () => {
     const theme = useTheme()
@@ -22,10 +23,12 @@ const LandingPage = () => {
       setOpenFiltersDrawer(newOpen);
     };
 
+    const currentCourseId = useSelector((state) => state.courseRating.currentCourseId);
+
     return (
         <React.Fragment>
-            <CourseDetailsOverlay />
-            <CourseRatingOverlay />
+            {/* <CourseDetailsOverlay /> */}
+            {currentCourseId && <CourseRatingOverlay />}
             <Container maxWidth='xl' disableGutters sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 <Box px={{ xs: 2.5, md: 3 }} py={3} sx={{ flexGrow: 1 }}>
                     <Grid container spacing={5} direction="column">

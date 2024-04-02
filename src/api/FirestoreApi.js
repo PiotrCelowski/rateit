@@ -1,6 +1,7 @@
-import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion } from "firebase/firestore";
 import { firestore, storage } from "../configuration/firebase/FirebaseCommon";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { chain, isNil } from "lodash";
 
 export const fetchCourse = async (id) => {
     try {
@@ -23,7 +24,8 @@ export const addCourse = async (course) => {
             type: course.type,
             level: course.level,
             approved: course.approved,
-            photoUrl: course.photoUrl
+            photoUrl: course.photoUrl,
+            comments: []
         };
         await setDoc(doc(firestore, "courses", course.id), docData);
     } catch (error) {
@@ -33,17 +35,22 @@ export const addCourse = async (course) => {
 
 export const addRating = async (rating) => {
     try {
-        const docData = {
-            id: rating.id,
-            courseId: rating.courseId,
-            userId: rating.userId,
-            rating: rating.rating,
-            codeSnippetsWorking: rating.codeSnippetsWorking,
-            easilyExplained: rating.easilyExplained,
-            keptUpToDate: rating.keptUpToDate,
-            topicCoverage: rating.topicCoverage,
-            organization: rating.organization
-        };
+        const docData = chain(rating) // -- starts chaining
+            .pick([
+                'id',
+                'courseId',
+                'userId',
+                'rating',
+                'codeSnippetsWorking',
+                'easilyExplained',
+                'keptUpToDate',
+                'topicCoverage',
+                'organization',
+                'comment',
+            ]) // -- picks only the listed fields
+            .omitBy(isNil) // -- checks if value is null or undefined, and if it is, removes it from the object
+            .value() // -- gets the final result without fields that contain a null or undefined value
+
         await setDoc(doc(firestore, "ratings", rating.id), docData);
     } catch (error) {
         console.error(error);
@@ -73,7 +80,8 @@ export const updateRating = async (rating) => {
             easilyExplained: rating.easilyExplained,
             keptUpToDate: rating.keptUpToDate,
             topicCoverage: rating.topicCoverage,
-            organization: rating.organization
+            organization: rating.organization,
+            comment: rating.comment
         })
     } catch (error) {
         console.error(error);
@@ -101,6 +109,17 @@ export const updateCourse = async (course) => {
             approved: course.approved,
             photoUrl: course.photoUrl
         })
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const addNewCommentToCourse = async (commentData) => {
+    try {
+        const existingRating = doc(firestore, "courses", commentData.courseId)
+        await updateDoc(existingRating, {
+            comments: arrayUnion(commentData)
+        });
     } catch (error) {
         console.error(error);
     }

@@ -10,29 +10,7 @@ import { CourseTopicsList } from "../components/CourseDetailsPage/CourseTopicsLi
 import { FeaturesSectionContainer, Subheader } from "../components/CourseDetailsPage/CourseDetails.styled";
 import CourseRatingSection from "../components/CourseDetailsOverlay/CourseRatingSection";
 import { CourseCommentsList } from "../components/CourseDetailsPage/CourseCommentsList";
-
-const mockComments = [
-  {
-    userId: "0000",
-    userName: "admin",
-    averageUserRating: 4,
-    comment: "Amazing course",
-    photoUrl: 'http://localhost:9199/v0/b/rateit-production.appspot.com/o/courseImages%2F3571f0b7-df37-40d7-b2a2-505ea7cbfd87?alt=media&token=a29b2aeb-dd4d-4e2a-8ec9-e946b97fc854'
-  },
-  {
-    userId: "0001",
-    userName: "user",
-    averageUserRating: 3,
-    comment: "I dont like this course",
-    photoUrl: '',
-    createdAt: 1710449636750 // -- ToDo: add this field to firestore
-  }
-]
-
-const mock = {
-  description: "This course is designed for absolute beginners in Figma. Starting from the basics, you will gain the confidence to create interfaces and work with user experience. From foundational tools to advanced techniques, you'll have everything you need for successful design.",
-  comments: new Array(8).fill(mockComments[0], 0, 4).fill(mockComments[1], 4)
-}
+import { isEmpty } from "lodash";
 
 export const getCourseDetails = async ({ params }) => {
   const { courseID } = params
@@ -56,7 +34,7 @@ export const getCourseDetails = async ({ params }) => {
           technologies: response.get('technologies'),
           features: response?.get('features'),
           description: response?.get('description'),
-          comments: response?.get('comments') || mock.comments // -- ToDo: remove mock comments
+          comments: response?.get('comments')
         }
         return { data: courseData }
       }
@@ -95,8 +73,8 @@ export const CourseDetaisPage = () => {
       </Container>
 
       <FeaturesSectionContainer maxWidth="xl" sx={{ px }}>
-        {technologies && <CourseTopicsList title="Key Course Topics" list={technologies} />}
-        {features && <CourseTopicsList title="Course Features" list={features} />}
+        {!isEmpty(technologies) && <CourseTopicsList title="Key Course Topics" list={technologies} />}
+        {!isEmpty(features) && <CourseTopicsList title="Course Features" list={features} />}
       </FeaturesSectionContainer>
 
       <Container maxWidth="xl" disableGutters sx={{ px }}>

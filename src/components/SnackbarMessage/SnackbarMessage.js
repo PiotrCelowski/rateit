@@ -30,7 +30,7 @@ export const SnackBarMessage = () => {
       autoHideDuration={6000}
       onClose={closeSnackbar}
     >
-      <Alert onClose={closeSnackbar} severity="success" sx={{ width: "100%" }}>
+      <Alert onClose={closeSnackbar} severity={location?.state?.severity ? location.state.severity : "success"} sx={{ width: "100%" }}>
         {message}
       </Alert>
     </Snackbar>
