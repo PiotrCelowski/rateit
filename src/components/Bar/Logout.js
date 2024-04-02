@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { isUserSignedIn, signOutUser } from "../../api/FirebaseAuthApi";
-import { loginActions } from "../../store/loginSlice";
+import { setLoggedIn } from "../../store/loginSlice";
 import { ListItemIcon, ListItemText } from "@mui/material";
 import { MenuItem } from "./MenuItem";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -19,7 +19,7 @@ export const Logout = ({ closeMenu }) => {
 
     if (!isUserSignedIn()) {
       localStorage.removeItem("token");
-      dispatch(loginActions.setLoggedIn(isUserSignedIn()));
+      dispatch(setLoggedIn(isUserSignedIn()));
     }
 
     navigate("/", { state: { message: "Logged out successfully." } });

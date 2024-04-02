@@ -1,13 +1,16 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export const ProtectedRoute = ({ redirectPath = "/login", children }) => {
+export const ProtectedRoute = ({ redirectPath = "/login" }) => {
   const loggedIn = useSelector((state) => state.login.isLoggedIn);
   const location = useLocation();
 
-  if (!loggedIn) {
-    return <Navigate to={redirectPath} state={{ from: location }} replace />;
-  }
+  if (loggedIn === undefined) return null
 
-  return children ? children : <Outlet />;
+  return (
+    loggedIn
+    ? <Outlet /> 
+    : <Navigate to={redirectPath} state={{ from: location }} replace />
+  )
+
 };

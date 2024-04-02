@@ -9,7 +9,7 @@ import CourseFooter from "./CourseFooter";
 import { courseRatingActions } from "../../store/courseRatingSlice";
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from "react";
-import { loginActions } from "../../store/loginSlice";
+import { setLoggedIn } from "../../store/loginSlice";
 import CardMedia from '@mui/material/CardMedia';
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/system";
@@ -38,7 +38,7 @@ const Course = (props) => {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      dispatch(loginActions.setLoggedIn((true)));
+      dispatch(setLoggedIn((true)));
     }
   }, [dispatch]);
 
