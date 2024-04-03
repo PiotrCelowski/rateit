@@ -16,6 +16,7 @@ import { redirectToHome } from "./utils/redirectToHome";
 import { ResponsivePageLayout } from "./utils/ResponsivePageLayout";
 import { AuthCheck } from "./utils/AuthCheck";
 import { RootErrorPage } from "./pages/RootErrorPage";
+import { AuthorizedGuard } from "./pages/AuthorizedGuard";
 
 export const router = createBrowserRouter([
   {
@@ -44,10 +45,15 @@ export const router = createBrowserRouter([
             ]
           },
           {
-            element: <SigninLayout />,
+            element: <AuthorizedGuard />,
             children: [
-              { path: "/login", element: <LoginPage /> },
-              { path: "/register", element: <RegisterPage /> },
+              {
+                element: <SigninLayout />,
+                children: [
+                  { path: "/login", element: <LoginPage /> },
+                  { path: "/register", element: <RegisterPage /> },
+                ]
+              }
             ]
           },
           { path: '/',

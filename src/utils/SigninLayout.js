@@ -1,6 +1,5 @@
 import { Box, Container, styled } from "@mui/material";
-import { useSelector } from "react-redux";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 export const GradientBackgroundBox = styled(Box)(({ theme }) => ({
   flexGrow: 1,
@@ -30,13 +29,6 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 }))
 
 export const SigninLayout = () => {
-  // -- guest guard: user should not see login/signup pages if already logged in --
-  const loggedIn = useSelector(({ login }) => login.isLoggedIn);
-  const location = useLocation()
-
-  // -- redirects already authorized user from auth pages back to previous location --
-  if (loggedIn) return <Navigate to={location?.state?.from ? location.state.from : '/'} replace />
-
   return (
     <GradientBackgroundBox>
       <StyledContainer component="main" maxWidth="xs">
