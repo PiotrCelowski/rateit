@@ -8,7 +8,7 @@ import { Logo } from "../Logo/LogoIcon";
 import { lightPurpleTheme } from "../../themes/purpleTheme";
 import { NavigationPanel } from "./NavigationPanel";
 
-const Bar = () => {
+const Bar = ({ root = false }) => {
   const navigate = useNavigate();
 
   const goToMainPageHandler = () => {
@@ -31,7 +31,7 @@ const Bar = () => {
               <Box sx={{ flexGrow: 1 }}>
                 <Logo onClick={goToMainPageHandler} />
               </Box>
-              <NavigationPanel />
+              {!root && <NavigationPanel />}
             </Toolbar>
           </Container>
         </AppBar>

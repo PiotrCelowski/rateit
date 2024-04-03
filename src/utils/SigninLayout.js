@@ -2,7 +2,7 @@ import { Box, Container, styled } from "@mui/material";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-const GradientBackgroundBox = styled(Box)(({ theme }) => ({
+export const GradientBackgroundBox = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
   backgroundColor: '#eeeeee',

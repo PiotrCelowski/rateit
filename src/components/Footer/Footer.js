@@ -24,7 +24,7 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 
 const Footer = () => {
   return (
-    <Box bgcolor="secondary.dark" paddingY={{ xs: 2.5, sm: 4, md: 5 }}>
+    <Box bgcolor="secondary.dark" paddingY={{ xs: 2.5, sm: 4, md: 5 }} marginTop={'auto'}>
       <Container maxWidth={"xl"}>
         <Divider sx={{ bgcolor: 'secondary.contrastText', mb: { xs: 1, sm: 1.5, md: 2 } }} />
         <ThemeProvider theme={footerFont}>
