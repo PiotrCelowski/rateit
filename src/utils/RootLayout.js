@@ -8,12 +8,12 @@ import { ThemeProvider } from "@mui/material";
 import { mainTheme } from "../themes/purpleTheme";
 import { SnackBarMessage } from "../components/SnackbarMessage/SnackbarMessage";
 
-function RootLayout() {
+function RootLayout({ children }) {
     return (
         <ThemeProvider theme={mainTheme}>
             <Stack spacing={0} minHeight={"100vh"} sx={{ display: 'flex', flexDirection: "column", justifyItems: "flex-start" }}>
                 <Bar />
-                <Outlet />
+                {children || <Outlet />}
                 <Footer />
             </Stack>
             <CookieBanner />

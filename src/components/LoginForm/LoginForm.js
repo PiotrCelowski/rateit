@@ -13,7 +13,7 @@ import {
   signInWithEmail,
 } from "../../api/FirebaseAuthApi";
 import { useDispatch } from "react-redux";
-import { loginActions } from "../../store/loginSlice";
+import { setAdmin, setLoggedIn } from "../../store/loginSlice";
 import { AuthErrorCodes, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../configuration/firebase/FirebaseCommon";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -99,8 +99,8 @@ export default function SignIn() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         user.getIdTokenResult().then((token) => {
-          dispatch(loginActions.setLoggedIn(true));
-          if (isUserAdmin(token)) dispatch(loginActions.setAdmin(true));
+          dispatch(setLoggedIn(true));
+          if (isUserAdmin(token)) dispatch(setAdmin(true));
           navigate(navigatePath, { state: { message: "Login successfull!" } });
         });
       } else {

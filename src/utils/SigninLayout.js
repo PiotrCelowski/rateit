@@ -1,7 +1,7 @@
 import { Box, Container, styled } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
-const GradientBackgroundBox = styled(Box)(({ theme }) => ({
+export const GradientBackgroundBox = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
   backgroundColor: '#eeeeee',
@@ -28,10 +28,12 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   }
 }))
 
-export const SigninLayout = () => (
-  <GradientBackgroundBox>
-    <StyledContainer component="main" maxWidth="xs">
-      <Outlet />
-    </StyledContainer>
-  </GradientBackgroundBox>
-)
+export const SigninLayout = () => {
+  return (
+    <GradientBackgroundBox>
+      <StyledContainer component="main" maxWidth="xs">
+        <Outlet />
+      </StyledContainer>
+    </GradientBackgroundBox>
+  )
+}
