@@ -4,10 +4,12 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
 import { Form } from "react-router-dom";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { addCourse, uploadPhoto } from "../../api/FirestoreApi";
+import { addCourse, updateCourse, uploadPhoto } from "../../api/FirestoreApi";
 import { v4 as uuidv4 } from "uuid";
 import { Dropzone } from "../Dropzone/Dropzone";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
@@ -17,6 +19,7 @@ import { FormActions } from "./FormActions";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { FormAutocomplete } from "./FormAutocomplete";
 import { FormSelect } from "./FormSelect";
+import { chain, defaultTo, isEmpty } from "lodash";
 
 const ENUM_TYPES = ["Video", "Book"];
 const ENUM_LEVELS = ["Beginner", "Intermediate", "Expert"];
@@ -28,11 +31,12 @@ const defaultFormValues = {
   type: "",
   level: "",
   description: "",
+  photoUrl: "/static/images/no-image.jpg"
 };
 
 
-export const CourseForm = ({ adminEdit = false }) => {
-  // const navigate = useNavigate();
+export const CourseForm = ({ adminEdit = false, currentCourseData = false }) => {
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -48,45 +52,68 @@ export const CourseForm = ({ adminEdit = false }) => {
 
   const featuresOptions = []; // -- replace it with preferred features options
 
-  const proposeCourse = async (data) => {
-    console.log('proposeCourse', data)
-    // const proposedCourse = {
-    //   id: uuidv4(),
-    //   title: capitalize(data.title),
-    //   author: capitalizeFewWords(data.author),
-    //   technologies: data.technologies,
-    //   type: capitalize(data.type),
-    //   level: capitalize(data.level),
-    //   description: capitalize(data.description),
-    //   features: data.features,
-    //   approved: false,
-    // };
+  const onSubmit = async (data) => {
+    console.log('submitFunc', data)
+    const courseId = adminEdit && currentCourseData?.id ? currentCourseData?.id : uuidv4()
+    const proposedCourse = {
+      id: courseId,
+      title: capitalize(data.title),
+      author: capitalizeFewWords(data.author),
+      technologies: data.technologies,
+      type: capitalize(data.type),
+      level: capitalize(data.level),
+      description: capitalize(data.description),
+      features: data.features,
+      approved: adminEdit,
+    };
 
-    // let url = "/static/images/no-image.jpg";
+    let url = "/static/images/no-image.jpg";
 
-    // if (file) {
-    //   url = await uploadPhoto(
-    //     file,
-    //     proposedCourse.id,
-    //     proposedCourse.title,
-    //     proposedCourse.author
-    //   );
-    // }
+    if (file) {
+      url = await uploadPhoto(
+        file,
+        proposedCourse.id,
+        proposedCourse.title,
+        proposedCourse.author
+      );
+    }
 
-    // proposedCourse["photoUrl"] = url;
+    proposedCourse["photoUrl"] = url;
 
-    // await addCourse(proposedCourse);
+    adminEdit
+    ? await updateCourse(proposedCourse)
+    : await addCourse(proposedCourse);
+    const alertMessage = adminEdit ? "Course approved!" : "Course was proposed!"
 
-    // navigate("/", { state: { message: "Course was proposed!" } });
-  };
+    navigate("/", { state: { message: alertMessage } });
+  }
+
+  const setDefaultFormValues = () => {
+    if (!isEmpty(currentCourseData)) {
+      const safeFormValues = chain(currentCourseData) // -- starts chaining
+        .pick([
+          'title',
+          'author',
+          'technologies',
+          'features',
+          'type',
+          'level',
+          'description',
+          'photoUrl'
+        ]) // -- picks selected values from currentCourseData
+        .mapValues(((value, key) => defaultTo(value, defaultFormValues[key]))) // -- replaces null, undefined or NaN values with provided default value
+        .value() // -- gets result of chaining
+        console.log('safeFormValues', safeFormValues)
+      return safeFormValues;
+    }
+    return defaultFormValues;
+  }
 
   const methods = useForm({
-    defaultValues: defaultFormValues, // -- ToDo: add async fetching course values for admin form here
+    defaultValues: setDefaultFormValues()
   });
 
-  const onSubmit = adminEdit
-    ? (data) => console.log("approve", data)
-    : proposeCourse;
+  const photoUrl = methods.watch('photoUrl')
 
   return (
     <Container component="main" maxWidth="md" disableGutters>
@@ -140,6 +167,15 @@ export const CourseForm = ({ adminEdit = false }) => {
             <Grid item xs={12}>
               <LabelTitle htmlFor="photo">Upload Course files</LabelTitle>
             </Grid>
+            {/* -- only for admin use -- */}
+            {adminEdit && photoUrl &&
+              <Grid item xs={12} my={1.5}>
+                <Typography component={'span'} variant='subtitle2'>Incoming course photoUrl:</Typography>
+                {' '}
+                <Typography component={'span'} variant='body2' fontFamily={'monospace'}>{photoUrl}</Typography>
+                <Avatar variant='square' src={photoUrl} alt="Course photoUrl" sx={{ width: 180, height: 180 }} />
+              </Grid>
+            }
             <Grid item xs={12}>
               {isMobile ? (
                 <DropzoneMobile file={file} setFile={setFile} id="photo" />
