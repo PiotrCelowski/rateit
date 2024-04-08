@@ -20,6 +20,9 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { FormAutocomplete } from "./FormAutocomplete";
 import { FormSelect } from "./FormSelect";
 import { chain, defaultTo, isEmpty } from "lodash";
+import { SnackBarMessageOnPage } from "../SnackbarMessage/SnackbarMessageOnPage";
+import { useDispatch, useSelector } from "react-redux";
+import { setError } from "../../store/errorSlice";
 
 const ENUM_TYPES = ["Video", "Book"];
 const ENUM_LEVELS = ["Beginner", "Intermediate", "Expert"];
@@ -35,7 +38,7 @@ const defaultFormValues = {
 };
 
 
-export const CourseForm = ({ adminEdit = false, currentCourseData = false }) => {
+export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const theme = useTheme();
@@ -44,6 +47,8 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = false }) => 
     attribute: "technologies",
     operator: "and",
   });
+  const visibleError = useSelector(state => state.errorState.visibleError)
+  const dispatch = useDispatch()
 
   const technologies = useMemo(() => {
     const flattenedItems = items?.map((item) => item.value);
@@ -52,8 +57,35 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = false }) => 
 
   const featuresOptions = []; // -- replace it with preferred features options
 
+  const setDefaultFormValues = useMemo(() => {
+    if (!isEmpty(currentCourseData)) {
+      const safeFormValues = chain(currentCourseData) // -- starts chaining
+        .pick([
+          'title',
+          'author',
+          'technologies',
+          'features',
+          'type',
+          'level',
+          'description',
+          'photoUrl'
+        ]) // -- picks selected values from currentCourseData
+        .mapValues(((value, key) => defaultTo(value, defaultFormValues[key]))) // -- replaces null, undefined or NaN values with provided default value
+        .value() // -- gets result of chaining
+      return safeFormValues;
+    }
+    return defaultFormValues;
+  }, [currentCourseData])
+
+  const methods = useForm({
+    defaultValues: setDefaultFormValues
+  });
+
+  const photoUrl = methods.watch('photoUrl')
+
   const onSubmit = async (data) => {
     console.log('submitFunc', data)
+    methods.clearErrors('root.serverError')
     const courseId = adminEdit && currentCourseData?.id ? currentCourseData?.id : uuidv4()
     const proposedCourse = {
       id: courseId,
@@ -79,41 +111,21 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = false }) => 
     }
 
     proposedCourse["photoUrl"] = url;
-
-    adminEdit
-    ? await updateCourse(proposedCourse)
-    : await addCourse(proposedCourse);
-    const alertMessage = adminEdit ? "Course approved!" : "Course was proposed!"
-
-    navigate("/", { state: { message: alertMessage } });
-  }
-
-  const setDefaultFormValues = () => {
-    if (!isEmpty(currentCourseData)) {
-      const safeFormValues = chain(currentCourseData) // -- starts chaining
-        .pick([
-          'title',
-          'author',
-          'technologies',
-          'features',
-          'type',
-          'level',
-          'description',
-          'photoUrl'
-        ]) // -- picks selected values from currentCourseData
-        .mapValues(((value, key) => defaultTo(value, defaultFormValues[key]))) // -- replaces null, undefined or NaN values with provided default value
-        .value() // -- gets result of chaining
-        console.log('safeFormValues', safeFormValues)
-      return safeFormValues;
+    try {
+      adminEdit
+      ? await updateCourse(proposedCourse)
+      : await addCourse(proposedCourse);
+      // proposedCourse.id = 'none'
+      // await updateCourse(proposedCourse)
+      const alertMessage = adminEdit ? "Course approved!" : "Course was proposed!"
+      navigate("/", { state: { message: alertMessage } });
+    } catch (error) {
+      // -- Which method should we choose? --
+      // dispatch(setError(error?.message || 'Something goes wrong'))
+      // methods.setError('root.serverError', { message: error?.message || 'Oops! Unknown error' })
     }
-    return defaultFormValues;
   }
-
-  const methods = useForm({
-    defaultValues: setDefaultFormValues()
-  });
-
-  const photoUrl = methods.watch('photoUrl')
+  // const serverError = methods?.formState?.errors?.root?.serverError
 
   return (
     <Container component="main" maxWidth="md" disableGutters>
@@ -240,6 +252,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = false }) => 
           <FormActions adminEdit={adminEdit} />
         </Stack>
       </FormProvider>
+      {visibleError && <SnackBarMessageOnPage />}
     </Container>
   );
 };

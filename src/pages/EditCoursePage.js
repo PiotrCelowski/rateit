@@ -3,12 +3,14 @@ import Box from "@mui/material/Box";
 import { CourseForm } from "../components/CourseForm/CourseForm";
 import { useSelector } from "react-redux";
 import { fetchCourse } from "../api/FirestoreApi";
+import { useNavigate } from "react-router-dom";
 // import PendingCourseEditForm from "../components/PendingCourseEditForm/PendingCourseEditForm"
 
 const EditCoursePage = () => {
     const currentCourseId = useSelector((state) => state.courseDetails.currentCourseId)
     const [loading, setLoading] = useState(true)
-    const [currentCourse, setCurrentCourse] = useState(false);
+    const [currentCourse, setCurrentCourse] = useState(null);
+    const navigate = useNavigate()
 
     const fetchCurrentCourse = useCallback(async () => {
     if (currentCourseId) {
@@ -28,9 +30,9 @@ const EditCoursePage = () => {
           };
         });
       }
-    //   if (!response.exists()) {
-    //     setNoCourse(true)
-    //   }
+      if (!response.exists()) {
+        navigate('/pending', { state: { message: 'No pending course found', severity: 'error' } })
+      }
     }
         setLoading(false);
     }, [currentCourseId]);
@@ -42,7 +44,7 @@ const EditCoursePage = () => {
     return (
         <Box px={{ xs: 2.5, md: 3 }} py={3} minHeight={"1250px"}>
             {/* <PendingCourseEditForm /> */}
-            {!loading && <CourseForm adminEdit currentCourseData={currentCourse} />}
+            {!loading && <CourseForm adminEdit key={currentCourseId} currentCourseData={currentCourse} />}
         </Box>
     )
 }

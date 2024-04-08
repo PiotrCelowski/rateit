@@ -98,6 +98,7 @@ export const fetchUserPermissions = async (userId) => {
 }
 
 export const updateCourse = async (course) => {
+    // ToDo: decide where to handle errors properly
     try {
         const existingRating = doc(firestore, "courses", course.id)
         await updateDoc(existingRating, {
