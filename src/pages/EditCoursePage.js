@@ -4,7 +4,6 @@ import { CourseForm } from "../components/CourseForm/CourseForm";
 import { useSelector } from "react-redux";
 import { fetchCourse } from "../api/FirestoreApi";
 import { useNavigate } from "react-router-dom";
-// import PendingCourseEditForm from "../components/PendingCourseEditForm/PendingCourseEditForm"
 
 const EditCoursePage = () => {
     const currentCourseId = useSelector((state) => state.courseDetails.currentCourseId)
@@ -15,7 +14,7 @@ const EditCoursePage = () => {
     const fetchCurrentCourse = useCallback(async () => {
     if (currentCourseId) {
       const response = await fetchCourse(currentCourseId);
-      if (response.exists()) {
+      if (response?.exists()) {
         setCurrentCourse((oldState) => {
           return {
             id: response.data().id,
@@ -30,20 +29,20 @@ const EditCoursePage = () => {
           };
         });
       }
-      if (!response.exists()) {
+      if (!response?.exists()) {
         navigate('/pending', { state: { message: 'No pending course found', severity: 'error' } })
       }
     }
         setLoading(false);
-    }, [currentCourseId]);
+    }, [currentCourseId, navigate]);
 
     useEffect(() => {
         fetchCurrentCourse()
     }, [fetchCurrentCourse])
 
     return (
-        <Box px={{ xs: 2.5, md: 3 }} py={3} minHeight={"1250px"}>
-            {/* <PendingCourseEditForm /> */}
+        <Box px={{ xs: 2.5, md: 3 }} py={3} sx={{ flexGrow: 1 }}>
+            {loading && <div>Fetching data...</div>}
             {!loading && <CourseForm adminEdit key={currentCourseId} currentCourseData={currentCourse} />}
         </Box>
     )

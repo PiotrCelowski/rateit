@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Container, LabelTitle, SectionTitle } from "../ProposeCourseForm/ProposeCourseForm.styled";
+import { Container, LabelTitle, SectionTitle } from "./CourseForm.styled";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -152,7 +152,6 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
                 placeholder="Enter Course name"
                 hiddenLabel
                 inputRef={ref}
-                // autoFocus
                 error={Boolean(methods?.formState?.errors?.title)}
                 helperText={methods?.formState?.errors?.title?.message}
               />
