@@ -1,7 +1,8 @@
 import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion } from "firebase/firestore";
 import { firestore, storage } from "../configuration/firebase/FirebaseCommon";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { chain, isNil } from "lodash";
+import { chain, get, isNil } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
 export const fetchCourse = async (id) => {
     try {
@@ -14,22 +15,24 @@ export const fetchCourse = async (id) => {
 
 export const addCourse = async (course) => {
     try {
+        const courseId = get(course, 'id', uuidv4())
         const docData = {
-            id: course.id,
-            title: course.title,
-            author: course.author,
-            technologies: course.technologies,
-            features: course.features,
-            description: course.description,
-            type: course.type,
-            level: course.level,
-            approved: course.approved,
-            photoUrl: course.photoUrl,
+            id: courseId,
+            title: get(course, 'title', 'Title'),
+            author: get(course, 'author', 'Author'),
+            technologies: get(course, 'technologies', []),
+            features: get(course, 'features', []),
+            description: get(course, 'description', ''),
+            type: get(course, 'type', ''),
+            level: get(course, 'level', ''),
+            approved: get(course, 'approved', false),
+            photoUrl: get(course, 'photoUrl', "/static/images/no-image.jpg"),
             comments: []
         };
-        await setDoc(doc(firestore, "courses", course.id), docData);
+        await setDoc(doc(firestore, "courses", courseId), docData);
     } catch (error) {
-        console.error(error);
+        console.log(error)
+        throw error
     }
 }
 
@@ -98,20 +101,30 @@ export const fetchUserPermissions = async (userId) => {
 }
 
 export const updateCourse = async (course) => {
-    // ToDo: decide where to handle errors properly
     try {
-        const existingRating = doc(firestore, "courses", course.id)
-        await updateDoc(existingRating, {
-            title: course.title,
-            author: course.author,
-            technologies: course.technologies,
-            type: course.type,
-            level: course.level,
-            approved: course.approved,
-            photoUrl: course.photoUrl
-        })
+        const courseId = get(course, 'id', null)
+        // -- throws error to prevent firestore api call if there no course.id provided --
+        if (!courseId) throw new Error(`Course id is required. Provided course.id is ${courseId}`)
+
+        const updatedData = chain(course)
+            .pick([
+                'title',
+                'author',
+                'technologies',
+                'features',
+                'type',
+                'level',
+                'approved',
+                'photoUrl',
+                'description'
+            ])
+            .omitBy(isNil) // -- checks if value is null or undefined, and if it is, removes it from the object
+            .value()
+        const existingRating = doc(firestore, "courses", courseId)
+        await updateDoc(existingRating, updatedData)
     } catch (error) {
-        console.error(error);
+        console.error(error)
+        throw error
     }
 }
 

@@ -20,9 +20,7 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { FormAutocomplete } from "./FormAutocomplete";
 import { FormSelect } from "./FormSelect";
 import { chain, defaultTo, isEmpty } from "lodash";
-import { SnackBarMessageOnPage } from "../SnackbarMessage/SnackbarMessageOnPage";
-import { useDispatch, useSelector } from "react-redux";
-import { setError } from "../../store/errorSlice";
+import { AutoHideSnackbarMessage } from "../SnackbarMessage/AutoHideSnackbarMessage";
 
 const ENUM_TYPES = ["Video", "Book"];
 const ENUM_LEVELS = ["Beginner", "Intermediate", "Expert"];
@@ -47,8 +45,6 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
     attribute: "technologies",
     operator: "and",
   });
-  const visibleError = useSelector(state => state.errorState.visibleError)
-  const dispatch = useDispatch()
 
   const technologies = useMemo(() => {
     const flattenedItems = items?.map((item) => item.value);
@@ -78,14 +74,14 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
   }, [currentCourseData])
 
   const methods = useForm({
-    defaultValues: setDefaultFormValues
+    defaultValues: setDefaultFormValues,
+    shouldFocusError: true,
+    criteriaMode: 'all'
   });
 
   const photoUrl = methods.watch('photoUrl')
 
   const onSubmit = async (data) => {
-    console.log('submitFunc', data)
-    methods.clearErrors('root.serverError')
     const courseId = adminEdit && currentCourseData?.id ? currentCourseData?.id : uuidv4()
     const proposedCourse = {
       id: courseId,
@@ -112,25 +108,24 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
 
     proposedCourse["photoUrl"] = url;
     try {
+      // -- call one of firestore api functions --
       adminEdit
       ? await updateCourse(proposedCourse)
       : await addCourse(proposedCourse);
-      // proposedCourse.id = 'none'
-      // await updateCourse(proposedCourse)
+      
       const alertMessage = adminEdit ? "Course approved!" : "Course was proposed!"
       navigate("/", { state: { message: alertMessage } });
     } catch (error) {
-      // -- Which method should we choose? --
-      // dispatch(setError(error?.message || 'Something goes wrong'))
-      // methods.setError('root.serverError', { message: error?.message || 'Oops! Unknown error' })
+      // -- Sets manual form root error --
+      methods.setError('root.serverError', { type: 'manual', message: 'Oops! Something went wrong. Try again later.' })
     }
   }
-  // const serverError = methods?.formState?.errors?.root?.serverError
+  const serverError = methods?.formState?.errors?.root?.serverError || null
 
   return (
     <Container component="main" maxWidth="md" disableGutters>
       <SectionTitle component="h1" variant={"h3"}>
-        Please provide details about the course
+        {adminEdit ? 'Edit and approve course' : 'Please provide details about the course'}
       </SectionTitle>
       <FormProvider {...methods}>
         <Stack
@@ -144,8 +139,11 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
         >
           <Controller
             name="title"
-            rules={{ required: "Title is required" }}
-            render={({ field }) => (
+            rules={{
+              required: "Title is required",
+              pattern: { value: /[\S]/gm, message: "Title is required" }  // -- invalid if value contains only space symbols
+            }}
+            render={({ field: { ref, ...field } }) => (
               <TextField
                 {...field}
                 fullWidth
@@ -153,6 +151,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
                 label="Course name"
                 placeholder="Enter Course name"
                 hiddenLabel
+                inputRef={ref}
                 // autoFocus
                 error={Boolean(methods?.formState?.errors?.title)}
                 helperText={methods?.formState?.errors?.title?.message}
@@ -162,7 +161,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
           <Controller
             name="author"
             rules={{ required: "Author is required" }}
-            render={({ field }) => (
+            render={({ field: { ref, ...field } }) => (
               <TextField
                 {...field}
                 id="author"
@@ -170,6 +169,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
                 placeholder="Enter Course Author"
                 hiddenLabel
                 fullWidth
+                inputRef={ref}
                 error={Boolean(methods?.formState?.errors?.author)}
                 helperText={methods?.formState?.errors?.author?.message}
               />
@@ -252,7 +252,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
           <FormActions adminEdit={adminEdit} />
         </Stack>
       </FormProvider>
-      {visibleError && <SnackBarMessageOnPage />}
+      {serverError && <AutoHideSnackbarMessage message={serverError?.message} open={!isEmpty(serverError)} />}
     </Container>
   );
 };
