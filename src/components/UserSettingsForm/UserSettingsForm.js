@@ -15,7 +15,7 @@ import { setImageUrl } from "../../store/loginSlice";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
 import { Dropzone } from "../Dropzone/Dropzone";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
-import { SectionTitle } from "../ProposeCourseForm/ProposeCourseForm.styled";
+import { SectionTitle } from "../CourseForm/CourseForm.styled";
 import { useForm } from "react-hook-form";
 
 const GridTemplateBox = styled(Box)(({ theme }) => ({
