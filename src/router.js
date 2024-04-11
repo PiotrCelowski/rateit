@@ -17,6 +17,7 @@ import { ResponsivePageLayout } from "./utils/ResponsivePageLayout";
 import { AuthCheck } from "./utils/AuthCheck";
 import { RootErrorPage } from "./pages/RootErrorPage";
 import { AuthorizedGuard } from "./pages/AuthorizedGuard";
+import { AdminRoutesGuard } from "./pages/AdminRoutesGuard";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <RootLayout />,
+        // -- public routes --
         children: [
           { path: "/", element: <LandingPage /> },
           {
@@ -44,6 +46,7 @@ export const router = createBrowserRouter([
               }
             ]
           },
+          // -- only unauthorised users have access to these routes --
           {
             element: <AuthorizedGuard />,
             children: [
@@ -56,13 +59,19 @@ export const router = createBrowserRouter([
               }
             ]
           },
-          { path: '/',
+          // -- only authorised users (regardless of their role) have access to these routes --
+          {
             element: <ProtectedRoute />,
             children: [
             { path: "/propose", element: <ProposeCoursePage /> },
+            { path: "/user", element: <UserSettingsPage /> }
+          ]},
+          // -- only authorised admins can access these routes --
+          {
+            element: <AdminRoutesGuard />,
+            children: [
             { path: "/pending", element: <PendingCoursesPage /> },
             { path: "/edit", element: <EditCoursePage /> },
-            { path: "/user", element: <UserSettingsPage /> }
           ]}
         ]
       }
