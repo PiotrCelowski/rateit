@@ -6,7 +6,8 @@ import {
   signInWithPopup,
   signOut,
   browserSessionPersistence,
-  updateProfile
+  updateProfile,
+  deleteUser
 } from "firebase/auth";
 import { auth } from "../configuration/firebase/FirebaseCommon";
 
@@ -47,6 +48,16 @@ export const signOutUser = async () => {
 export const getCurrentUser = () => {
   return auth.currentUser;
 };
+
+export const deleteCurrentUser = async () => {
+  try {
+    const currentUser = getCurrentUser()
+    await deleteUser(currentUser)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 export const isUserAdmin = (tokenResult) => {
   if (tokenResult.claims["role"] != null) {

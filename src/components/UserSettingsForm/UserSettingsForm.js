@@ -10,7 +10,7 @@ import deepPurple from '@mui/material/colors/deepPurple';
 import Stack from "@mui/material/Stack"
 import { styled, useMediaQuery, useTheme } from "@mui/material";
 import { uploadUserPhoto } from "../../api/FirestoreApi";
-import { updatePhoto } from "../../api/FirebaseAuthApi";
+import { deleteCurrentUser, getCurrentUser, updatePhoto } from "../../api/FirebaseAuthApi";
 import { setImageUrl } from "../../store/loginSlice";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
 import { Dropzone } from "../Dropzone/Dropzone";
@@ -62,7 +62,16 @@ const UserSettingsForm = () => {
     navigate("/");
   };
 
-  const deleteAccountHandler = () => {};
+  const deleteAccountHandler = async () => {
+    // ToDo: remove this to dialog handling, and add logout/reload behavior
+    try {
+      await deleteCurrentUser()
+      console.log('user deleted successfully')
+    } catch (error) {
+      console.log(error)
+    }
+    console.log(getCurrentUser())
+  };
 
   const displayPhotoHandler = useCallback(() => {
     if (file) return setPhoto(URL.createObjectURL(file));
