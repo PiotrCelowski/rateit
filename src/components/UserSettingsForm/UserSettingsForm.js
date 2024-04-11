@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
@@ -64,14 +64,14 @@ const UserSettingsForm = () => {
 
   const deleteAccountHandler = () => {};
 
-  const displayPhotoHandler = () => {
-    setPhoto(URL.createObjectURL(file));
-  };
+  const displayPhotoHandler = useCallback(() => {
+    if (file) return setPhoto(URL.createObjectURL(file));
+    return setPhoto(userPhoto);
+  }, [file, userPhoto]);
 
   useEffect(() => {
-    if (file) return displayPhotoHandler();
-    return setPhoto(userPhoto);
-  }, [file]);
+    displayPhotoHandler()
+  }, [displayPhotoHandler]);
 
   return (
     <Container component="main" maxWidth="md" disableGutters>
