@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, getDoc, setDoc, getDocs, collection, query, where, updateDoc, arrayUnion, deleteDoc } from "firebase/firestore";
 import { firestore, storage } from "../configuration/firebase/FirebaseCommon";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { chain, get, isNil } from "lodash";
@@ -33,6 +33,16 @@ export const addCourse = async (course) => {
     } catch (error) {
         console.log(error)
         throw error
+    }
+}
+
+export const deleteCourse = async (courseId) => {
+    try {
+        const docRef = doc(firestore, "courses", courseId);
+        return await deleteDoc(docRef);
+    } catch (error) {
+        console.error(error);
+        throw error;
     }
 }
 
