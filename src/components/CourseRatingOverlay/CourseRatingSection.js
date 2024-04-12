@@ -3,8 +3,9 @@ import Rating from "@mui/material/Rating";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { alpha, styled, useMediaQuery, useTheme } from "@mui/material";
+import { Tooltip, alpha, styled, tooltipClasses, useMediaQuery, useTheme } from "@mui/material";
 import { Controller } from 'react-hook-form';
+import { RATINGS } from '../../utils/constants';
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   alignItems: 'center',
@@ -26,23 +27,32 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   }
 }))
 
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.secondary.dark,
+    color: theme.palette.common.white,
+    boxShadow: theme.shadows[1],
+    maxWidth: 300
+  },
+  [`&.${tooltipClasses.popper}[data-popper-placement*="top"] .${tooltipClasses.tooltip}`]: {
+      marginBottom: '4px',
+    },
+}));
+
 const CourseRatingSection = ({ control, readOnly }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  const mapFields = {
-    rating: 'Overall rating:',
-    codeSnippetsWorking: 'Are code snippets working:',
-    easilyExplained: 'Is simply explained:',
-    keptUpToDate: 'Is up to date:',
-    topicCoverage: 'Is everything covered:',
-    organization: 'Is well organized:',
-  }
+  // -- On mobile, the tooltip is displayed when the user longpresses the element and hides after a delay of 1500ms. --
 
   const renderListItem = (key) => {
     return (
       <StyledListItem key={key}>
-        <ListItemText sx={{ fontSize: 'inherit'}}>{mapFields[key]}</ListItemText>
+        <LightTooltip title={RATINGS[key].description} placement='top-start' arrow>
+          <ListItemText sx={{ fontSize: 'inherit'}}>{RATINGS[key].title}</ListItemText>
+        </LightTooltip>
         <Controller
           control={control}
           name={key}
@@ -56,7 +66,7 @@ const CourseRatingSection = ({ control, readOnly }) => {
 
   return (
     <List disablePadding>
-      {Object.keys(mapFields).map((key) => renderListItem(key))}
+      {Object.keys(RATINGS).map((key) => renderListItem(key))}
     </List>
   )
 }

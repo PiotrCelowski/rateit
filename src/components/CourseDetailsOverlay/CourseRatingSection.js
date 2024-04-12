@@ -5,6 +5,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from '@mui/material/Typography';
 import { alpha, styled } from "@mui/material";
+import { RATINGS } from '../../utils/constants';
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   display: 'grid',
@@ -29,34 +30,36 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   }
 }))
 
+// ToDo: Add tooltips?
+
 const CourseRatingSection = (props) => {
   return (
     <List sx={{ maxWidth: 686 }}>
       <StyledListItem>
-        <ListItemText>Overall rating:</ListItemText>
+        <ListItemText>{RATINGS.rating.title}</ListItemText>
           <Rating name="read-only" value={props?.rating} readOnly />
           <Typography component="div" color="text.secondary">
             ({props?.ratingVotes || 0})
           </Typography>
       </StyledListItem>
       <StyledListItem>
-        <ListItemText>Are code snippets working:</ListItemText>
+        <ListItemText>{RATINGS.codeSnippetsWorking.title}</ListItemText>
           <Rating name="read-only" value={props?.codeSnippetsWorking} readOnly />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText>Is simply explained:</ListItemText>
+        <ListItemText>{RATINGS.easilyExplained.title}</ListItemText>
           <Rating name="read-only" value={props?.easilyExplained} readOnly />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText>Is up to date:</ListItemText>
+        <ListItemText>{RATINGS.keptUpToDate.title}</ListItemText>
           <Rating name="read-only" value={props?.keptUpToDate} readOnly />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText>Is everything covered:</ListItemText>
+        <ListItemText>{RATINGS.topicCoverage.title}</ListItemText>
           <Rating name="read-only" value={props?.topicCoverage} readOnly />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText>Is well organized:</ListItemText>
+        <ListItemText>{RATINGS.organization.title}</ListItemText>
           <Rating name="read-only" value={props?.organization} readOnly />
       </StyledListItem>
     </List>
