@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setAdmin, setEmail, setImageUrl, setLoggedIn, setUserId } from "../store/loginSlice";
+import { setAdmin, setEmail, setImageUrl, setLoggedIn, setUserId, logOut } from "../store/loginSlice";
 import { auth } from "../configuration/firebase/FirebaseCommon";
 import { onAuthStateChanged } from "@firebase/auth";
 import { getCurrentUser } from "../api/FirebaseAuthApi";
@@ -25,6 +25,9 @@ export const AuthCheck = ({ children }) => {
               dispatch(setImageUrl(user.photoURL));
               dispatch(setUserId(user.uid));
           }
+          if (user === null) {
+              dispatch(logOut());
+        }
           setLoading(false)
     },
     [dispatch, handleAdminRigths]

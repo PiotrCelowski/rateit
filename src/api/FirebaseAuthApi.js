@@ -67,8 +67,12 @@ export const isUserAdmin = (tokenResult) => {
   }
 };
 
-export const updatePhoto = async (uid, imageUrl) => {
-  updateProfile(auth.currentUser, {
-    photoURL: imageUrl
-  })
+export const updatePhoto = async (imageUrl) => {
+  try {
+    await updateProfile(auth.currentUser, {
+      photoURL: imageUrl
+    })
+  } catch (error) {
+    throw error
+  }
 }

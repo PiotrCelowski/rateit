@@ -8,15 +8,20 @@ import { useDispatch, useSelector } from "react-redux";
 import Avatar from '@mui/material/Avatar';
 import deepPurple from '@mui/material/colors/deepPurple';
 import Stack from "@mui/material/Stack"
+import Alert from "@mui/material/Alert";
+import DialogContentText from "@mui/material/DialogContentText";
 import { styled, useMediaQuery, useTheme } from "@mui/material";
 import { uploadUserPhoto } from "../../api/FirestoreApi";
-import { deleteCurrentUser, getCurrentUser, updatePhoto } from "../../api/FirebaseAuthApi";
+import { deleteCurrentUser, updatePhoto } from "../../api/FirebaseAuthApi";
 import { setImageUrl } from "../../store/loginSlice";
 import { DropzoneMobile } from "../Dropzone/DropzoneMobile";
 import { Dropzone } from "../Dropzone/Dropzone";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
 import { SectionTitle } from "../CourseForm/CourseForm.styled";
 import { useForm } from "react-hook-form";
+import { ConfirmationDialog } from "../ConfirmationDialog/ConfirmationDialog";
+import { AutoHideSnackbarMessage } from "../SnackbarMessage/AutoHideSnackbarMessage";
+import { isEmpty } from "lodash";
 
 const GridTemplateBox = styled(Box)(({ theme }) => ({
   display: "grid",
@@ -33,11 +38,13 @@ const UserSettingsForm = () => {
   const userId = useSelector((state) => state.login.userId);
   const [photo, setPhoto] = useState(userPhoto);
   const [file, setFile] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useDispatch();
   const firstLetter = userEmail?.charAt(0)?.toUpperCase() || "N";
-  const { handleSubmit } = useForm();
+  const { handleSubmit, setError, clearErrors, formState: { errors } } = useForm();
 
   const updateUserHandler = async (data) => {
     let url = "/static/images/no-image.jpg";
@@ -46,31 +53,32 @@ const UserSettingsForm = () => {
       url = await uploadUserPhoto(file, userId);
     }
     try {
-      updatePhoto(userId, url);
+      await updatePhoto(url);
       dispatch(setImageUrl(url));
 
       navigate("/", { state: { message: "Photo was uploaded!" } });
     } catch (error) {
-      // Todo: add error handling with a toast message or any other solution to notify user about an error
       const { code, message } = error;
-      if (code && message) return console.log(`Error ${code}: ${message}`);
-      return console.log("Submit Error:", error);
+      if (code && message) console.log(`Error ${code}: ${message}`);
+      return setError('root.serverError', { type: 'manual', message: 'Oops! Something went wrong. Try again later.' });
     }
   };
+
+  const openConfirmation = () => setOpenDialog(true);
+  const closeConfirmation = () => setOpenDialog(false);
 
   const goBackHandler = () => {
     navigate("/");
   };
 
   const deleteAccountHandler = async () => {
-    // ToDo: remove this to dialog handling, and add logout/reload behavior
     try {
       await deleteCurrentUser()
-      console.log('user deleted successfully')
+      closeConfirmation()
+      navigate('/', { replace: true })
     } catch (error) {
-      console.log(error)
+      setError('root.serverError', { type: 'manual', message: 'Oops! Something went wrong. Try again later.' })
     }
-    console.log(getCurrentUser())
   };
 
   const displayPhotoHandler = useCallback(() => {
@@ -81,6 +89,9 @@ const UserSettingsForm = () => {
   useEffect(() => {
     displayPhotoHandler()
   }, [displayPhotoHandler]);
+
+  const serverError = errors?.root?.serverError || null
+  const clearServerError = () => clearErrors('root.serverError') // -- clears form errors state from root.serverError
 
   return (
     <Container component="main" maxWidth="md" disableGutters>
@@ -137,7 +148,7 @@ const UserSettingsForm = () => {
           <PrimaryButton
             type="button"
             variant="contained"
-            onClick={deleteAccountHandler}
+            onClick={openConfirmation}
             sx={{ flexGrow: 1 }}
           >
             Delete account
@@ -151,6 +162,20 @@ const UserSettingsForm = () => {
           </PrimaryButton>
         </Stack>
       </Stack>
+      <ConfirmationDialog
+        title="Delete account"
+        open={openDialog}
+        onClose={closeConfirmation}
+        onSubmit={deleteAccountHandler}
+        >
+          <Alert severity='warning' color='error'>
+            When you confirm, your account will be permanently deleted - this action is irreversible.
+          </Alert>
+          <DialogContentText mt={2}>
+            Are you sure you want to delete your account?
+          </DialogContentText>
+        </ConfirmationDialog>
+        {serverError?.message && <AutoHideSnackbarMessage message={serverError?.message} open={!isEmpty(serverError)} onHide={clearServerError} />}
     </Container>
   );
 };
