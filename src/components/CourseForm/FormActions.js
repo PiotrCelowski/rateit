@@ -1,14 +1,13 @@
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 import { PrimaryButton } from "../PrimaryButton/PrimaryButton";
+import { DeclineCourse } from "./DeclineCourse";
 
 export const FormActions = ({ adminEdit }) => {
   const navigate = useNavigate();
   const returnTo = adminEdit ? '/pending' : '/'
 
   const goBackHandler = () => navigate(returnTo);
-
-  const declineHandler = () => {}; // -- should we delete current course?
 
   return (
     <Grid
@@ -23,18 +22,7 @@ export const FormActions = ({ adminEdit }) => {
           {adminEdit ? "Approve" : "Propose course"}
         </PrimaryButton>
       </Grid>
-      {adminEdit && (
-        <Grid item xs={12} sm={true}>
-          <PrimaryButton
-            type="button"
-            variant="contained"
-            onClick={declineHandler}
-            fullWidth
-          >
-            Decline
-          </PrimaryButton>
-        </Grid>
-      )}
+      {adminEdit && <DeclineCourse />}
       <Grid item xs={12} sm={true}>
         <PrimaryButton
           type="button"

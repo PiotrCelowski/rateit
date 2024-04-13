@@ -36,12 +36,6 @@ const Course = (props) => {
   const dispatch = useDispatch();
   const loggedIn = useSelector((state) => state.login.isLoggedIn);
 
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      dispatch(setLoggedIn((true)));
-    }
-  }, [dispatch]);
-
   const navigate = useNavigate()
 
   const openCourseHandler = () => {

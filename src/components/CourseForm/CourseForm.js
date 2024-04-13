@@ -121,6 +121,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
     }
   }
   const serverError = methods?.formState?.errors?.root?.serverError || null
+  const clearServerError = () => methods.clearErrors('root.serverError') // -- clears form errors state from root.serverError
 
   return (
     <Container component="main" maxWidth="md" disableGutters>
@@ -251,7 +252,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
           <FormActions adminEdit={adminEdit} />
         </Stack>
       </FormProvider>
-      {serverError && <AutoHideSnackbarMessage message={serverError?.message} open={!isEmpty(serverError)} />}
+      {serverError?.message && <AutoHideSnackbarMessage message={serverError?.message} open={!isEmpty(serverError)} onHide={clearServerError} />}
     </Container>
   );
 };

@@ -99,6 +99,12 @@ export default function SignIn() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         user.getIdTokenResult().then((token) => {
+          // ToDo: Decide should the token be stored in localStorage?
+
+          // if (getValues('rememberMe') === true) {
+          //   localStorage.setItem('token', token.token)
+          // }
+
           dispatch(setLoggedIn(true));
           if (isUserAdmin(token)) dispatch(setAdmin(true));
           navigate(navigatePath, { state: { message: "Login successfull!" } });

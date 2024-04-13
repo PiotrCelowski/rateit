@@ -6,7 +6,8 @@ import {
   signInWithPopup,
   signOut,
   browserSessionPersistence,
-  updateProfile
+  updateProfile,
+  deleteUser
 } from "firebase/auth";
 import { auth } from "../configuration/firebase/FirebaseCommon";
 
@@ -48,6 +49,16 @@ export const getCurrentUser = () => {
   return auth.currentUser;
 };
 
+export const deleteCurrentUser = async () => {
+  try {
+    const currentUser = getCurrentUser()
+    await deleteUser(currentUser)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
 export const isUserAdmin = (tokenResult) => {
   if (tokenResult.claims["role"] != null) {
     return tokenResult.claims["role"] === "admin";
@@ -56,8 +67,12 @@ export const isUserAdmin = (tokenResult) => {
   }
 };
 
-export const updatePhoto = async (uid, imageUrl) => {
-  updateProfile(auth.currentUser, {
-    photoURL: imageUrl
-  })
+export const updatePhoto = async (imageUrl) => {
+  try {
+    await updateProfile(auth.currentUser, {
+      photoURL: imageUrl
+    })
+  } catch (error) {
+    throw error
+  }
 }

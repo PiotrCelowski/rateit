@@ -21,9 +21,16 @@ const loginSlice = createSlice({
     setUserId(state, action) {
       state.userId = action.payload;
     },
+    logOut(state) {
+      state.isLoggedIn = initialLoginState.isLoggedIn
+      state.isAdmin = initialLoginState.isAdmin
+      state.email = initialLoginState.email
+      state.imageUrl = initialLoginState.imageUrl
+      state.userId = initialLoginState.userId
+    }
   },
 });
 
-export const { setLoggedIn, setAdmin, setEmail, setImageUrl, setUserId } = loginSlice.actions;
+export const { setLoggedIn, setAdmin, setEmail, setImageUrl, setUserId, logOut } = loginSlice.actions;
 
 export default loginSlice.reducer;
