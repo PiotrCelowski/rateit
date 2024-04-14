@@ -95,7 +95,7 @@ export const CourseForm = ({ adminEdit = false, currentCourseData = null }) => {
       approved: adminEdit,
     };
 
-    let url = "/static/images/no-image.jpg";
+    let url = data.photoUrl ? data.photoUrl : "/static/images/no-image.jpg";
 
     if (file) {
       url = await uploadPhoto(
