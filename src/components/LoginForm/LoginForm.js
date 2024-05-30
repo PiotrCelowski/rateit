@@ -199,9 +199,9 @@ export default function SignIn() {
               <GoogleIcon />
             </IconButton>
 
-            <IconButton type='button' onClick={facebookHandler} color="default" size="large">
+            {/* <IconButton type='button' onClick={facebookHandler} color="default" size="large">
               <FacebookIcon />
-            </IconButton>
+            </IconButton> */}
           </Stack>
 
         </Stack>

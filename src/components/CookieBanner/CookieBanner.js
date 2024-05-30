@@ -16,7 +16,7 @@ const CookieBanner = () => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         bgcolor: 'background.paper',
-        boxShadow: 24,
+        outline: 'none'
     };
 
     const approveHandler = () => {
@@ -33,11 +33,11 @@ const CookieBanner = () => {
             <Box padding={"10px"} sx={{ ...style, display: "flex", flexDirection: "row" }}>
                 <Box display={"flex"} flexDirection={"column"} justifyContent={"space-between"}>
                     <Typography variant="h5" textAlign={"center"}>Cookie consent</Typography>
-                    <Typography variant="p">This website uses cookies to enhance the user experience.</Typography>
+                    <Typography variant="p">We use cookies to personalize content and ads, to provide social media features and to analyze our traffic. We also share information about your use of our site with our social media, advertising, and analytics partners who may combine it with other information that you’ve provided to them or that they’ve collected from your use of their services. </Typography>
                     <Button onClick={approveHandler}
                         type="button"
                         variant="contained"
-                        sx={{width: "100px", alignSelf: "center", marginTop: "10px"}}
+                        sx={{width: "100px", alignSelf: "center", marginTop: "10px", backgroundColor: '#ba68c8'}}
                         >Got it!</Button>
                 </Box>
             </Box>
