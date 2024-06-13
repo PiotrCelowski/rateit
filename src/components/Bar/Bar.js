@@ -2,11 +2,14 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
+import Stack from '@mui/material/Stack';
 import { useNavigate } from "react-router-dom";
 import { Container, ThemeProvider } from "@mui/material";
 import { Logo } from "../Logo/LogoIcon";
 import { lightPurpleTheme } from "../../themes/purpleTheme";
 import { NavigationPanel } from "./NavigationPanel";
+import { Link, Typography } from "@mui/material";
+import Divider from '@mui/material/Divider';
 
 const Bar = ({ root = false }) => {
   const navigate = useNavigate();
@@ -17,24 +20,32 @@ const Bar = ({ root = false }) => {
 
   return (
     <ThemeProvider theme={lightPurpleTheme}>
-        <AppBar
-          position="static"
-          color='primary'
-          sx={{
-            minHeight: { md: 88 },
-            placeContent: 'center',
-            boxShadow: 'none'
-          }}
-        >
-          <Container maxWidth="xl" disableGutters>
-            <Toolbar sx={{ columnGap: 5 }}>
-              <Box sx={{ flexGrow: 1 }}>
+      <AppBar
+        position="static"
+        color='primary'
+        sx={{
+          minHeight: { md: 88 },
+          placeContent: 'center',
+          boxShadow: 'none'
+        }}
+      >
+        <Container maxWidth="xl" disableGutters>
+          <Toolbar sx={{ columnGap: 5 }}>
+            <Stack sx={{ flexGrow: 1 }} direction="row" spacing={2} divider={<Divider orientation="vertical" color="white" flexItem />} justifyContent="center"
+              alignItems="center">
+              <Box>
                 <Logo onClick={goToMainPageHandler} />
               </Box>
-              {!root && <NavigationPanel />}
-            </Toolbar>
-          </Container>
-        </AppBar>
+              <Box alignContent={"center"}>
+                <Link color="inherit" href="https://blog.r4te.it" underline="hover">
+                  r4te.it blog
+                </Link>
+              </Box>
+            </Stack>
+            {!root && <NavigationPanel />}
+          </Toolbar>
+        </Container>
+      </AppBar>
     </ThemeProvider>
   );
 };

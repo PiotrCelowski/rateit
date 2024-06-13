@@ -29,7 +29,7 @@ const Footer = () => {
         <Divider sx={{ bgcolor: 'secondary.contrastText', mb: { xs: 1, sm: 1.5, md: 2 } }} />
         <ThemeProvider theme={footerFont}>
           <StyledTypography component="div" align="center" variant='caption'>
-            © 2023 R4te.it!
+            © 2024 R4te.it!
           </StyledTypography>
         </ThemeProvider>
       </Container>
