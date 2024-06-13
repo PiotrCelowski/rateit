@@ -31,8 +31,7 @@ const Bar = ({ root = false }) => {
       >
         <Container maxWidth="xl" disableGutters>
           <Toolbar sx={{ columnGap: 5 }}>
-            <Stack sx={{ flexGrow: 1 }} direction="row" spacing={2} divider={<Divider orientation="vertical" color="white" flexItem />} justifyContent="center"
-              alignItems="center">
+            <Stack sx={{ flexGrow: 2 }} direction="row" spacing={2} divider={<Divider orientation="vertical" color="white" flexItem />} alignItems="center">
               <Box>
                 <Logo onClick={goToMainPageHandler} />
               </Box>
