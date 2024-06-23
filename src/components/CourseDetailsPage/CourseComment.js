@@ -21,7 +21,6 @@ export const CourseComment = ({ userName = 'user', rating, comment, photoUrl, cr
       <Avatar src={photoUrl} alt={userName}>{userName[0]?.toUpperCase()}</Avatar>
       <Stack direction='column' useFlexGap spacing={1}>
         <Rating readOnly value={rating} />
-        <Typography variant='subtitle2'>{userName} • {formattedTime}</Typography>
         <Typography variant="body1" whiteSpace='break-spaces'>{comment}</Typography>
       </Stack>
     </Box>
